@@ -15,21 +15,22 @@ import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
  * These are not the only parameters; some are located in the localizer classes, drive base classes,
  * and op modes themselves.
  */
+
 @Config
 public class DriveConstants {
 
     /*
      * These are motor constants that should be listed online for your motors.
      */
-    public static final double TICKS_PER_REV = 1;
-    public static final double MAX_RPM = 1;
+    public static final double TICKS_PER_REV = 537.6;
+    public static final double MAX_RPM = 312;
 
     /*
      * Set the first flag appropriately. If using the built-in motor velocity PID, update
      * MOTOR_VELO_PID with the tuned coefficients from DriveVelocityPIDTuner.
      */
     public static final boolean RUN_USING_ENCODER = true;
-    public static final PIDCoefficients MOTOR_VELO_PID = null;
+    public static final PIDCoefficients MOTOR_VELO_PID = new PIDCoefficients(10, 0, 10);
 
     /*
      * These are physical constants that can be determined from your robot (including the track
@@ -39,9 +40,9 @@ public class DriveConstants {
      * angular distances although most angular parameters are wrapped in Math.toRadians() for
      * convenience. Make sure to exclude any gear ratio included in MOTOR_CONFIG from GEAR_RATIO.
      */
-    public static double WHEEL_RADIUS = 2; // in
+    public static double WHEEL_RADIUS = 1.9685; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (motor) speed
-    public static double TRACK_WIDTH = 1; // in
+    public static double TRACK_WIDTH = 14.1; // in
 
     /*
      * These are the feedforward parameters used to model the drive motor behavior. If you are using
@@ -62,8 +63,8 @@ public class DriveConstants {
      * forces acceleration-limited profiling). All distance units are inches.
      */
     public static DriveConstraints BASE_CONSTRAINTS = new DriveConstraints(
-            30.0, 30.0, 0.0,
-            Math.toRadians(180.0), Math.toRadians(180.0), 0.0
+            40, 40, 0.0,
+            Math.toRadians(300), Math.toRadians(300), 0.0
     );
 
 

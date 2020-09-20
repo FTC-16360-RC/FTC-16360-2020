@@ -12,9 +12,8 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 /*
  * This is an example of a more complex path to really test the tuning.
  */
-@Disabled
 @Autonomous(group = "drive")
-public class SplineTest extends LinearOpMode {
+public class AutoTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
@@ -27,14 +26,30 @@ public class SplineTest extends LinearOpMode {
                 .splineTo(new Vector2d(30, 30), 0)
                 .build();
 
+        Trajectory traj2 = drive.trajectoryBuilder(traj.end())
+                .lineToSplineHeading(new Pose2d(0, 60, Math.toRadians(90)))
+                .build();
+
+        Trajectory traj3 = drive.trajectoryBuilder(traj2.end(), true)
+                .splineTo(new Vector2d(-30, 30), 135)
+                .build();
+
+        Trajectory traj4 = drive.trajectoryBuilder(traj3.end())
+                .lineToConstantHeading(new Vector2d(0, 0))
+                .build();
+
         drive.followTrajectory(traj);
 
-        sleep(2000);
+        sleep(500);
 
-        drive.followTrajectory(
-                drive.trajectoryBuilder(traj.end(), true)
-                        .splineTo(new Vector2d(0, 0), Math.toRadians(180))
-                        .build()
-        );
+        drive.followTrajectory(traj2);
+
+        sleep(500);
+
+        drive.followTrajectory(traj3);
+
+        sleep(500);
+
+        drive.followTrajectory(traj4);
     }
 }

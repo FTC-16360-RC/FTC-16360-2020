@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
@@ -35,6 +36,8 @@ public class Shooter extends OpMode {
         motor2.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
         motor1.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         motor2.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        motor1.setDirection(DcMotorEx.Direction.REVERSE);
+        motor2.setDirection(DcMotorEx.Direction.REVERSE);
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status:", "Initialized");    //

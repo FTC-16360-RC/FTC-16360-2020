@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
@@ -13,7 +14,8 @@ public class Shooter extends OpMode {
     private ElapsedTime runtime = new ElapsedTime();
     double lastTimeMeasurement = 0;
     double lastEncoderMeasurement = 0;
-    DcMotor motor;
+    DcMotorEx motor1;
+    DcMotorEx motor2;
     boolean motorOn = false;
     boolean stateChanged = false;
     boolean lastUp = false;
@@ -26,10 +28,13 @@ public class Shooter extends OpMode {
     @Override
     public void init() {
 
-        motor = hardwareMap.get(DcMotor.class, "motor");
+        motor1 = hardwareMap.get(DcMotorEx.class, "motor1");
+        motor2 = hardwareMap.get(DcMotorEx.class, "motor2");
 
-        motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motor1.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+        motor2.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+        motor1.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        motor2.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status:", "Initialized");    //
@@ -47,7 +52,8 @@ public class Shooter extends OpMode {
      */
     @Override
     public void start() {
-        motor.setPower(0);
+        motor1.setPower(0);
+        motor2.setPower(0);
     }
 
     /*
@@ -77,15 +83,17 @@ public class Shooter extends OpMode {
 
         if(motorOn && stateChanged)
         {
-            motor.setPower(power);
+            motor1.setPower(power);
+            motor2.setPower(power);
         } else {
-            motor.setPower(0);
+            motor1.setPower(0);
+            motor2.setPower(0);
         }
         lastUp = gamepad1.dpad_up;
         lastDown = gamepad1.dpad_down;
         tiime = getRuntime();
         if(tiime > lastTimeMeasurement + 5) {
-            encoderMeasurement = motor.getCurrentPosition();
+            encoderMeasurement = motor1.getCurrentPosition();
             RPM = Math.abs(encoderMeasurement - lastEncoderMeasurement)/28*5/5*60/3.7;
             lastEncoderMeasurement = encoderMeasurement;
             lastTimeMeasurement = tiime;

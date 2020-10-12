@@ -30,14 +30,12 @@ public class Shooter extends OpMode {
     public void init() {
 
         motor1 = hardwareMap.get(DcMotorEx.class, "motor1");
-        motor2 = hardwareMap.get(DcMotorEx.class, "motor2");
+        //motor2 = hardwareMap.get(DcMotorEx.class, "motor2");
 
         motor1.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
-        motor2.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+        //motor2.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
         motor1.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        motor2.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        motor1.setDirection(DcMotorEx.Direction.REVERSE);
-        motor2.setDirection(DcMotorEx.Direction.REVERSE);
+        //motor2.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status:", "Initialized");    //
@@ -56,7 +54,7 @@ public class Shooter extends OpMode {
     @Override
     public void start() {
         motor1.setPower(0);
-        motor2.setPower(0);
+        //motor2.setPower(0);
     }
 
     /*
@@ -87,10 +85,10 @@ public class Shooter extends OpMode {
         if(motorOn && stateChanged)
         {
             motor1.setPower(power);
-            motor2.setPower(power);
+            //motor2.setPower(power);
         } else {
             motor1.setPower(0);
-            motor2.setPower(0);
+            //motor2.setPower(0);
         }
         lastUp = gamepad1.dpad_up;
         lastDown = gamepad1.dpad_down;

@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.lib;
 
-import com.acmerobotics.roadrunner:core:0.5.2;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 
 public class Vector {
 

@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.lib;
 
+import com.acmerobotics.roadrunner:core:0.5.2;
+
 public class Vector {
 
     public double x,y,z,w;  //no setters/getters because you can't fucking overload functions is this garbage language
@@ -120,5 +122,4 @@ public class Vector {
 
         return deg;
     }
-    Vector2d v2 = new Vector2d();
 }

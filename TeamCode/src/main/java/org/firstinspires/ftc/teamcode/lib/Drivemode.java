@@ -45,8 +45,8 @@ public class Drivemode {
         if (mode == "GOAL") {
             //currentRotation = roadrunner.getRotation();
             expectedRotation = shooting.currentTarget.getCoordinates().subtract(currentPos).angle();
-
             error = currentRotation - expectedRotation;
+
             if (error > g.e) {
                 rotationPower = new Vector(-1.0, 1.0, -1.0, 1.0);
             }

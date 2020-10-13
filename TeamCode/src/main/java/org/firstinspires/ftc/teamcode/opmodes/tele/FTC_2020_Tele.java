@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.lib.Drivemode;
 //@Disabled
 public class FTC_2020_Tele extends OpMode {
 
-    Drivemode drivemode = new Drivemode();
+    Drivemode drivemode = new Drivemode(gamepad1);
 
     @Override
     public void init() {
@@ -26,6 +26,7 @@ public class FTC_2020_Tele extends OpMode {
 
     @Override
     public void start() {
+        drivemode.startTracking();
     }
 
     @Override

@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode.lib;
 
+import com.qualcomm.robotcore.hardware.Gamepad;
+
 public class Drivemode {
-    Controller controller = new Controller(/*gamepad*/);
     Globals g = new Globals();
+    Controller controller;
     Shooting shooting = new Shooting("blue");       //classes
 
     String mode = "ROBOT";                                  //Idk
@@ -20,10 +22,11 @@ public class Drivemode {
     Vector translationPower = new Vector();
     double rotationFactor = 0;                              //Motor
 
-    double lateralInput;
-    double longitudinalInput;                               //input
-
     double error;
+
+    public Drivemode(Gamepad gamepad) {
+        controller = new Controller(gamepad);
+    }
 
     public void startTracking() {
         //roadrunner.goto(currentHeading * tuned constant depending on speed, shooting.calculateAngleAlpha)
@@ -51,7 +54,6 @@ public class Drivemode {
                 rotationPower = new Vector(1.0, -1.0, 1.0, -1.0);
             }
 
-            lateralInput = controller.getLeftJoystickXValue();
             translationPowerX = new Vector(1,-1,-1,1).multiply(controller.getLeftJoystickXValue());
             translationPowerY = new Vector(1,1,1,1).multiply(controller.getLeftJoystickYValue());
             translationPower = translationPowerX.add(translationPowerY);

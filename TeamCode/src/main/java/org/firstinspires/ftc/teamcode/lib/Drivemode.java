@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.lib;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-public class Drivemode {
+/*public class Drivemode {
     Globals g = new Globals();
     Controller controller;
     Shooting shooting = new Shooting("blue");       //classes
@@ -65,4 +65,4 @@ public class Drivemode {
             motorPower = rotationPower.multiply(rotationFactor).add(translationPower.multiply(1-rotationFactor));       //f * v1 + (1-f) * v2
         }
     }
-}
+}*/

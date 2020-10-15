@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.lib;
 
-<<<<<<< HEAD
+/*<<<<<<< HEAD
 =======
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
@@ -99,7 +99,7 @@ public class Shooting extends FTC_2020_Tele {
         }
         return false;
     }*/
-    public void adjustAlpha() {
+    /*public void adjustAlpha() {
     double alpha = calculateAngleAlpha();
     }
     public void adjustTheta() {
@@ -113,7 +113,7 @@ public class Shooting extends FTC_2020_Tele {
     }
 }
 =======
-    public void shootAllStatic(HardwareMap hardwareMap, Pose2d position) {
+        public void shootAllStatic(HardwareMap hardwareMap, Pose2d position) {
         DcMotor motor1 = hardwareMap.get(DcMotorEx.class, "motor1");
         DcMotor motor2 = hardwareMap.get(DcMotorEx.class, "motor2");
         Servo servo = hardwareMap.get(Servo.class, "shooter");
@@ -138,4 +138,4 @@ public class Shooting extends FTC_2020_Tele {
     }
 }
 
->>>>>>> TestRC
+>>>>>>> TestRC*/

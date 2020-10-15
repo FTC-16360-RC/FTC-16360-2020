@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.lib;
 
-<<<<<<< HEAD
+/*<<<<<<< HEAD
 public class Globals {
 
     public double e = 0.000001;
@@ -12,4 +12,4 @@ public class Globals {
     public static double e = 0.000001;
     public HardwareMap hardwareMap;
 >>>>>>> TestRC
-}
+}*/

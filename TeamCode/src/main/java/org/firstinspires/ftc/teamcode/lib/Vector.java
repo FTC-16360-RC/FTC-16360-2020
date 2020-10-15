@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.lib;
 
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 
-public class Vector {
+/*public class Vector {
 
     public double x,y,z,w;  //no setters/getters because you can't fucking overload functions is this garbage language
     Globals g = new Globals();
@@ -133,4 +133,4 @@ public class Vector {
         return new Vector(in.getX(), in.getY());
     }
 >>>>>>> TestRC
-}
+}*/

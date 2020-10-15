@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes.tele;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
+/*import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -58,4 +58,4 @@ public class FTC_2020_Tele extends OpMode {
         }
 >>>>>>> TestRC
     }
-}
+}*/

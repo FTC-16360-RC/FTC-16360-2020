@@ -122,4 +122,15 @@ public class Vector {
 
         return deg;
     }
+<<<<<<< HEAD
+=======
+
+    public Vector2d toVector2d(Vector in) {
+        return new Vector2d(in.x, in.y);
+    }
+
+    public Vector toVector(Vector2d in) {
+        return new Vector(in.getX(), in.getY());
+    }
+>>>>>>> TestRC
 }

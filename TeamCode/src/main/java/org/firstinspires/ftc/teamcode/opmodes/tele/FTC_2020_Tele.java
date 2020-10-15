@@ -18,6 +18,7 @@ import org.firstinspires.ftc.teamcode.lib.Drivemode;
 public class FTC_2020_Tele extends OpMode {
 
     private Shooting shooting = new Shooting(hardwareMap);
+    Pose2d position = new Pose2d();
 
     StandardTrackingWheelLocalizer myLocalizer = new StandardTrackingWheelLocalizer(hardwareMap);
     public double d = 0;
@@ -42,7 +43,7 @@ public class FTC_2020_Tele extends OpMode {
         position = myLocalizer.getPoseEstimate();
         //drivemode.loop();
         if (gamepad1.a) {
-            shooting.shootAllStatic();
+            shooting.shootAllStatic(position);
         }
     }
 }

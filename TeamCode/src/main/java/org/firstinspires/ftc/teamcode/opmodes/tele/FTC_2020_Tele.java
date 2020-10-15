@@ -17,8 +17,8 @@ import org.firstinspires.ftc.teamcode.lib.Drivemode;
 //@Disabled
 public class FTC_2020_Tele extends OpMode {
 
-    Drivemode drivemode = new Drivemode(gamepad1);
-    Shooting shooting = new Shooting("blue");
+    private Shooting shooting = new Shooting(hardwareMap);
+
     StandardTrackingWheelLocalizer myLocalizer = new StandardTrackingWheelLocalizer(hardwareMap);
     public double d = 0;
 
@@ -39,9 +39,10 @@ public class FTC_2020_Tele extends OpMode {
     @Override
     public void loop() {
         myLocalizer.update();
+        position = myLocalizer.getPoseEstimate();
         //drivemode.loop();
         if (gamepad1.a) {
-            shooting.shootAllStatic(hardwareMap, myLocalizer.getPoseEstimate());
+            shooting.shootAllStatic();
         }
     }
 }

@@ -16,9 +16,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Shooting extends FTC_2020_Tele {
+public class Shooting {
     public Targets currentTarget;
     private String alliance;
+    private HardwareMap hardwareMap;
+
+    private DcMotorEx motorOne;
+    private DcMotorEx motorTwo;
+    private int lastDistance = 0;
+    private long lastTime = 0;
+    private long timeSinceLast = 0;
+    private double distance = 0;
+    private double MIN_DISTANCE = 0;
+    private boolean motorsReady = false;
 
     public enum Targets  {
         blueUpper (new Vector(5,-3,3)),
@@ -45,29 +55,35 @@ public class Shooting extends FTC_2020_Tele {
         }
     }
 
+    public Shooting (HardwareMap hardwareMap) {
+        this.hardwareMap = hardwareMap;
+        currentTarget = Targets.blueUpper;
+
+        motorOne = hardwareMap.get(DcMotorEx.class, "shooterOne");
+        motorTwo = hardwareMap.get(DcMotorEx.class, "shoorerTwo");
+    }
+
     private void adjustTheta() {
     }
 
-    private Boolean motorsReady() {
-        HardwareMap hardwareMap;
-        DcMotorEx motorOne = hardwareMap.dcMotor(DcMotorEx.class, "shooterOne");
+    private void motorsReadyLoop() {
+        distance = motorOne.getCurrentPosition() + motorTwo.getCurrentPosition() - lastDistance;
+        lastDistance = motorOne.getCurrentPosition() + motorTwo.getCurrentPosition();
 
-        return true;
+        timeSinceLast = System.nanoTime() - lastTime;
+        lastTime = System.nanoTime();
+        if (distance / timeSinceLast > MIN_DISTANCE) {
+            motorsReady = true;
+        } else {
+            motorsReady = false;
+        }
     }
 
-    public Shooting(String alliance) {
-        if (!(alliance == "Red")) {
-            alliance = "blue";
-        }
-        if (!(alliance == "Blue")) {
-            alliance = "red";
-        }
-        currentTarget = Targets.blueUpper;
+    public void shootingLoop() {
+        motorsReadyLoop();
     }
 
-    public void shootAllStatic(HardwareMap hardwareMap, Pose2d position) {
-        DcMotor motor1 = hardwareMap.get(DcMotorEx.class, "motor1");
-        DcMotor motor2 = hardwareMap.get(DcMotorEx.class, "motor2");
+    public void shootAllStatic(Pose2d position) {
         Servo servo = hardwareMap.get(Servo.class, "shooter");
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
@@ -78,15 +94,19 @@ public class Shooting extends FTC_2020_Tele {
 
         drive.followTrajectory(turn);
 
+        motorOne.setPower(1);
+        motorTwo.setPower(1);
+
         for (int i = 0; i < 3; i++) {
             adjustTheta();
-            while (!motorsReady()) {
+            while (!motorsReady) {
+                motorsReadyLoop();
             }
             servo.setPosition(0);   //Feed Ring
             servo.setPosition(1);
         }
-        motor1.setPower(0);
-        motor2.setPower(0);
+        motorOne.setPower(0);
+        motorTwo.setPower(0);
     }
 }
 

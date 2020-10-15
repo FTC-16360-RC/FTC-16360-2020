@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.lib;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
 
+import org.firstinspires.ftc.teamcode.opmodes.tele.FTC_2020_Tele;
+
 public class Drivemode {
     Globals g = new Globals();
     Controller controller;

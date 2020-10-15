@@ -9,14 +9,14 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.drive.StandardTrackingWheelLocalizer;
+import org.firstinspires.ftc.teamcode.opmodes.tele.FTC_2020_Tele;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Shooting {
-    private Globals g = new Globals();
+public class Shooting extends FTC_2020_Tele {
     public Targets currentTarget;
     private String alliance;
 
@@ -46,10 +46,12 @@ public class Shooting {
     }
 
     private void adjustTheta() {
-
     }
 
     private Boolean motorsReady() {
+        HardwareMap hardwareMap;
+        DcMotorEx motorOne = hardwareMap.dcMotor(DcMotorEx.class, "shooterOne");
+
         return true;
     }
 
@@ -71,7 +73,7 @@ public class Shooting {
 
         Vector currentPos = new Vector(position.component1(), position.component2());
         double expectedRotation = currentTarget.getCoordinates().subtract(currentPos).angle();
-        Pose2d targetPose = new Pose2d(currentPos.x, currentPos.y, Math.toRadians(position.component3() - expectedRotation));
+        Pose2d targetPose = new Pose2d(currentPos.x, currentPos.y, Math.toRadians(expectedRotation));
         Trajectory turn = drive.trajectoryBuilder(new Pose2d()).lineToSplineHeading(targetPose).build();
 
         drive.followTrajectory(turn);
@@ -80,7 +82,7 @@ public class Shooting {
             adjustTheta();
             while (!motorsReady()) {
             }
-            servo.setPosition(0);
+            servo.setPosition(0);   //Feed Ring
             servo.setPosition(1);
         }
         motor1.setPower(0);

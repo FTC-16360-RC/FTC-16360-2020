@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.drive.StandardTrackingWheelLocalizer;
+import org.firstinspires.ftc.teamcode.lib.Globals;
 import org.firstinspires.ftc.teamcode.lib.Shooting;
 import org.firstinspires.ftc.teamcode.lib.Vector;
 import org.firstinspires.ftc.teamcode.lib.Drivemode;
@@ -19,6 +20,7 @@ public class FTC_2020_Tele extends OpMode {
     Drivemode drivemode = new Drivemode(gamepad1);
     Shooting shooting = new Shooting("blue");
     StandardTrackingWheelLocalizer myLocalizer = new StandardTrackingWheelLocalizer(hardwareMap);
+    public double d = 0;
 
     @Override
     public void init() {

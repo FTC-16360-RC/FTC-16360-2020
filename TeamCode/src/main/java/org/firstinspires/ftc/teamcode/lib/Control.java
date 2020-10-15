@@ -6,8 +6,13 @@ public class Control {
     double iCount = 0;
 
     double lastError = 0;
+    Vector K_VALUES;
 
-    public double PID(double error, Vector K_VALUES) {
+    private Control(Vector K_VALUES) {
+        this.K_VALUES = K_VALUES;
+    }
+
+    public double PID(double error) {
         double p_error;
         double i_error;
         double d_error;

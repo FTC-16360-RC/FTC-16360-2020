@@ -1,13 +1,16 @@
-package org.firstinspires.ftc.teamcode.lib;
+package org.firstinspires.ftc.teamcode.lib.practicals;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
 
+import org.firstinspires.ftc.teamcode.lib.Controller;
+import org.firstinspires.ftc.teamcode.lib.Globals;
+import org.firstinspires.ftc.teamcode.lib.Shooter;
+import org.firstinspires.ftc.teamcode.lib.Vector;
 import org.firstinspires.ftc.teamcode.opmodes.tele.FTC_2020_Tele;
 
 public class Drivemode {
     Globals g = new Globals();
     Controller controller;
-    Shooting shooting = new Shooting("blue");       //classes
 
     String mode = "ROBOT";                                  //Idk
 
@@ -40,6 +43,7 @@ public class Drivemode {
     }
 
     public void loop() {
+        /*
         lastPos = currentPos;
         //currentPos = roadrunner.getPos();
         currentHeading = currentPos.subtract(lastPos);
@@ -60,6 +64,6 @@ public class Drivemode {
             translationPowerY = new Vector(1,1,1,1).multiply(controller.getLeftJoystickYValue());
             translationPower = translationPowerX.add(translationPowerY);
             motorPower = rotationPower.multiply(rotationFactor).add(translationPower.multiply(1-rotationFactor));       //f * v1 + (1-f) * v2
-        }
+        }*/
     }
 }

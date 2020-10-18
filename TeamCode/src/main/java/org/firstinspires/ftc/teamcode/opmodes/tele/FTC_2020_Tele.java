@@ -3,22 +3,17 @@ package org.firstinspires.ftc.teamcode.opmodes.tele;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.drive.StandardTrackingWheelLocalizer;
-import org.firstinspires.ftc.teamcode.lib.Globals;
-import org.firstinspires.ftc.teamcode.lib.Shooting;
-import org.firstinspires.ftc.teamcode.lib.Vector;
-import org.firstinspires.ftc.teamcode.lib.Drivemode;
+import org.firstinspires.ftc.teamcode.lib.Shooter;
 
 
 @TeleOp(name="FTC 2020 Tele", group="Iterative Opmode")
 //@Disabled
 public class FTC_2020_Tele extends OpMode {
 
-    private Shooting shooting = new Shooting(hardwareMap);
-    Pose2d position = new Pose2d();
+    private Shooter shooter = new Shooter(hardwareMap);
+    Pose2d currentPosition = new Pose2d();
 
     StandardTrackingWheelLocalizer myLocalizer = new StandardTrackingWheelLocalizer(hardwareMap);
     public double d = 0;
@@ -40,10 +35,10 @@ public class FTC_2020_Tele extends OpMode {
     @Override
     public void loop() {
         myLocalizer.update();
-        position = myLocalizer.getPoseEstimate();
+        currentPosition = myLocalizer.getPoseEstimate();
         //drivemode.loop();
         if (gamepad1.a) {
-            shooting.shootAllStatic(position);
+            shooter.shootAllStatic(currentPosition);
         }
     }
 }

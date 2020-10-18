@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Shooting {
+public class Shooter {
     public Targets currentTarget;
     private String alliance;
     private HardwareMap hardwareMap;
@@ -55,7 +55,7 @@ public class Shooting {
         }
     }
 
-    public Shooting (HardwareMap hardwareMap) {
+    public Shooter (HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
         currentTarget = Targets.blueUpper;
 

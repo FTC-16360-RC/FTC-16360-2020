@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmodes.tele;
+package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 @TeleOp(name="Shooter")
-public class Shooter extends OpMode {
+public class ShooterTest extends OpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
     double lastTimeMeasurement = 0;

@@ -4,9 +4,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.lib.Controller;
 import org.firstinspires.ftc.teamcode.lib.Globals;
-import org.firstinspires.ftc.teamcode.lib.Shooter;
-import org.firstinspires.ftc.teamcode.lib.Vector;
-import org.firstinspires.ftc.teamcode.opmodes.tele.FTC_2020_Tele;
+import org.firstinspires.ftc.teamcode.lib.datatypes.Vector;
 
 public class Drivemode {
     Globals g = new Globals();

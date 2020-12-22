@@ -43,7 +43,7 @@ public class Controller {
     private ButtonState  leftBumper = ButtonState.RELEASED;
     private ButtonState  rightBumper = ButtonState.RELEASED;
 
-    private double      triggerDeadZone = 0.05;
+    private double       triggerDeadZone = 0.05;
     private ButtonState  leftTrigger = ButtonState.RELEASED;
     private float        leftTriggerValue = (float) 0.0;
     private ButtonState  rightTrigger = ButtonState.RELEASED;

@@ -2,24 +2,28 @@ package org.firstinspires.ftc.teamcode.lib;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.drive.StandardTrackingWheelLocalizer;
-import org.firstinspires.ftc.teamcode.opmodes.tele.FTC_2020_Tele;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.control.DriveAuto;
+import org.firstinspires.ftc.teamcode.lib.datatypes.INTuple;
+import org.firstinspires.ftc.teamcode.lib.datatypes.Twople;
+import org.firstinspires.ftc.teamcode.lib.datatypes.Vector;
 
 public class Shooter {
-    public Targets currentTarget;
+
     private String alliance;
     private HardwareMap hardwareMap;
+
+    private enum State {
+        Idle,
+        Shooting;
+    }
+    private State state = State.Idle;
+
+    Twople[] comms = {};
 
     private DcMotorEx motorOne;
     private DcMotorEx motorTwo;
@@ -29,7 +33,7 @@ public class Shooter {
     private double distance = 0;
     private double MIN_DISTANCE = 0;
     private boolean motorsReady = false;
-
+/*
     public enum Targets  {
         blueUpper (new Vector(5,-3,3)),
         blueMiddle (new Vector(1,2,3)),
@@ -54,16 +58,38 @@ public class Shooter {
             this.coordinates = coordinates;
         }
     }
-
+*/
     public Shooter (HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
         currentTarget = Targets.blueUpper;
 
         motorOne = hardwareMap.get(DcMotorEx.class, "shooterOne");
-        motorTwo = hardwareMap.get(DcMotorEx.class, "shoorerTwo");
+        motorTwo = hardwareMap.get(DcMotorEx.class, "shooterTwo");
+    }
+
+    private void adjustAlpha(Vector position) {
+        Vector target = new Vector(0,2);
+        double angle = Math.atan((target.x - position.x) /(target.y - position.y));
+        comms[comms.length + 1] = new Twople("odometry", new INTuple("turn", new double[]{angle}));
     }
 
     private void adjustTheta() {
+    }
+
+    public Twople[] update(INTuple[] instructions, Vector position) {
+        for (int i = 0; i < instructions.length; i++) {
+            //  instructions is an array of INTuples (Instruction, [data, data])
+            switch (instructions[i].a) {
+                case "fire":
+                    adjustAlpha(position);
+                    state = State.Shooting;
+                    break;
+
+                default:
+                    break;
+            }
+        }
+        return comms;
     }
 
     private void motorsReadyLoop() {
@@ -85,7 +111,6 @@ public class Shooter {
 
     public void shootAllStatic(Pose2d position) {
         Servo servo = hardwareMap.get(Servo.class, "shooter");
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
         Vector currentPos = new Vector(position.component1(), position.component2());
         double expectedRotation = currentTarget.getCoordinates().subtract(currentPos).angle();

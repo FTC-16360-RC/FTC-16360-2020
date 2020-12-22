@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.lib;
 
+import org.firstinspires.ftc.teamcode.lib.datatypes.Vector;
+
 public class Control {
 
     double iErrorSum = 0;

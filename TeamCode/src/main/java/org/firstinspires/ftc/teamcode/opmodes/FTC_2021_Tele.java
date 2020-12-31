@@ -4,20 +4,23 @@ package org.firstinspires.ftc.teamcode.opmodes;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.lib.AlignToPoint;
 import org.firstinspires.ftc.teamcode.lib.Keybindings;
 import org.firstinspires.ftc.teamcode.lib.datatypes.INTuple;
 import org.firstinspires.ftc.teamcode.lib.datatypes.Twople;
-import org.firstinspires.ftc.teamcode.lib.hardware.Drivetrain;
+import org.firstinspires.ftc.teamcode.lib.hardware.Shooter;
 
 import java.util.ArrayList;
 
 
 @TeleOp(name="FTC 2020 Tele", group="Iterative Opmode")
 //@Disabled
-public class FTC_2020_Tele extends OpMode {
+public class FTC_2021_Tele extends OpMode {
 
     private Keybindings keys;
-    private Drivetrain drivetrain;
+    private AlignToPoint alignToPoint;
+    private Shooter shooter;
+
     ArrayList<Twople> comms;
     ArrayList<Twople> lastComms;
 
@@ -41,10 +44,12 @@ public class FTC_2020_Tele extends OpMode {
 
     @Override
     public void init() {
+        keys = new Keybindings(gamepad1, gamepad2);
+        alignToPoint = new AlignToPoint(hardwareMap, telemetry, gamepad1);
+        shooter = new Shooter(hardwareMap, gamepad2);
+
         comms = new ArrayList<Twople>();
         lastComms = new ArrayList<Twople>();
-        drivetrain = new Drivetrain(hardwareMap, telemetry);
-        keys = new Keybindings(gamepad1, gamepad2);
     }
 
     @Override
@@ -61,16 +66,15 @@ public class FTC_2020_Tele extends OpMode {
         //clear comms
         comms.clear();
 
+        ArrayList<INTuple> temp = new ArrayList<>();
+
         //every update function returns an Twople[] (String recipient, (String instruction, (JSONArray data)))
         //append appends every element in this Twople[] to comms. Comms is also Twople[]
         //retrunComs returns a INTuple[], an array of (String instruction, (JSONArray data))
 
-        //append(shooter.update(returnComs("shooter"), currentPosition));
-        append(keys.update(returnComs("keys")));
-        append(drivetrain.update(returnComs("drivetrain")));
-        telemetry.addData("len", comms.size());
-        telemetry.log();
-        //append(odometry.update(returnComs("odometry"), currentPosition));
+        //append(keys.update(returnComs("keys")));
+        alignToPoint.update(temp);
+        append(shooter.update(returnComs("shooter")));
 
         //lastComms is the comms that is used to give back to the classes. Comms picks up information.
         lastComms = comms;

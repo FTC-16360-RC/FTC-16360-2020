@@ -5,9 +5,11 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.lib.AlignToPoint;
+import org.firstinspires.ftc.teamcode.lib.G;
 import org.firstinspires.ftc.teamcode.lib.Keybindings;
 import org.firstinspires.ftc.teamcode.lib.datatypes.INTuple;
 import org.firstinspires.ftc.teamcode.lib.datatypes.Twople;
+import org.firstinspires.ftc.teamcode.lib.hardware.Intake;
 import org.firstinspires.ftc.teamcode.lib.hardware.Shooter;
 
 import java.util.ArrayList;
@@ -17,9 +19,10 @@ import java.util.ArrayList;
 //@Disabled
 public class FTC_2021_Tele extends OpMode {
 
-    private Keybindings keys;
+    private Keybindings keybindings;
     private AlignToPoint alignToPoint;
     private Shooter shooter;
+    private Intake intake;
 
     ArrayList<Twople> comms;
     ArrayList<Twople> lastComms;
@@ -30,9 +33,7 @@ public class FTC_2021_Tele extends OpMode {
         }
     }
 
-
-
-    private ArrayList<INTuple> returnComs(String name) {
+    private ArrayList<INTuple> returnComs(G.a name) {
         ArrayList<INTuple> output = new ArrayList<INTuple>();
         for (int i = 0; i < lastComms.size(); i++) {
             if (lastComms.get(i).a == name) {
@@ -44,9 +45,10 @@ public class FTC_2021_Tele extends OpMode {
 
     @Override
     public void init() {
-        keys = new Keybindings(gamepad1, gamepad2);
-        alignToPoint = new AlignToPoint(hardwareMap, telemetry, gamepad1);
-        shooter = new Shooter(hardwareMap, gamepad2);
+        keybindings = new Keybindings(gamepad1, gamepad2);
+        alignToPoint = new AlignToPoint(hardwareMap, telemetry, gamepad1, gamepad2);
+        shooter = new Shooter(hardwareMap);
+        intake = new Intake(hardwareMap, telemetry);
 
         comms = new ArrayList<Twople>();
         lastComms = new ArrayList<Twople>();
@@ -58,7 +60,7 @@ public class FTC_2021_Tele extends OpMode {
 
     @Override
     public void start() {
-        //myLocalizer.setPoseEstimate(new Pose2d(10, 10, Math.toRadians(90)));
+        intake.lowerIntake();
     }
 
     @Override
@@ -72,9 +74,9 @@ public class FTC_2021_Tele extends OpMode {
         //append appends every element in this Twople[] to comms. Comms is also Twople[]
         //retrunComs returns a INTuple[], an array of (String instruction, (JSONArray data))
 
-        //append(keys.update(returnComs("keys")));
-        alignToPoint.update(temp);
-        append(shooter.update(returnComs("shooter")));
+        append(keybindings.update(returnComs(G.a.KEYBINDINGS)));
+        append(alignToPoint.update(returnComs(G.a.ALIGN_TO_POINT)));
+        append(shooter.update(returnComs(G.a.SHOOTER)));
 
         //lastComms is the comms that is used to give back to the classes. Comms picks up information.
         lastComms = comms;

@@ -1,30 +1,32 @@
 package org.firstinspires.ftc.teamcode.lib.datatypes;
 
+import org.firstinspires.ftc.teamcode.lib.G;
+
 public class INTuple {
 
     private int mode;
 
-    public String a = "";
+    public G.i a;
     public double[] b_array = {};
-    private double b_double;
-    private Boolean b_bool;
+    public double b_double;
+    public Boolean b_bool;
 
-    public INTuple(String instruction, double[] data) {
+    public INTuple(G.i instruction, double[] data) {
         mode = 0;
         b_array = data;
         a = instruction;
     }
-    public INTuple(String instruction, double data) {
+    public INTuple(G.i instruction, double data) {
         mode = 1;
         a = instruction;
         b_double = data;
     }
-    public INTuple(String instruction, Boolean data) {
+    public INTuple(G.i instruction, Boolean data) {
         mode = 2;
         a = instruction;
         b_bool = data;
     }
-    public INTuple(String instruction) {
+    public INTuple(G.i instruction) {
         a = instruction;
     }
     public INTuple(int mode) {
@@ -34,7 +36,7 @@ public class INTuple {
         mode = 0;
     }
 
-    public String get_a() {
+    public G.i get_a() {
         return a;
     }
 

@@ -1,22 +1,40 @@
 package org.firstinspires.ftc.teamcode.lib.datatypes;
 
+import org.firstinspires.ftc.teamcode.lib.G;
+
 public class Twople {
 
-    public String a;
+    public G.a a;
     public INTuple b;
 
-    public String get_a() {
+    public G.a get_a() {
         return a;
     }
     public INTuple get_b() {
         return b;
     }
-    public Twople (String Recipiant, INTuple Instructions) {
+    public Twople (G.a Recipiant, INTuple Instructions) {
         a = Recipiant;
         b = Instructions;
     }
+    public Twople(G.a Recipiant, G.i Instruction, double[] data) {
+        a = Recipiant;
+        b = new INTuple(Instruction, data);
+    }
+    public Twople(G.a Recipiant, G.i Instruction, double data) {
+        a = Recipiant;
+        b = new INTuple(Instruction, data);
+    }
+    public Twople(G.a Recipiant, G.i Instruction, Boolean data) {
+        a = Recipiant;
+        b = new INTuple(Instruction, data);
+    }
+    public Twople(G.a Recipiant, G.i Instuction) {
+        a = Recipiant;
+        b = new INTuple(Instuction);
+    }
     public Twople () {
-        a = "";
+        a = G.a.NONE;
         b = new INTuple(0);
     }
 

@@ -75,6 +75,13 @@ public class AlignToPoint {
     // Can be any x/y coordinate of your choosing
     private Vector2d targetPosition = new Vector2d(targetX, targetY);
 
+    private void resetOrientation() {
+        drive.getLocalizer().setPoseEstimate(new Pose2d(0, 0, 0));
+        errorX = 0;
+        errorY = 0;
+    }
+
+
     public AlignToPoint(HardwareMap hardwareMap, Telemetry telemetry, Gamepad gamepad1, Gamepad gamepad2) {
 
         this.hardwareMap = hardwareMap;
@@ -89,9 +96,7 @@ public class AlignToPoint {
         // Velocity control per wheel is not necessary outside of motion profiled auto
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        // Retrieve our pose from the PoseStorage.currentPose static field
-        // See AutoTransferPose.java for further details
-        drive.getLocalizer().setPoseEstimate(new Pose2d(0, 0, 0));
+        resetOrientation();
 
         // Set input bounds for the heading controller
         // Automatically handles overflow
@@ -100,7 +105,17 @@ public class AlignToPoint {
 
     public ArrayList<Twople> update(ArrayList<INTuple> instructions) {
 
-        ArrayList<Twople> output = new ArrayList<Twople>();
+        for (INTuple i : instructions) {
+            switch (i.a) {
+                case RESET_ORIENTATION:
+                    resetOrientation();
+                    break;
+                default:
+                    telemetry.addLine("oh  no oh no oh no something went wrong oh no");
+                    break;
+            }
+        }
+
 
         if(!gamepad2.dpad_right && !gamepad2.dpad_left) {
             lastState = false;
@@ -197,12 +212,6 @@ public class AlignToPoint {
         fieldOverlay.setStroke("#3F51B5");
         DashboardUtil.drawRobot(fieldOverlay, poseEstimate);
 
-        if(gamepad2.x) {
-            drive.getLocalizer().setPoseEstimate(new Pose2d(0, 0, 0));
-            errorX = 0;
-            errorY = 0;
-        }
-
         drive.setWeightedDrivePower(driveDirection);
 
         // Update the heading controller with our current heading
@@ -222,13 +231,13 @@ public class AlignToPoint {
         telemetry.addData("heading", poseEstimate.getHeading());
         telemetry.update();
 
-
+        ArrayList<Twople> output = new ArrayList<Twople>();
 
         if (currentMode == Mode.ALIGN_TO_POINT) {
-            output.add(new Twople("shooter", new INTuple("enableShooter")));
+            output.add(new Twople(G.a.SHOOTER, G.i.ENABLE_SHOOTER));
         }
         if (currentMode == Mode.NORMAL_CONTROL) {
-            output.add(new Twople("shooter", new INTuple("disableShooter")));
+            output.add(new Twople(G.a.SHOOTER, G.i.DISABLE_SHOOTER));
         }
 
         return output;

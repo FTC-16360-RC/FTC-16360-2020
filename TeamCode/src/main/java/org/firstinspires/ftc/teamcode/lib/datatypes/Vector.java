@@ -2,12 +2,12 @@ package org.firstinspires.ftc.teamcode.lib.datatypes;
 
 //import com.acmerobotics.roadrunner.geometry.Vector2d;
 
-import org.firstinspires.ftc.teamcode.lib.Globals;
+import org.firstinspires.ftc.teamcode.lib.G;
 
 public class Vector {
 
     public double x,y,z,w;  //no setters/getters because you can't fucking overload functions is this garbage language
-    Globals g = new Globals();
+    G g = new G();
 
     public Vector(double x, double y, double z, double w) {
         this.x = x;

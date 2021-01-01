@@ -14,40 +14,54 @@ import java.util.ArrayList;
 
 public class Keybindings {
 
+    G g = new G();
+
     Controller controller1;
     Controller controller2;
+
+    Gamepad gamepad1;
+    Gamepad gamepad2;
 
 
     public Keybindings(Gamepad gamepad1, Gamepad gamepad2) {
         controller1 = new Controller(gamepad1);
         controller2 = new Controller(gamepad2);
+
+        this.gamepad1 = gamepad1;
+        this.gamepad2 = gamepad2;
     }
     public Keybindings(Gamepad gamepad1) {
         controller1 = new Controller(gamepad1);
+        this.gamepad1 = gamepad1;
     }
 
     public ArrayList<Twople> update(ArrayList<INTuple> instructions) {
-        ArrayList<Twople> output = new ArrayList<Twople>();
+        ArrayList<Twople> output = new ArrayList<>();
 
         controller1.update();
         controller2.update();
 
-        //double speed = Math.hypot(Math.abs(controller1.getLeftJoystickXValue()), Math.abs(controller1.getLeftJoystickYValue()));
+        if (gamepad1.x) {
+            output.add(new Twople(G.a.ALIGN_TO_POINT, G.i.RESET_ORIENTATION));
+        }
 
-        //direction
-        double x = controller1.getLeftJoystickXValue();
-        double y = controller1.getLeftJoystickYValue();
-        double angle = controller1.getRightJoystickXValue();
-        output.add(new Twople("drivetrain", new INTuple("setSpeed", new double[]{x, y, angle})));
+        //shooting
+        if (gamepad1.a) {
+            output.add(new Twople(G.a.SHOOTER, G.i.SHOOT_THREE));
+        }
+        if (gamepad1.x) {
+            output.add(new Twople(G.a.SHOOTER, G.i.SHOOT_ONE));
+        }
 
         //switch between targets
-        if (controller2.getdPadLeft() == Controller.ButtonState.ON_PRESS) {
-            output.add(new Twople("shooter", new INTuple("nextTarget")));
+        if (gamepad2.dpad_up) {
+            output.add(new Twople(G.a.SHOOTER, G.i.NEXT_TARGET));
         }
-        if (controller2.getdPadRight() == Controller.ButtonState.ON_PRESS) {
-            output.add(new Twople("shooter", new INTuple("previousTarget")));
+        if (gamepad2.dpad_down) {
+            output.add(new Twople(G.a.SHOOTER, G.i.PREVIOUS_TARGET));
         }
 
         return output;
     }
 }
+

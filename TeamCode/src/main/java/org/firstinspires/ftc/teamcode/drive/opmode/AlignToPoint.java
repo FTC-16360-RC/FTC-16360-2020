@@ -12,7 +12,10 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
+import org.firstinspires.ftc.teamcode.drive.opmode.Intake;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.drive.opmode.Shooter;
+import org.firstinspires.ftc.teamcode.drive.opmode.Transfer;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
 /**
@@ -46,6 +49,12 @@ public class AlignToPoint extends LinearOpMode {
 
     private Mode currentMode = Mode.NORMAL_CONTROL;
 
+    private Intake intake;
+
+    private Transfer transfer;
+
+    private Shooter shooter;
+
     // Declare a PIDF Controller to regulate heading
     // Use the same gains as SampleMecanumDrive's heading controller
     private PIDFController headingController = new PIDFController(SampleMecanumDrive.HEADING_PID);
@@ -58,6 +67,9 @@ public class AlignToPoint extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         // Initialize SampleMecanumDrive
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        intake = new Intake(hardwareMap);
+        transfer = new Transfer(hardwareMap);
+        shooter = new Shooter(hardwareMap);
 
         // We want to turn off velocity control for teleop
         // Velocity control per wheel is not necessary outside of motion profiled auto
@@ -76,6 +88,30 @@ public class AlignToPoint extends LinearOpMode {
         if (isStopRequested()) return;
 
         while (opModeIsActive() && !isStopRequested()) {
+            if(gamepad2.a) {
+                intake.setMode(Intake.Mode.NORMAL);
+                transfer.setMode(Transfer.Mode.NORMAL);
+            }
+            if(gamepad2.b) {
+                intake.setMode(Intake.Mode.IDLE);
+                transfer.setMode(Transfer.Mode.IDLE);
+            }
+            if(gamepad2.x) {
+                intake.setMode(Intake.Mode.REVERSE);
+                transfer.setMode(Transfer.Mode.REVERSE);
+            }
+            if(gamepad2.right_bumper) {
+                shooter.setTargetVolicty(6000);
+                shooter.setMode(Shooter.Mode.SHOOTING);
+            }
+            if(gamepad2.left_bumper) {
+                shooter.setMode(Shooter.Mode.IDLE);
+            }
+            if(gamepad2.right_trigger != 0) {
+                shooter.shoot();
+            } else {
+                shooter.reset();
+            }
             if(!gamepad1.dpad_right && !gamepad1.dpad_left) {
                 lastState = false;
             }

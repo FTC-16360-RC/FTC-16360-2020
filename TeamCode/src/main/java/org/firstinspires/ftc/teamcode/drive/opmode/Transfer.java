@@ -19,8 +19,8 @@ public class Transfer {
     private Mode mode;
 
     public Transfer(HardwareMap hardwaremap) {
-        transfer = hardwaremap.get(DcMotor.class, "intake");
-        transfer.setDirection(DcMotor.Direction.FORWARD);
+        transfer = hardwaremap.get(DcMotor.class, "transfer");
+        transfer.setDirection(DcMotor.Direction.REVERSE);
         transfer.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         transfer.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         transfer.setPower(0);
@@ -39,7 +39,7 @@ public class Transfer {
                 transfer.setPower(0);
                 break;
             case NORMAL: //intake
-                transfer.setPower(1);
+                transfer.setPower(0.6);
                 break;
             case REVERSE: //outtake
                 transfer.setPower(-0.3);

@@ -20,7 +20,7 @@ public class Intake {
 
     public Intake(HardwareMap hardwaremap) {
         intake = hardwaremap.get(DcMotor.class, "intake");
-        intake.setDirection(DcMotor.Direction.FORWARD);
+        intake.setDirection(DcMotor.Direction.REVERSE);
         intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         intake.setPower(0);

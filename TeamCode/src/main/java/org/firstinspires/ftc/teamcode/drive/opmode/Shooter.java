@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.drive.opmode;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 @Config
 public class Shooter {
@@ -16,6 +17,8 @@ public class Shooter {
     private DcMotorEx shooter1;
     private DcMotorEx shooter2;
 
+    private Servo feeder;
+
     private Mode mode;
 
     private double targetVelocity;
@@ -23,6 +26,8 @@ public class Shooter {
     public Shooter(HardwareMap hardwaremap) {
         shooter1 = hardwaremap.get(DcMotorEx.class, "shooter1");
         shooter2 = hardwaremap.get(DcMotorEx.class, "shooter2");
+        feeder = hardwaremap.get(Servo.class, "feeder");
+        feeder.setPosition(0.2);
         shooter1.setDirection(DcMotorEx.Direction.FORWARD);
         shooter2.setDirection(DcMotorEx.Direction.FORWARD);
         shooter1.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
@@ -48,6 +53,14 @@ public class Shooter {
 
     public void setTargetVolicty(double targetVelocity) {
         this.targetVelocity = targetVelocity;
+    }
+
+    public void shoot() {
+        feeder.setPosition(0.4);
+    }
+
+    public void reset() {
+        feeder.setPosition(0.2);
     }
 
     public void setMode(Mode mode) {

@@ -14,6 +14,13 @@ public class Shooter {
         IDLE,
     }
 
+    private enum FeederState {
+        PUSHING,
+        RETRACTING,
+        EXTENDED,
+        RETRACTED
+    }
+
     private DcMotorEx shooter1;
     private DcMotorEx shooter2;
 
@@ -21,13 +28,22 @@ public class Shooter {
 
     private Mode mode;
 
+    private FeederState feederState;
+
+    private double currentRuntime;
+    private double actuationTime;
+    private double startTime;
+
+    private final double feederStartPosition = 0.2;
+    private final double feederExtendedPosition = 0.4;
+
     private double targetVelocity;
 
     public Shooter(HardwareMap hardwaremap) {
         shooter1 = hardwaremap.get(DcMotorEx.class, "shooter1");
         shooter2 = hardwaremap.get(DcMotorEx.class, "shooter2");
         feeder = hardwaremap.get(Servo.class, "feeder");
-        feeder.setPosition(0.2);
+        feeder.setPosition(feederStartPosition);
         shooter1.setDirection(DcMotorEx.Direction.FORWARD);
         shooter2.setDirection(DcMotorEx.Direction.FORWARD);
         shooter1.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
@@ -56,11 +72,15 @@ public class Shooter {
     }
 
     public void shoot() {
-        feeder.setPosition(0.4);
+        if(feederState == FeederState.RETRACTED) {
+            feeder.setPosition(feederExtendedPosition);
+            startTime = currentRuntime;
+            feederState = FeederState.PUSHING;
+        }
     }
 
     public void reset() {
-        feeder.setPosition(0.2);
+        feeder.setPosition(feederStartPosition);
     }
 
     public void setMode(Mode mode) {
@@ -76,6 +96,11 @@ public class Shooter {
                 shooter2.setVelocity(targetVelocity);
                 break;
         }
+    }
+
+    public void update(double currentRuntime) {
+        this.currentRuntime = currentRuntime;
+
     }
 
 }

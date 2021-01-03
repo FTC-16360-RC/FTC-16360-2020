@@ -17,7 +17,6 @@ public class Shooter {
     private enum FeederState {
         PUSHING,
         RETRACTING,
-        EXTENDED,
         RETRACTED
     }
 
@@ -31,11 +30,11 @@ public class Shooter {
     private FeederState feederState;
 
     private double currentRuntime;
-    private double actuationTime;
+    private double actuationTime = 0.19;
     private double startTime;
 
-    private final double feederStartPosition = 0.2;
-    private final double feederExtendedPosition = 0.4;
+    private final double feederStartPosition = 0.33;
+    private final double feederExtendedPosition = 0.5;
 
     private double targetVelocity;
 
@@ -44,6 +43,7 @@ public class Shooter {
         shooter2 = hardwaremap.get(DcMotorEx.class, "shooter2");
         feeder = hardwaremap.get(Servo.class, "feeder");
         feeder.setPosition(feederStartPosition);
+        feederState = FeederState.RETRACTED;
         shooter1.setDirection(DcMotorEx.Direction.FORWARD);
         shooter2.setDirection(DcMotorEx.Direction.FORWARD);
         shooter1.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
@@ -79,8 +79,9 @@ public class Shooter {
         }
     }
 
-    public void reset() {
+    public void reset() { //ONLY for autonomous
         feeder.setPosition(feederStartPosition);
+        feederState = FeederState.RETRACTED;
     }
 
     public void setMode(Mode mode) {
@@ -100,7 +101,14 @@ public class Shooter {
 
     public void update(double currentRuntime) {
         this.currentRuntime = currentRuntime;
-
+        if(feederState == FeederState.PUSHING && (this.currentRuntime-startTime > actuationTime)) {
+            feeder.setPosition(feederStartPosition);
+            startTime = this.currentRuntime;
+            feederState = FeederState.RETRACTING;
+        }
+        if(feederState == FeederState.RETRACTING && (this.currentRuntime-startTime > actuationTime)) {
+            feederState = FeederState.RETRACTED;
+        }
     }
 
 }

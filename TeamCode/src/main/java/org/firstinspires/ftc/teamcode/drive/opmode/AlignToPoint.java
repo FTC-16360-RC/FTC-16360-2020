@@ -4,12 +4,14 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.control.PIDFController;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.opmode.Intake;
@@ -33,6 +35,8 @@ import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 @TeleOp(group = "advanced")
 public class AlignToPoint extends LinearOpMode {
 
+    private ElapsedTime runtime = new ElapsedTime();
+
     public static double DRAWING_TARGET_RADIUS = 2;
 
     // Define 2 states, driver control or alignment control
@@ -41,10 +45,11 @@ public class AlignToPoint extends LinearOpMode {
         ALIGN_TO_POINT
     }
 
-    int targetX = 138;
-    int targetY = -18;
+    int targetX = 72;
+    int targetY = 37;  //21, 13.5, 6
     int errorX = 0;
     int errorY = 0;
+    final double headingError = Math.toRadians(-10);
     boolean lastState = false;
 
     private Mode currentMode = Mode.NORMAL_CONTROL;
@@ -57,7 +62,7 @@ public class AlignToPoint extends LinearOpMode {
 
     // Declare a PIDF Controller to regulate heading
     // Use the same gains as SampleMecanumDrive's heading controller
-    private PIDFController headingController = new PIDFController(SampleMecanumDrive.HEADING_PID);
+    private PIDFController headingController = new PIDFController(new PIDCoefficients(8, 0.2, 0));
 
     // Declare a target vector you'd like your bot to align with
     // Can be any x/y coordinate of your choosing
@@ -88,6 +93,7 @@ public class AlignToPoint extends LinearOpMode {
         if (isStopRequested()) return;
 
         while (opModeIsActive() && !isStopRequested()) {
+            double currentRuntime = getRuntime();
             if(gamepad2.a) {
                 intake.setMode(Intake.Mode.NORMAL);
                 transfer.setMode(Transfer.Mode.NORMAL);
@@ -107,10 +113,9 @@ public class AlignToPoint extends LinearOpMode {
             if(gamepad2.left_bumper) {
                 shooter.setMode(Shooter.Mode.IDLE);
             }
+            shooter.update(currentRuntime);
             if(gamepad2.right_trigger != 0) {
                 shooter.shoot();
-            } else {
-                shooter.reset();
             }
             if(!gamepad1.dpad_right && !gamepad1.dpad_left) {
                 lastState = false;
@@ -176,7 +181,7 @@ public class AlignToPoint extends LinearOpMode {
                     double thetaFF = -fieldFrameInput.rotated(-Math.PI / 2).dot(difference) / (difference.norm() * difference.norm());
 
                     // Set the target heading for the heading controller to our desired angle
-                    headingController.setTargetPosition(theta);
+                    headingController.setTargetPosition(theta+headingError);
 
                     // Set desired angular velocity to the heading controller output + angular
                     // velocity feedforward

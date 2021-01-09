@@ -32,7 +32,7 @@ public class FTC_2021_Tele extends OpMode {
         }
     }
 
-    private ArrayList<UTuple> returnComs(G.a name) {
+    private ArrayList<UTuple> returnComs(UTuple.A name) {
         ArrayList<UTuple> output = new ArrayList<UTuple>();
         for (int i = 0; i < lastComms.size(); i++) {
             if (lastComms.get(i).a_adr == name) {

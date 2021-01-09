@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.lib.G;
 import org.firstinspires.ftc.teamcode.lib.datatypes.UTuple;
 
 import java.util.ArrayList;

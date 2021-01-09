@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 public class Keybindings {
 
-    Boolean manual = false;
+    int mode = 0;
     Telemetry telemetry;
 
     Controller controller1;
@@ -57,80 +57,95 @@ public class Keybindings {
         }
 
         //shooting
-        if (gamepad1.a) {
+        if (gamepad1.right_trigger != 0) {
             messages.add(Adresses.SHOOTER, Instructions.SHOOT_THREE);
         }
-        if (gamepad1.x) {
+        if (gamepad1.left_trigger != 0) {
             messages.add(Adresses.SHOOTER, Instructions.SHOOT_ONE);
         }
 
-        //switch between targets
-        if (gamepad2.dpad_up) {
-            messages.add(Adresses.SHOOTER, Instructions.NEXT_TARGET);
+        //switch between modes
+        if (gamepad2.left_bumper){
+            mode = 0;
         }
-        if (gamepad2.dpad_down) {
-            messages.add(Adresses.SHOOTER, Instructions.PREVIOUS_TARGET);
+        if (gamepad2.right_bumper) {
+            mode = 1;
         }
 
-        //debugging mode
-        if (controller2.getLeftBumper() == Controller.ButtonState.ON_PRESS) {
-            manual = !manual;
+        if (mode == 0) {
+            //switch between targets
+            if (gamepad2.dpad_up) {
+                messages.add(Adresses.SHOOTER, Instructions.NEXT_TARGET);
+            }
+            if (gamepad2.dpad_down) {
+                messages.add(Adresses.SHOOTER, Instructions.PREVIOUS_TARGET);
+            }
+
         }
-        if (gamepad2.b) {
-            telemetry.addData("Press left bumper (gp2) to toggle debug mode. It is currently", manual);
+        if (mode == 1) {
+
         }
-        if (manual) {
             if (gamepad2.x) {
                 if (lift_on) {
-                    messages.add(Adresses.INTAKE, Instructions.DISABLE_LIFT_DEBUG);
+                    messages.add(Adresses.INTAKE, Instructions.SET_TRANSFER_IDLE);
                     lift_on = !lift_on;
                 }
                 else {
-                    messages.add(Adresses.INTAKE, Instructions.ENABLE_LIFT_DEBUG);
+                    messages.add(Adresses.INTAKE, Instructions.SET_TRANSFER_ON);
                     lift_on = !lift_on;
-                }
-            }
-            if (gamepad2.a) {
-                if (intake_on) {
-                    messages.add(Adresses.INTAKE, Instructions.DISABLE_INTAKE_DEBUG);
-                    intake_on = !intake_on;
-                }
-                else {
-                    messages.add(Adresses.INTAKE, Instructions.ENABLE_INTAKE_DEBUG);
-                    intake_on = !intake_on;
                 }
             }
             if (gamepad2.y) {
+                if (lift_on) {
+                    messages.add(Adresses.INTAKE, Instructions.SET_TRANSFER_IDLE);
+                    lift_on = !lift_on;
+                } else {
+                    messages.add(Adresses.INTAKE, Instructions.SET_TRANSFER_REVERSE);
+                    lift_on = !lift_on;
+                }
+            }
+
+            if (gamepad2.a) {
+                if (intake_on) {
+                    messages.add(Adresses.INTAKE, Instructions.SET_INTAKE_IDLE);
+                    intake_on = !intake_on;
+                }
+                else {
+                    messages.add(Adresses.INTAKE, Instructions.SET_INTAKE_ON);
+                    intake_on = !intake_on;
+                }
+            }
+            if (gamepad2.b) {
+                if (intake_on) {
+                    messages.add(Adresses.INTAKE, Instructions.SET_INTAKE_IDLE);
+                    intake_on = !intake_on;
+                }
+                else {
+                    messages.add(Adresses.INTAKE, Instructions.SET_INTAKE_REVERSE);
+                    intake_on = !intake_on;
+                }
+            }
+
+            if (gamepad2.dpad_up) {
                 if (shooter_on) {
-                    messages.add(Adresses.SHOOTER, Instructions.DISABLE_SHOOTER);
+                    messages.add(Adresses.SHOOTER, Instructions.SET_SHOOTER_IDLE);
                     shooter_on = !shooter_on;
                 }
                 else {
-                    messages.add(Adresses.SHOOTER, Instructions.ENABLE_SHOOTER);
+                    messages.add(Adresses.SHOOTER, Instructions.SET_SHOOTER_ON);
                     shooter_on = !shooter_on;
                 }
             }
+
             if (gamepad2.dpad_down) {
                 messages.add(Adresses.INTAKE, Instructions.LOWER_INTAKE_DEBUG);
             }
             if (gamepad2.dpad_left) {
                 messages.add(Adresses.SHOOTER, Instructions.ADJUST_FLAP_DEBUG);
             }
-            if (gamepad2.dpad_up) {
+            if (gamepad2.dpad_right) {
                 messages.add(Adresses.SHOOTER, Instructions.FEED_RING_DEBUG);
             }
-            if (gamepad2.b) {
-                telemetry.addLine("y to toggle shooter");
-                telemetry.addLine("x to toggle lift");
-                telemetry.addLine("a to toggle intake");
-                telemetry.addLine("dpad up to feed single ring");
-                telemetry.addLine("dpad left to adjust flap");
-                telemetry.addLine("dpad down to lower intake");
-            }
-
-        }
-        telemetry.log();
-
         return messages;
     }
 }

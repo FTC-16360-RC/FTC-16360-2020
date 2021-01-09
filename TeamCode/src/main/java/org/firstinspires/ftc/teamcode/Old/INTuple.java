@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.Old;
 
 import org.firstinspires.ftc.teamcode.lib.G;
 
-public class INTuple {
+public class INTuple {/*
 
     private int mode;
 
@@ -44,5 +44,5 @@ public class INTuple {
         return b_array;
     }
 
-    //OTHER DATATYPES REEEEEEE
+    //OTHER DATATYPES REEEEEEE*/
 }

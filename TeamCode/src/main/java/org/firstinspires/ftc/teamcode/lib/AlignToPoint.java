@@ -119,7 +119,7 @@ public class AlignToPoint {
         }
 
 
-        if(!gamepad2.dpad_right && !gamepad2.dpad_left) {
+        /*if(!gamepad2.dpad_right && !gamepad2.dpad_left) {
             lastState = false;
         }
         if(gamepad2.dpad_right && !lastState) {
@@ -128,7 +128,7 @@ public class AlignToPoint {
         } else if(gamepad2.dpad_left && !lastState) {
             errorY += 5;
             lastState = true;
-        }
+        }*/
 
 
         // Read pose

@@ -137,7 +137,12 @@ public class Shooter {
                         messages.add(i.b_adr, Instructions.RETURN_SHOOTER_VELOCITY, getShooterVelocity());
                     }
                     break;
+                case SHOOT_ONE:
+                    shoot();
+                    break;
                 case SHOOT_THREE:
+                    shoot();
+                    shoot();
                     shoot();
                     break;
 

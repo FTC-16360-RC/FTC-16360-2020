@@ -1,29 +1,54 @@
 package org.firstinspires.ftc.teamcode.lib.datatypes;
 
+import org.firstinspires.ftc.teamcode.lib.G;
+
 public class UTuple {
 
-    String key;
-    Double[] valD;
-    INTuple valI;
-    int mode = 0; //0 = Twople, 1 = INTuple
-    INTuple inTuple;
-    Twople twople;
+    public G.a a_adr;
+    public G.i a_ins;
 
-    public UTuple (String string, Double[] data) {
-        valD = data;
-        key = string;
-        create();
-    }
-    public UTuple (String string, INTuple intuple) {
-        valI = intuple;
-        key = string;
-        create();
-    }
-    public UTuple(int mode) {
-        create();
+    public UTuple b_utp;
+    public double b_dbl;
+    public double[] b_arr;
+    public Boolean b_bln;
+
+    public UTuple (G.a a, UTuple b) {
+        a_adr = a;
+        b_utp = b;
     }
 
-    private void create() {
+    public UTuple (G.a a, G.i i, double b) {
+        a_adr = a;
+        b_utp = new UTuple(i, b);
+    }
+    public UTuple (G.i i, double b) {
+        a_ins = i;
+        b_dbl = b;
+    }
 
+    public UTuple (G.a a, G.i i, double[] b) {
+        a_adr = a;
+        b_utp = new UTuple(i, b);
+    }
+    public UTuple (G.i i, double[] b) {
+        a_ins = i;
+        b_arr = b;
+    }
+
+    public UTuple (G.a a, G.i i, Boolean b) {
+        a_adr = a;
+        b_utp = new UTuple(i, b);
+    }
+    public UTuple (G.i i, Boolean b) {
+        a_ins = i;
+        b_bln = b;
+    }
+
+    public UTuple(G.a a, G.i i) {
+        a_adr = a;
+        b_utp = new UTuple(i);
+    }
+    public UTuple(G.i i) {
+        a_ins = i;
     }
 }

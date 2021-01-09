@@ -7,12 +7,23 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.lib.G;
-import org.firstinspires.ftc.teamcode.lib.datatypes.INTuple;
-import org.firstinspires.ftc.teamcode.lib.datatypes.Twople;
+import org.firstinspires.ftc.teamcode.lib.datatypes.UTuple;
 
 import java.util.ArrayList;
 
 public class Shooter {
+
+    public class Goal {
+        double x;
+        double y;
+        double z;
+
+        public Goal(double x, double y, double z) {
+            this.x = x;
+            this.y = y;
+            this.z = z;
+        }
+    }
 
     HardwareMap hardwareMap;
     DcMotorEx motor1;
@@ -20,7 +31,9 @@ public class Shooter {
 
     Servo flap;
     Servo feeder;
-    Servo blocker;
+
+    Goal HighGoal = new Goal(1,2, 3);
+    double[] position;
 
     public Shooter (HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
@@ -32,33 +45,54 @@ public class Shooter {
 
         flap = hardwareMap.get(Servo.class, "flap");
         feeder = hardwareMap.get(Servo.class, "feeder");
-        blocker = hardwareMap.get(Servo.class, "blocker");
     }
 
-    public void enableShooter() {
+    private void enableShooter() {
         motor1.setVelocity(6000);
         motor2.setVelocity(6000);
     }
 
-    public void disableShooter() {
+    private void disableShooter() {
         motor1.setPower(0);
         motor2.setPower(0);
     }
 
     public void shootOne() {
-
+        adjustFlap();
+        feeder.setPosition(1);
+        feeder.setPosition(0);
     }
-    public void shootThree() {
-
+    private void shootThree() {
+        shootOne();
+        shootOne();
+        shootOne();
     }
-    public void adjustFlap(double angle) {
+    private double g_inverse() {
+        double u = 1;
+        double v = 1;
 
+        double d_x = position[0] - HighGoal.x;
+        double d_y = position[1] - HighGoal.y;
+        double d_s = Math.sqrt(d_x * d_x + d_y * d_y);
+
+        return u * d_s + v * HighGoal.z;
+    }
+    private void adjustFlap() {
+        double angle = g_inverse();
+        double max_angle = 45;
+        flap.setPosition(angle / max_angle);
     }
 
-    public ArrayList<Twople> update(ArrayList<INTuple> instructions) {
+    //debug
+    private void feedRing() {
+        feeder.setPosition(1);
+        feeder.setPosition(0);
+    }
 
-        for (INTuple i : instructions) {
-            switch (i.a) {
+    public ArrayList<UTuple> update(ArrayList<UTuple> instructions) {
+
+        for (UTuple i : instructions) {
+            switch (i.a_ins) {
                 case ENABLE_SHOOTER:
                     enableShooter();
                     break;
@@ -69,14 +103,25 @@ public class Shooter {
                     shootOne();
                     break;
                 case SHOOT_THREE:
-                    adjustFlap(i.b_double);
+                    shootThree();
+                    break;
+                case RECIEVE_POSITION:
+                    position = i.b_arr;
+                    break;
+
+                case ADJUST_FLAP_DEBUG:
+                    adjustFlap();
+                    break;
+                case FEED_RING_DEBUG:
+                    feedRing();
+                    break;
                 default:
                     break;
             }
         }
 
 
-        ArrayList<Twople> output = new ArrayList<>();
+        ArrayList<UTuple> output = new ArrayList<>();
         return output;
     }
 }

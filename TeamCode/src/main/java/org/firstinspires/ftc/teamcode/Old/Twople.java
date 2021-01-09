@@ -1,9 +1,8 @@
-package org.firstinspires.ftc.teamcode.lib.datatypes;
+package org.firstinspires.ftc.teamcode.Old;
 
 import org.firstinspires.ftc.teamcode.lib.G;
 
 public class Twople {
-
     public G.a a;
     public INTuple b;
 
@@ -37,5 +36,4 @@ public class Twople {
         a = G.a.NONE;
         b = new INTuple(0);
     }
-
 }

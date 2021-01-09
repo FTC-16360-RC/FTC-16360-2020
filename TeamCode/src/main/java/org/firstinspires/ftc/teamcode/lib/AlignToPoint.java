@@ -17,8 +17,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.lib.datatypes.INTuple;
-import org.firstinspires.ftc.teamcode.lib.datatypes.Twople;
+import org.firstinspires.ftc.teamcode.lib.datatypes.UTuple;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
 import java.util.ArrayList;
@@ -103,10 +102,10 @@ public class AlignToPoint {
         headingController.setInputBounds(-Math.PI, Math.PI);
     }
 
-    public ArrayList<Twople> update(ArrayList<INTuple> instructions) {
+    public ArrayList<UTuple> update(ArrayList<UTuple> instructions) {
 
-        for (INTuple i : instructions) {
-            switch (i.a) {
+        for (UTuple i : instructions) {
+            switch (i.a_ins) {
                 case RESET_ORIENTATION:
                     resetOrientation();
                     break;
@@ -231,14 +230,16 @@ public class AlignToPoint {
         telemetry.addData("heading", poseEstimate.getHeading());
         telemetry.update();
 
-        ArrayList<Twople> output = new ArrayList<Twople>();
+        ArrayList<UTuple> output = new ArrayList<UTuple>();
 
         if (currentMode == Mode.ALIGN_TO_POINT) {
-            output.add(new Twople(G.a.SHOOTER, G.i.ENABLE_SHOOTER));
+            output.add(new UTuple(G.a.SHOOTER, G.i.ENABLE_SHOOTER));
         }
         if (currentMode == Mode.NORMAL_CONTROL) {
-            output.add(new Twople(G.a.SHOOTER, G.i.DISABLE_SHOOTER));
+            output.add(new UTuple(G.a.SHOOTER, G.i.DISABLE_SHOOTER));
         }
+        double[] position = {poseEstimate.getX(), poseEstimate.getY()};
+        output.add(new UTuple(G.a.SHOOTER, G.i.RECIEVE_POSITION, position));
 
         return output;
     }

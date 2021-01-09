@@ -6,7 +6,7 @@ import org.firstinspires.ftc.teamcode.lib.G;
 
 public class Vector {
 
-    public double x,y,z,w;  //no setters/getters because you can't fucking overload functions is this garbage language
+    public double x,y,z,w;  //no setters/getters because you can't overload functions is this garbage language
     G g = new G();
 
     public Vector(double x, double y, double z, double w) {

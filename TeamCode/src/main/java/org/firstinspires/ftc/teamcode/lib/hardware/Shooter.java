@@ -1,127 +1,150 @@
 package org.firstinspires.ftc.teamcode.lib.hardware;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.lib.datatypes.TUtil;
 import org.firstinspires.ftc.teamcode.lib.datatypes.UTuple;
+import org.firstinspires.ftc.teamcode.lib.datatypes.util.Instructions;
+import org.firstinspires.ftc.teamcode.lib.hardware.Intake;
 
-import java.util.ArrayList;
-
+@Config
 public class Shooter {
 
-    public class Goal {
-        double x;
-        double y;
-        double z;
+    // Define 3 states. on, off or reverse
+    public enum Mode {
+        SHOOTING,
+        IDLE,
+    }
 
-        public Goal(double x, double y, double z) {
-            this.x = x;
-            this.y = y;
-            this.z = z;
+    private enum FeederState {
+        PUSHING,
+        RETRACTING,
+        RETRACTED
+    }
+
+    private DcMotorEx shooter1;
+    private DcMotorEx shooter2;
+
+    private Servo feeder;
+
+    private Mode mode;
+
+    private FeederState feederState;
+
+    private double currentRuntime;
+    private double actuationTime = 0.19;
+    private double startTime;
+
+    private final double feederStartPosition = 0.33;
+    private final double feederExtendedPosition = 0.5;
+
+    private double targetVelocity;
+
+    public Shooter(HardwareMap hardwaremap) {
+        shooter1 = hardwaremap.get(DcMotorEx.class, "shooter1");
+        shooter2 = hardwaremap.get(DcMotorEx.class, "shooter2");
+        feeder = hardwaremap.get(Servo.class, "feeder");
+        feeder.setPosition(feederStartPosition);
+        feederState = FeederState.RETRACTED;
+        shooter1.setDirection(DcMotorEx.Direction.FORWARD);
+        shooter2.setDirection(DcMotorEx.Direction.FORWARD);
+        shooter1.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        shooter2.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        shooter1.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+        shooter2.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+        shooter1.setPower(0);
+        shooter2.setPower(0);
+        mode = Mode.IDLE;
+    }
+
+    public Mode getMode() {
+        return mode;
+    }
+
+    public double getShooterVelocity() {
+        return 0.5*(shooter1.getVelocity() + shooter2.getVelocity());
+    }
+    
+    public double getTargetVelocity() {
+        return targetVelocity;
+    }
+
+    public void setTargetVolicty(double targetVelocity) {
+        this.targetVelocity = targetVelocity;
+    }
+
+    public void shoot() {
+        if(feederState == FeederState.RETRACTED) {
+            feeder.setPosition(feederExtendedPosition);
+            startTime = currentRuntime;
+            feederState = FeederState.PUSHING;
         }
     }
 
-    HardwareMap hardwareMap;
-    DcMotorEx motor1;
-    DcMotorEx motor2;
-
-    Servo flap;
-    Servo feeder;
-
-    Goal HighGoal = new Goal(1,2, 3);
-    double[] position;
-
-    public Shooter (HardwareMap hardwareMap) {
-        this.hardwareMap = hardwareMap;
-
-        motor1 = hardwareMap.get(DcMotorEx.class, "shooter1");
-        motor2 = hardwareMap.get(DcMotorEx.class, "shooter2");
-        motor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        motor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-
-        flap = hardwareMap.get(Servo.class, "flap");
-        feeder = hardwareMap.get(Servo.class, "feeder");
+    public void reset() { //ONLY for autonomous
+        feeder.setPosition(feederStartPosition);
+        feederState = FeederState.RETRACTED;
     }
 
-    private void enableShooter() {
-        motor1.setVelocity(6000);
-        motor2.setVelocity(6000);
+    public void setMode(Mode mode) {
+        this.mode = mode;
+        switch (this.mode)
+        {
+            case IDLE: //no power
+                shooter1.setPower(0);
+                shooter2.setPower(0);
+                break;
+            case SHOOTING: //shoot
+                shooter1.setVelocity(targetVelocity);
+                shooter2.setVelocity(targetVelocity);
+                break;
+        }
     }
 
-    private void disableShooter() {
-        motor1.setPower(0);
-        motor2.setPower(0);
-    }
+    public TUtil update(double currentRuntime, TUtil instructions) {
+        this.currentRuntime = currentRuntime;
+        if(feederState == FeederState.PUSHING && (this.currentRuntime-startTime > actuationTime)) {
+            feeder.setPosition(feederStartPosition);
+            startTime = this.currentRuntime;
+            feederState = FeederState.RETRACTING;
+        }
+        if(feederState == FeederState.RETRACTING && (this.currentRuntime-startTime > actuationTime)) {
+            feederState = FeederState.RETRACTED;
+        }
 
-    public void shootOne() {
-        adjustFlap();
-        feeder.setPosition(1);
-        feeder.setPosition(0);
-    }
-    private void shootThree() {
-        shootOne();
-        shootOne();
-        shootOne();
-    }
-    private double g_inverse() {
-        double u = 1;
-        double v = 1;
-
-        double d_x = position[0] - HighGoal.x;
-        double d_y = position[1] - HighGoal.y;
-        double d_s = Math.sqrt(d_x * d_x + d_y * d_y);
-
-        return u * d_s + v * HighGoal.z;
-    }
-    private void adjustFlap() {
-        double angle = g_inverse();
-        double max_angle = 45;
-        flap.setPosition(angle / max_angle);
-    }
-
-    //debug
-    private void feedRing() {
-        feeder.setPosition(1);
-        feeder.setPosition(0);
-    }
-
-    public TUtil update(TUtil instructions) {
-
+        TUtil messages = new TUtil();
         for (UTuple i : instructions.list) {
             switch (i.a_ins) {
-                case ENABLE_SHOOTER:
-                    enableShooter();
+                case LOWER_INTAKE_DEBUG:
                     break;
-                case DISABLE_SHOOTER:
-                    disableShooter();
+                case SET_SHOOTER_IDLE:
+                    setMode(Mode.IDLE);
                     break;
-                case SHOOT_ONE:
-                    shootOne();
+                case SET_SHOOTER_ON:
+                    setMode(Mode.SHOOTING);
+                    break;
+                case RESET_SHOOTER:
+                    reset();
+                    break;
+                case SET_SHOOTER_VELOCITY:
+                    setTargetVolicty(i.b_dbl);
+                    break;
+                case GET_SHOOTER_VELOCITY:
+                    if(i.b_adr != null) {
+                        messages.add(i.b_adr, Instructions.RETURN_SHOOTER_VELOCITY, getShooterVelocity());
+                    }
                     break;
                 case SHOOT_THREE:
-                    shootThree();
-                    break;
-                case RECIEVE_POSITION:
-                    position = i.b_arr;
+                    shoot();
                     break;
 
-                case ADJUST_FLAP_DEBUG:
-                    adjustFlap();
-                    break;
-                case FEED_RING_DEBUG:
-                    feedRing();
-                    break;
                 default:
                     break;
             }
         }
-
-        TUtil messages = new TUtil();
         return messages;
     }
 }
-

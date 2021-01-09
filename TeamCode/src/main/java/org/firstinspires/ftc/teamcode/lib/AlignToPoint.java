@@ -236,10 +236,10 @@ public class AlignToPoint {
         TUtil messages = new TUtil();
 
         if (currentMode == Mode.ALIGN_TO_POINT) {
-            messages.add(Adresses.SHOOTER, Instructions.ENABLE_SHOOTER);
+            messages.add(Adresses.SHOOTER, Instructions.SET_SHOOTER_ON);
         }
         if (currentMode == Mode.NORMAL_CONTROL) {
-            messages.add(Adresses.SHOOTER, Instructions.DISABLE_SHOOTER);
+            messages.add(Adresses.SHOOTER, Instructions.SET_SHOOTER_IDLE);
         }
         double[] position = {poseEstimate.getX(), poseEstimate.getY()};
         messages.add(Adresses.SHOOTER, Instructions.RECIEVE_POSITION, position);

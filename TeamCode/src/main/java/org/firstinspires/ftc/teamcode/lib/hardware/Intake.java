@@ -1,95 +1,82 @@
 package org.firstinspires.ftc.teamcode.lib.hardware;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.lib.G;
+import org.firstinspires.ftc.teamcode.lib.datatypes.TUtil;
 import org.firstinspires.ftc.teamcode.lib.datatypes.UTuple;
 
-import java.util.ArrayList;
-
+@Config
 public class Intake {
 
-    HardwareMap hardwareMap;
-    Telemetry telemetry;
-    DcMotor motor1;
-    DcMotor motor2;
-    Servo servo;
+    // Define 3 states. on, off or reverse
+    public enum Mode {
+        NORMAL,
+        IDLE,
+        REVERSE
+    }
 
-    public Intake(HardwareMap hardwareMap, Telemetry telemetry) {
-        this.hardwareMap = hardwareMap;
-        this.telemetry = telemetry;
+    private DcMotor intake;
+    private Servo servo;
 
-        motor1 = hardwareMap.get(DcMotor.class, "intake");
-        motor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        motor2 = hardwareMap.get(DcMotor.class, "lift");
-        motor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+    private Mode mode;
 
-        servo = hardwareMap.get(Servo.class, "intake");
+    public Intake(HardwareMap hardwaremap) {
+        servo = hardwaremap.get(Servo.class, "intake");
+        intake = hardwaremap.get(DcMotor.class, "intake");
+        intake.setDirection(DcMotor.Direction.REVERSE);
+        intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        intake.setPower(0);
+        mode = Mode.IDLE;
+    }
+
+    public Mode getMode() {
+        return this.mode;
     }
 
     public void lowerIntake() {
         servo.setPosition(1);
     }
-    private void enableIntake() {
-        motor1.setPower(1);
-        motor2.setPower(1);
-        telemetry.addLine("Succ mode activated");
-    }
-    private void disableIntake() {
-        motor1.setPower(0);
-        motor2.setPower(0);
-    }
 
-    //debugging stuff
-    private void enableIntakeOnly() {
-        motor1.setPower(1);
+    public void setMode(Mode mode) {
+        this.mode = mode;
+        switch (this.mode)
+        {
+            case IDLE: //no power
+                intake.setPower(0);
+                break;
+            case NORMAL: //intake
+                intake.setPower(1);
+                break;
+            case REVERSE: //outtake
+                intake.setPower(-0.3);
+                break;
+        }
     }
-    private void disableIntakeOnly() {
-        motor1.setPower(0);
-    }
-    private void enableLiftOnly() {
-        motor2.setPower(1);
-    }
-    private void disableLiftOnly() {
-        motor2.setPower(0);
-    }
+    public TUtil update (TUtil instructions) {
 
-    public ArrayList<UTuple> update(ArrayList<UTuple> instructions) {
-
-        for (UTuple i : instructions) {
+        TUtil messages = new TUtil();
+        for (UTuple i : instructions.list) {
             switch (i.a_ins) {
-                case ENABLE_INTAKE:
-                    enableIntake();
-                    break;
-                case DISABLE_INTAKE:
-                    disableIntake();
-                    break;
-
-                case ENABLE_INTAKE_DEBUG:
-                    enableIntakeOnly();
-                    break;
-                case DISABLE_INTAKE_DEBUG:
-                    disableIntakeOnly();
-                    break;
-                case ENABLE_LIFT_DEBUG:
-                    enableLiftOnly();
-                    break;
-                case DISABLE_LIFT_DEBUG:
-                    disableLiftOnly();
-                    break;
                 case LOWER_INTAKE_DEBUG:
                     lowerIntake();
+                    break;
+                case SET_INTAKE_IDLE:
+                    setMode(Mode.IDLE);
+                    break;
+                case SET_INTAKE_ON:
+                    setMode(Mode.NORMAL);
+                    break;
+                case SET_INTAKE_REVERSE:
+                    setMode(Mode.REVERSE);
                     break;
                 default:
                     break;
             }
         }
-
-        ArrayList<UTuple> output = new ArrayList<>();
-        return output;
+        return messages;
     }
-
 }

@@ -6,5 +6,6 @@ public enum Adresses {
     SHOOTER,
     KEYBINDINGS,
     ALIGN_TO_POINT,
-    INTAKE;
+    INTAKE,
+    TRANSFER;
 }

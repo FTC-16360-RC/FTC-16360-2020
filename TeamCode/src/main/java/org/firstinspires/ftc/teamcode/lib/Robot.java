@@ -15,15 +15,17 @@ import org.firstinspires.ftc.teamcode.lib.datatypes.UTuple;
 import org.firstinspires.ftc.teamcode.lib.datatypes.util.Adresses;
 import org.firstinspires.ftc.teamcode.lib.hardware.Intake;
 import org.firstinspires.ftc.teamcode.lib.hardware.Shooter;
+import org.firstinspires.ftc.teamcode.lib.hardware.Transfer;
 
 import java.util.ArrayList;
 
 public class Robot{
 
-    private Keybindings keybindings;
-    private AlignToPoint alignToPoint;
-    private Shooter shooter;
-    private Intake intake;
+    public Keybindings keybindings;
+    public AlignToPoint alignToPoint;
+    public Shooter shooter;
+    public Intake intake;
+    public Transfer transfer;
 
     TUtil comms;
     TUtil lastComms;
@@ -60,7 +62,7 @@ public class Robot{
         keybindings = new Keybindings(gamepad1, gamepad2, telemetry);
         alignToPoint = new AlignToPoint(hardwareMap, telemetry, gamepad1, gamepad2);
         shooter = new Shooter(hardwareMap);
-        intake = new Intake(hardwareMap, telemetry);
+        intake = new Intake(hardwareMap);
 
         comms = new TUtil();
         lastComms = new TUtil();
@@ -80,7 +82,9 @@ public class Robot{
 
         append(keybindings.update(returnComs(Adresses.KEYBINDINGS)));
         append(alignToPoint.update(returnComs(Adresses.ALIGN_TO_POINT)));
-        append(shooter.update(returnComs(Adresses.SHOOTER)));
+        append(shooter.update(0, returnComs(Adresses.SHOOTER)));
+        append(intake.update(returnComs(Adresses.INTAKE)));
+        append(transfer.update(returnComs(Adresses.TRANSFER)));
 
         //lastComms is the comms that is used to give back to the classes. Comms picks up information.
         lastComms = comms;

@@ -12,6 +12,7 @@ public class UTuple {
     public double b_dbl;
     public double[] b_arr;
     public Boolean b_bln;
+    public Adresses b_adr;
 
     public UTuple (Adresses a, UTuple b) {
         a_adr = a;
@@ -43,6 +44,15 @@ public class UTuple {
     public UTuple (Instructions i, Boolean b) {
         a_ins = i;
         b_bln = b;
+    }
+
+    public UTuple (Adresses a, Instructions i, Adresses b) {
+        a_adr = a;
+        b_utp = new UTuple(i, b);
+    }
+    public UTuple (Instructions i, Adresses b) {
+        a_ins = i;
+        b_adr = b;
     }
 
     public UTuple(Adresses a, Instructions i) {

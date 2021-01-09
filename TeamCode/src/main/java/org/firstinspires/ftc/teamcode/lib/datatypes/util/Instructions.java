@@ -1,0 +1,24 @@
+package org.firstinspires.ftc.teamcode.lib.datatypes.util;
+
+public enum Instructions {
+    NONE,
+    SHOOT_ONE,
+    SHOOT_THREE,
+    NEXT_TARGET,
+    PREVIOUS_TARGET,
+    ENABLE_INTAKE,
+    DISABLE_INTAKE,
+    ENABLE_SHOOTER,
+    DISABLE_SHOOTER,
+    RESET_ORIENTATION,
+    RECIEVE_POSITION,
+
+    ENABLE_INTAKE_DEBUG,
+    DISABLE_INTAKE_DEBUG,
+    ENABLE_LIFT_DEBUG,
+    DISABLE_LIFT_DEBUG,
+    LOWER_INTAKE_DEBUG,
+    ADJUST_FLAP_DEBUG,
+    FEED_RING_DEBUG;
+}
+

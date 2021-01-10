@@ -32,8 +32,8 @@ import org.firstinspires.ftc.teamcode.util.DashboardUtil;
  * want that to interfere with our graph so we just directly update localizer instead
  */
 @Config
-@TeleOp(group = "advanced")
-public class AlignToPoint extends LinearOpMode {
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(group = "advanced")
+public class Tele extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -46,10 +46,10 @@ public class AlignToPoint extends LinearOpMode {
     }
 
     int targetX = 72;
-    int targetY = 37;  //21, 13.5, 6
+    int targetY = 35;  //37, 21, 13.5, 6
     int errorX = 0;
     int errorY = 0;
-    final double headingError = Math.toRadians(-10);
+    final double headingError = Math.toRadians(-10);//-10
     boolean lastState = false;
 
     private Mode currentMode = Mode.NORMAL_CONTROL;
@@ -60,9 +60,11 @@ public class AlignToPoint extends LinearOpMode {
 
     private Shooter shooter;
 
+    double flapPosition;
+
     // Declare a PIDF Controller to regulate heading
     // Use the same gains as SampleMecanumDrive's heading controller
-    private PIDFController headingController = new PIDFController(new PIDCoefficients(8, 0.2, 0));
+    private PIDFController headingController = new PIDFController(new PIDCoefficients(12, 0, 0));
 
     // Declare a target vector you'd like your bot to align with
     // Can be any x/y coordinate of your choosing
@@ -106,18 +108,23 @@ public class AlignToPoint extends LinearOpMode {
                 intake.setMode(Intake.Mode.REVERSE);
                 transfer.setMode(Transfer.Mode.REVERSE);
             }
-            if(gamepad2.right_bumper) {
-                shooter.setTargetVolicty(6000);
+            if(gamepad2.right_bumper || gamepad1.a) {
+                shooter.setFlapPosition(flapPosition);
+                shooter.setTargetVolicty(5000);
                 shooter.setMode(Shooter.Mode.SHOOTING);
+                intake.setMode(Intake.Mode.IDLE);
             }
-            if(gamepad2.left_bumper) {
+            if(gamepad2.left_bumper || gamepad1.b) {
+                shooter.setFlapPosition(0);
                 shooter.setMode(Shooter.Mode.IDLE);
+                intake.setMode(Intake.Mode.NORMAL);
+                transfer.setMode(Transfer.Mode.NORMAL);
             }
             shooter.update(currentRuntime);
             if(gamepad2.right_trigger != 0) {
                 shooter.shoot();
             }
-            if(!gamepad1.dpad_right && !gamepad1.dpad_left) {
+            if(!gamepad1.dpad_right && !gamepad1.dpad_left && !gamepad2.dpad_up && !gamepad2.dpad_down) {
                 lastState = false;
             }
             if(gamepad1.dpad_right && !lastState) {
@@ -125,6 +132,22 @@ public class AlignToPoint extends LinearOpMode {
                 lastState = true;
             } else if(gamepad1.dpad_left && !lastState) {
                 errorY += 5;
+                lastState = true;
+            }
+            if (gamepad2.dpad_up && !lastState) {
+                flapPosition += 0.1;
+                if(flapPosition > 1) {
+                    flapPosition = 1;
+                }
+                shooter.setFlapPosition(flapPosition);
+                lastState = true;
+            }
+            if (gamepad2.dpad_down && !lastState) {
+                flapPosition -= 0.1;
+                if(flapPosition < 0) {
+                    flapPosition = 0;
+                }
+                shooter.setFlapPosition(flapPosition);
                 lastState = true;
             }
 
@@ -232,9 +255,10 @@ public class AlignToPoint extends LinearOpMode {
             // Print pose to telemetry
             telemetry.addData("x", poseEstimate.getX());
             telemetry.addData("y", poseEstimate.getY());
+            telemetry.addData("heading", poseEstimate.getHeading());
+            telemetry.addData("flap", shooter.getFlapPosition()+"%");
             telemetry.addData("x error", errorX);
             telemetry.addData("y error", errorY);
-            telemetry.addData("heading", poseEstimate.getHeading());
             telemetry.update();
         }
     }

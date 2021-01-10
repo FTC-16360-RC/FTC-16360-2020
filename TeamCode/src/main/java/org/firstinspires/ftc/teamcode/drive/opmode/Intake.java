@@ -42,7 +42,7 @@ public class Intake {
                 intake.setPower(1);
                 break;
             case REVERSE: //outtake
-                intake.setPower(-0.3);
+                intake.setPower(-1);
                 break;
         }
     }

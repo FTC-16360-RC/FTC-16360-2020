@@ -42,7 +42,7 @@ public class Transfer {
                 transfer.setPower(0.6);
                 break;
             case REVERSE: //outtake
-                transfer.setPower(-0.3);
+                transfer.setPower(-0.8);
                 break;
         }
     }

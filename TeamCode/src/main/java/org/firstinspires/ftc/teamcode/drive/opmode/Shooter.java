@@ -8,10 +8,11 @@ import com.qualcomm.robotcore.hardware.Servo;
 @Config
 public class Shooter {
 
-    // Define 3 states. on, off or reverse
+    // Define 3 states. on, off or idle
     public enum Mode {
         SHOOTING,
         IDLE,
+        OFF
     }
 
     private enum FeederState {
@@ -25,6 +26,8 @@ public class Shooter {
 
     private Servo feeder;
 
+    private Servo flap;
+
     private Mode mode;
 
     private FeederState feederState;
@@ -36,13 +39,18 @@ public class Shooter {
     private final double feederStartPosition = 0.33;
     private final double feederExtendedPosition = 0.5;
 
+    private final double flapMinPosition = 0.59;
+    private final double flapMaxPosition = 0.51;
+
     private double targetVelocity;
 
     public Shooter(HardwareMap hardwaremap) {
         shooter1 = hardwaremap.get(DcMotorEx.class, "shooter1");
         shooter2 = hardwaremap.get(DcMotorEx.class, "shooter2");
         feeder = hardwaremap.get(Servo.class, "feeder");
+        flap = hardwaremap.get(Servo.class, "flap");
         feeder.setPosition(feederStartPosition);
+        flap.setPosition(flapMinPosition);
         feederState = FeederState.RETRACTED;
         shooter1.setDirection(DcMotorEx.Direction.FORWARD);
         shooter2.setDirection(DcMotorEx.Direction.FORWARD);
@@ -77,6 +85,14 @@ public class Shooter {
             startTime = currentRuntime;
             feederState = FeederState.PUSHING;
         }
+    }
+
+    public double getFlapPosition() {
+        return Math.round((flapMinPosition-flap.getPosition())/(flapMinPosition-flapMaxPosition)*100);
+    }
+
+    public void setFlapPosition(double targetPosition) {
+        flap.setPosition(flapMinPosition+(flapMaxPosition-flapMinPosition)*targetPosition);
     }
 
     public void reset() { //ONLY for autonomous

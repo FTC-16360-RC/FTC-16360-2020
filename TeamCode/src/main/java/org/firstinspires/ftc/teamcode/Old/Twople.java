@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.Old;
 
 import org.firstinspires.ftc.teamcode.lib.G;
 
-public class Twople {
+public class Twople {/*
     public G.a a;
     public INTuple b;
 
@@ -34,6 +34,6 @@ public class Twople {
     }
     public Twople () {
         a = G.a.NONE;
-        b = new INTuple(0);
+        b = new INTuple(0);*/
     }
-}
+

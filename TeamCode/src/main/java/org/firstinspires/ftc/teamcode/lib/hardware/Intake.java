@@ -7,6 +7,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.lib.datatypes.TUtil;
 import org.firstinspires.ftc.teamcode.lib.datatypes.UTuple;
+import org.firstinspires.ftc.teamcode.lib.datatypes.util.Adresses;
+import org.firstinspires.ftc.teamcode.lib.datatypes.util.Instructions;
 
 @Config
 public class Intake {
@@ -38,7 +40,7 @@ public class Intake {
     }
 
     public void lowerIntake() {
-        servo.setPosition(1);
+        //servo.setPosition(1);
     }
 
     public void setMode(Mode mode) {
@@ -49,7 +51,7 @@ public class Intake {
                 intake.setPower(0);
                 break;
             case NORMAL: //intake
-                intake.setPower(1);
+                intake.setPower(0.3);
                 break;
             case REVERSE: //outtake
                 intake.setPower(-0.3);
@@ -57,7 +59,6 @@ public class Intake {
         }
     }
     public TUtil update (TUtil instructions) {
-
         TUtil messages = new TUtil();
         for (UTuple i : instructions.list) {
             switch (i.a_ins) {

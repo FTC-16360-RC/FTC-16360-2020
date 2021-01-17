@@ -4,8 +4,11 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.lib.datatypes.TUtil;
 import org.firstinspires.ftc.teamcode.lib.datatypes.UTuple;
+import org.firstinspires.ftc.teamcode.lib.datatypes.util.Adresses;
+import org.firstinspires.ftc.teamcode.lib.datatypes.util.Instructions;
 
 @Config
 public class Transfer {
@@ -20,8 +23,11 @@ public class Transfer {
     private DcMotor transfer;
 
     private Mode mode;
+    Telemetry telemetry;
 
     public Transfer(HardwareMap hardwaremap) {
+        this.telemetry = telemetry;
+
         transfer = hardwaremap.get(DcMotor.class, "transfer");
         transfer.setDirection(DcMotor.Direction.REVERSE);
         transfer.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -45,7 +51,7 @@ public class Transfer {
                 transfer.setPower(0.6);
                 break;
             case REVERSE: //outtake
-                transfer.setPower(-0.3);
+                transfer.setPower(-0.6);
                 break;
         }
     }

@@ -52,6 +52,8 @@ public class AlignToPoint {
 
     SampleMecanumDrive drive;
 
+    boolean a;
+    boolean b;
 
     public static double DRAWING_TARGET_RADIUS = 2;
 
@@ -107,29 +109,31 @@ public class AlignToPoint {
 
     public TUtil update(TUtil instructions) {
 
+        a = false;
+        b = false;
+
         for (UTuple i : instructions.list) {
             switch (i.a_ins) {
                 case RESET_ORIENTATION:
                     resetOrientation();
+                    break;
+                case STD_DPAD_LEFT:
+                    errorY += 5;
+                    break;
+                case STD_DPAD_RIGHT:
+                    errorY -= 5;
+                    break;
+                case STD_A:
+                    a = true;
+                    break;
+                case STD_B:
+                    b = true;
                     break;
                 default:
                     telemetry.addLine("oh  no oh no oh no something went wrong oh no");
                     break;
             }
         }
-
-
-        /*if(!gamepad2.dpad_right && !gamepad2.dpad_left) {
-            lastState = false;
-        }
-        if(gamepad2.dpad_right && !lastState) {
-            errorY -= 5;
-            lastState = true;
-        } else if(gamepad2.dpad_left && !lastState) {
-            errorY += 5;
-            lastState = true;
-        }*/
-
 
         // Read pose
         Pose2d poseEstimate = drive.getLocalizer().getPoseEstimate();
@@ -147,7 +151,7 @@ public class AlignToPoint {
         switch (currentMode) {
             case NORMAL_CONTROL:
                 // Switch into alignment mode if `a` is pressed
-                if (gamepad2.a) {
+                if (a) {
                     currentMode = Mode.ALIGN_TO_POINT;
                 }
 
@@ -160,9 +164,9 @@ public class AlignToPoint {
                 );
                 break;
             case ALIGN_TO_POINT:
-                targetPosition = new Vector2d(targetX+errorX, targetY+errorY);
+                targetPosition = new Vector2d(targetX + errorX, targetY + errorY);
                 // Switch back into normal driver control mode if `b` is pressed
-                if (gamepad2.b) {
+                if (b) {
                     currentMode = Mode.NORMAL_CONTROL;
                 }
 
@@ -235,11 +239,15 @@ public class AlignToPoint {
 
         TUtil messages = new TUtil();
 
-        if (currentMode == Mode.ALIGN_TO_POINT) {
-            messages.add(Adresses.SHOOTER, Instructions.SET_SHOOTER_ON);
-        }
-        if (currentMode == Mode.NORMAL_CONTROL) {
-            messages.add(Adresses.SHOOTER, Instructions.SET_SHOOTER_IDLE);
+        if (a || b) {
+            if (currentMode == Mode.ALIGN_TO_POINT) {
+                messages.add(Adresses.SHOOTER, Instructions.SET_SHOOTER_ON);
+                messages.add(Adresses.INTAKE, Instructions.SET_INTAKE_IDLE);
+            }
+            if (currentMode == Mode.NORMAL_CONTROL) {
+                messages.add(Adresses.SHOOTER, Instructions.SET_SHOOTER_IDLE);
+                messages.add(Adresses.INTAKE, Instructions.SET_INTAKE_ON);
+            }
         }
         double[] position = {poseEstimate.getX(), poseEstimate.getY()};
         messages.add(Adresses.SHOOTER, Instructions.RECIEVE_POSITION, position);

@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.lib.Robot;
 
-@TeleOp(name="FTC 2020 Tele", group="Iterative Opmode")
+@TeleOp(name="FTC 2021 Tele", group="Iterative Opmode")
 //@Disabled
 public class FTC_2021_Tele extends OpMode {
 
@@ -29,6 +29,6 @@ public class FTC_2021_Tele extends OpMode {
 
     @Override
     public void loop() {
-        robot.loop();
+        robot.loop(getRuntime());
     }
 }

@@ -11,7 +11,8 @@ public class TUtil {
     public int size = 0;
 
     public TUtil () {
-
+    }
+    public TUtil (int i) {
     }
 
     private void updateSize() {

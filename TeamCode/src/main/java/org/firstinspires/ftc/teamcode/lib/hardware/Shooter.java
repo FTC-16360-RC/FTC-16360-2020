@@ -58,6 +58,8 @@ public class Shooter {
         shooter1.setPower(0);
         shooter2.setPower(0);
         mode = Mode.IDLE;
+
+        setTargetVelocity(1000);
     }
 
     public Mode getMode() {
@@ -72,7 +74,7 @@ public class Shooter {
         return targetVelocity;
     }
 
-    public void setTargetVolicty(double targetVelocity) {
+    public void setTargetVelocity(double targetVelocity) {
         this.targetVelocity = targetVelocity;
     }
 
@@ -104,7 +106,7 @@ public class Shooter {
         }
     }
 
-    public TUtil update(double currentRuntime, TUtil instructions) {
+    public TUtil update(TUtil instructions, double currentRuntime) {
         this.currentRuntime = currentRuntime;
         if(feederState == FeederState.PUSHING && (this.currentRuntime-startTime > actuationTime)) {
             feeder.setPosition(feederStartPosition);
@@ -130,7 +132,7 @@ public class Shooter {
                     reset();
                     break;
                 case SET_SHOOTER_VELOCITY:
-                    setTargetVolicty(i.b_dbl);
+                    setTargetVelocity(i.b_dbl);
                     break;
                 case GET_SHOOTER_VELOCITY:
                     if(i.b_adr != null) {

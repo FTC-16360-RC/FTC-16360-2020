@@ -63,6 +63,7 @@ public class Robot{
         alignToPoint = new AlignToPoint(hardwareMap, telemetry, gamepad1, gamepad2);
         shooter = new Shooter(hardwareMap);
         intake = new Intake(hardwareMap);
+        transfer = new Transfer(hardwareMap);
 
         comms = new TUtil();
         lastComms = new TUtil();
@@ -73,16 +74,18 @@ public class Robot{
 
     public void start() {
         intake.lowerIntake();
+        transfer.setMode(Transfer.Mode.NORMAL);
+        intake.setMode(Intake.Mode.NORMAL);
     }
 
-    public void loop() {
+    public void loop(double runtime) {
         //clear comms
         comms.clear();
 
 
         append(keybindings.update(returnComs(Adresses.KEYBINDINGS)));
         append(alignToPoint.update(returnComs(Adresses.ALIGN_TO_POINT)));
-        append(shooter.update(0, returnComs(Adresses.SHOOTER)));
+        append(shooter.update(returnComs(Adresses.SHOOTER), runtime));
         append(intake.update(returnComs(Adresses.INTAKE)));
         append(transfer.update(returnComs(Adresses.TRANSFER)));
 

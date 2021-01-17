@@ -1,18 +1,13 @@
 package org.firstinspires.ftc.teamcode.lib;
 
-import com.qualcomm.robotcore.hardware.HardwareMap;
-
+// A class for all global variables
 public class Globals {
+    // Heading adjustment for shooting
+    public static double headingError = -10;
 
-    public static double e = 0.000001;
-    public HardwareMap hardwareMap;
+    // Normal RPM to shoot at for high goal
+    public static double standardRPM = 5000;
 
-    public double NormalizeAngle(double alpha) {
-        alpha = alpha % 360;
-        if (alpha < 0) {
-            alpha = 360 + alpha;
-        }
-        return alpha;
-    }
-
+    // RPM to shoot at for power shot
+    public static double powerShotRPM = 3000;
 }

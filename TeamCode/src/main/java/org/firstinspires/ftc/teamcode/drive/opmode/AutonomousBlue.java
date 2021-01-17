@@ -14,6 +14,7 @@ import com.acmerobotics.roadrunner.control.PIDFController;
 
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.lib.PoseStorage;
 
 @Config
 @Autonomous(group = "drive")
@@ -28,6 +29,7 @@ public class AutonomousBlue extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         shooter = new Shooter(hardwareMap);
         Pose2d startPose = new Pose2d(-62, 23, Math.toRadians(0));
+        PoseStorage.currentPose = startPose;
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         Vector2d PowerShot1 = new Vector2d(72, 21);
         Vector2d PowerShot2 = new Vector2d(72, 13.5);

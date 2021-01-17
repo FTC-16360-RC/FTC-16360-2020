@@ -18,6 +18,7 @@ import org.firstinspires.ftc.teamcode.drive.opmode.Intake;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.drive.opmode.Shooter;
 import org.firstinspires.ftc.teamcode.drive.opmode.Transfer;
+import org.firstinspires.ftc.teamcode.lib.PoseStorage;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
 /**
@@ -84,7 +85,7 @@ public class Tele extends LinearOpMode {
 
         // Retrieve our pose from the PoseStorage.currentPose static field
         // See AutoTransferPose.java for further details
-        drive.getLocalizer().setPoseEstimate(new Pose2d(0, 0, 0));
+        drive.getLocalizer().setPoseEstimate(PoseStorage.currentPose);
 
         // Set input bounds for the heading controller
         // Automatically handles overflow
@@ -154,6 +155,9 @@ public class Tele extends LinearOpMode {
 
             // Read pose
             Pose2d poseEstimate = drive.getLocalizer().getPoseEstimate();
+
+            //write pose to global class
+            PoseStorage.currentPose = poseEstimate;
 
             // Declare a drive direction
             // Pose representing desired x, y, and angular velocity

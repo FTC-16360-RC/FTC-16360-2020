@@ -245,6 +245,7 @@ public class AlignToPoint {
             if (currentMode == Mode.NORMAL_CONTROL) {
                 messages.add(Adresses.SHOOTER, Instructions.SET_SHOOTER_IDLE);
                 messages.add(Adresses.INTAKE, Instructions.SET_INTAKE_ON);
+                messages.add(Adresses.TRANSFER, Instructions.SET_TRANSFER_ON);
             }
         }
         double[] position = {poseEstimate.getX(), poseEstimate.getY()};

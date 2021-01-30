@@ -30,6 +30,7 @@ public class Keybindings {
     Boolean intake_on = true;
     Boolean lift_on = true;
     Boolean shooter_on = false;
+    double servoPos = 0;
 
 
     public Keybindings(Gamepad gamepad1, Gamepad gamepad2, Telemetry telemetry) {
@@ -61,7 +62,7 @@ public class Keybindings {
             messages.add(Adresses.TRANSFER, Instructions.SET_TRANSFER_REVERSE);
             messages.add(Adresses.INTAKE, Instructions.SET_INTAKE_REVERSE);
         }
-        if (controller1.getyButton() == Controller.ButtonState.ON_RELEASE) {
+        if (controller1.getxButton() == Controller.ButtonState.ON_RELEASE) {
             if (lift_on) {
                 messages.add(Adresses.TRANSFER, Instructions.SET_TRANSFER_ON);
             } else {
@@ -76,6 +77,21 @@ public class Keybindings {
             }
         }
 
+        //toggle intake and transfer
+        if (controller1.getyButton() == Controller.ButtonState.ON_RELEASE) {
+            if (lift_on && intake_on) {
+                messages.add(Adresses.INTAKE, Instructions.SET_INTAKE_IDLE);
+                messages.add(Adresses.TRANSFER, Instructions.SET_TRANSFER_IDLE);
+                lift_on = false;
+                intake_on = false;
+            } else {
+                messages.add(Adresses.INTAKE, Instructions.SET_INTAKE_ON);
+                messages.add(Adresses.TRANSFER, Instructions.SET_TRANSFER_ON);
+                lift_on = true;
+                intake_on = true;
+            }
+        }
+
         //drivemodes
         if (controller1.getaButton() == Controller.ButtonState.ON_PRESS) {
             messages.add(Adresses.ALIGN_TO_POINT, Instructions.STD_A);
@@ -87,14 +103,22 @@ public class Keybindings {
             lift_on = true;
         }
 
-        //
-        //Gamepad 2
-        //
-
         //shooting
         if (gamepad1.right_trigger != 0) {
             messages.add(Adresses.SHOOTER, Instructions.SHOOT_THREE);
         }
+
+        //AlignToPoint trimming
+        if (controller1.getdPadLeft() == Controller.ButtonState.ON_PRESS) {
+            messages.add(Adresses.ALIGN_TO_POINT, Instructions.STD_DPAD_LEFT);
+        }
+        if (controller1.getdPadRight() == Controller.ButtonState.ON_PRESS) {
+            messages.add(Adresses.ALIGN_TO_POINT, Instructions.STD_DPAD_RIGHT);
+        }
+
+        //
+        //Gamepad 2
+        //
 
         //switch between modes
         if (gamepad2.left_bumper){
@@ -103,6 +127,10 @@ public class Keybindings {
         }
         if (gamepad2.right_bumper) {
             mode = 1;
+            messages.add(Adresses.ALIGN_TO_POINT, Instructions.MODE_DEBUG);
+        }
+        if (gamepad2.left_stick_button) {
+            mode = 2;
             messages.add(Adresses.ALIGN_TO_POINT, Instructions.MODE_DEBUG);
         }
 
@@ -122,71 +150,7 @@ public class Keybindings {
             if (controller2.getdPadRight() == Controller.ButtonState.ON_PRESS) {
                 messages.add(Adresses.ALIGN_TO_POINT, Instructions.STD_DPAD_RIGHT);
             }
-
-            //Shooting
-            if (controller2.getRightTrigger() == Controller.ButtonState.PRESSED) {
-                messages.add(Adresses.SHOOTER, Instructions.SHOOT_THREE);
-            }
-
-            //Transfer on / off
-            if (controller2.getxButton() == Controller.ButtonState.ON_PRESS) {
-                if (lift_on) {
-                    messages.add(Adresses.TRANSFER, Instructions.SET_TRANSFER_IDLE);
-                    messages.add(Adresses.INTAKE, Instructions.SET_INTAKE_IDLE);
-                    intake_on = false;
-                    lift_on = !lift_on;
-                } else {
-                    messages.add(Adresses.TRANSFER, Instructions.SET_TRANSFER_ON);
-                    lift_on = !lift_on;
-                }
-            }
-            //Transfer reverse
-            if (gamepad2.y) {
-                messages.add(Adresses.TRANSFER, Instructions.SET_TRANSFER_REVERSE);
-                messages.add(Adresses.INTAKE, Instructions.SET_INTAKE_REVERSE);
-            }
-            if (controller2.getyButton() == Controller.ButtonState.ON_RELEASE) {
-                if (lift_on) {
-                    messages.add(Adresses.TRANSFER, Instructions.SET_TRANSFER_ON);
-                } else {
-                    messages.add(Adresses.TRANSFER, Instructions.SET_TRANSFER_IDLE);
-                    messages.add(Adresses.INTAKE, Instructions.SET_INTAKE_IDLE);
-                    intake_on = false;
-                }
-                if (intake_on) {
-                    messages.add(Adresses.INTAKE, Instructions.SET_INTAKE_ON);
-                } else {
-                    messages.add(Adresses.INTAKE, Instructions.SET_INTAKE_IDLE);
-                }
-            }
-
-            //Intake on / off
-            if (controller2.getaButton() == Controller.ButtonState.ON_PRESS) {
-                if (intake_on) {
-                    messages.add(Adresses.INTAKE, Instructions.SET_INTAKE_IDLE);
-                    intake_on = !intake_on;
-                } else {
-                    messages.add(Adresses.INTAKE, Instructions.SET_INTAKE_ON);
-                    messages.add(Adresses.TRANSFER, Instructions.SET_TRANSFER_ON);
-                    lift_on = true;
-                    intake_on = !intake_on;
-                }
-            }
-            //Reverse Intake
-            if (gamepad2.b) {
-                messages.add(Adresses.INTAKE, Instructions.SET_INTAKE_REVERSE);
-            }
-            if (controller2.getbButton() == Controller.ButtonState.ON_RELEASE) {
-                if (intake_on) {
-                    messages.add(Adresses.INTAKE, Instructions.SET_INTAKE_ON);
-                    messages.add(Adresses.TRANSFER, Instructions.SET_TRANSFER_ON);
-                    lift_on = true;
-                } else {
-                    messages.add(Adresses.INTAKE, Instructions.SET_INTAKE_IDLE);
-                }
-            }
         }
-
         if (mode == 1) {
 
             if (controller2.getdPadUp() == Controller.ButtonState.ON_PRESS) {
@@ -209,6 +173,74 @@ public class Keybindings {
                 messages.add(Adresses.SHOOTER, Instructions.FEED_RING_DEBUG);
             }
         }
+        if (mode == 2) {
+            if (gamepad2.dpad_up) {
+
+            }
+        }
+        //Shooting
+        if (controller2.getRightTrigger() == Controller.ButtonState.PRESSED) {
+            messages.add(Adresses.SHOOTER, Instructions.SHOOT_THREE);
+        }
+
+        //Transfer on / off
+        if (controller2.getxButton() == Controller.ButtonState.ON_PRESS) {
+            if (lift_on) {
+                messages.add(Adresses.TRANSFER, Instructions.SET_TRANSFER_IDLE);
+                messages.add(Adresses.INTAKE, Instructions.SET_INTAKE_IDLE);
+                intake_on = false;
+                lift_on = !lift_on;
+            } else {
+                messages.add(Adresses.TRANSFER, Instructions.SET_TRANSFER_ON);
+                lift_on = !lift_on;
+            }
+        }
+        //Transfer reverse
+        if (gamepad2.y) {
+            messages.add(Adresses.TRANSFER, Instructions.SET_TRANSFER_REVERSE);
+            messages.add(Adresses.INTAKE, Instructions.SET_INTAKE_REVERSE);
+        }
+        if (controller2.getyButton() == Controller.ButtonState.ON_RELEASE) {
+            if (lift_on) {
+                messages.add(Adresses.TRANSFER, Instructions.SET_TRANSFER_ON);
+            } else {
+                messages.add(Adresses.TRANSFER, Instructions.SET_TRANSFER_IDLE);
+                messages.add(Adresses.INTAKE, Instructions.SET_INTAKE_IDLE);
+                intake_on = false;
+            }
+            if (intake_on) {
+                messages.add(Adresses.INTAKE, Instructions.SET_INTAKE_ON);
+            } else {
+                messages.add(Adresses.INTAKE, Instructions.SET_INTAKE_IDLE);
+            }
+        }
+
+        //Intake on / off
+        if (controller2.getaButton() == Controller.ButtonState.ON_PRESS) {
+            if (intake_on) {
+                messages.add(Adresses.INTAKE, Instructions.SET_INTAKE_IDLE);
+                intake_on = !intake_on;
+            } else {
+                messages.add(Adresses.INTAKE, Instructions.SET_INTAKE_ON);
+                messages.add(Adresses.TRANSFER, Instructions.SET_TRANSFER_ON);
+                lift_on = true;
+                intake_on = !intake_on;
+            }
+        }
+        //Reverse Intake
+        if (gamepad2.b) {
+            messages.add(Adresses.INTAKE, Instructions.SET_INTAKE_REVERSE);
+        }
+        if (controller2.getbButton() == Controller.ButtonState.ON_RELEASE) {
+            if (intake_on) {
+                messages.add(Adresses.INTAKE, Instructions.SET_INTAKE_ON);
+                messages.add(Adresses.TRANSFER, Instructions.SET_TRANSFER_ON);
+                lift_on = true;
+            } else {
+                messages.add(Adresses.INTAKE, Instructions.SET_INTAKE_IDLE);
+            }
+        }
+
         telemetry.addData("Mode:", mode);
         return messages;
     }

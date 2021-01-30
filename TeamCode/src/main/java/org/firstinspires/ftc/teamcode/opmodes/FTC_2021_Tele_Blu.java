@@ -3,11 +3,12 @@ package org.firstinspires.ftc.teamcode.opmodes;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.lib.Globals;
 import org.firstinspires.ftc.teamcode.lib.Robot;
 
-@TeleOp(name="FTC 2021 Tele", group="Iterative Opmode")
+@TeleOp(name="2021 Tele Blu", group="Iterative Opmode")
 //@Disabled
-public class FTC_2021_Tele extends OpMode {
+public class FTC_2021_Tele_Blu extends OpMode {
 
     Robot robot;
 
@@ -15,6 +16,7 @@ public class FTC_2021_Tele extends OpMode {
     public void init() {
         robot = new Robot(telemetry, hardwareMap, gamepad1, gamepad2);
         robot.init();
+        Globals.team = Globals.Teams.BLU;
     }
 
     @Override

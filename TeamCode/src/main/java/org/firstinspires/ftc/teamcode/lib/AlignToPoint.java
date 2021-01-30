@@ -36,11 +36,6 @@ import java.util.ArrayList;
  * Note: We don't call drive.update() here because it has its own field drawing functions. We don't
  * want that to interfere with our graph so we just directly update localizer instead
  *
- * Used:
- *
- * Gamepad1: leftstick, rightstick
- * Gampead2: a, b, x, dpad_left, dpad_right
- *
  */
 
 public class AlignToPoint {
@@ -92,6 +87,8 @@ public class AlignToPoint {
         this.telemetry = telemetry;
         this.gamepad1 = gamepad1;
         this.gamepad2 = gamepad2;
+
+        targetPosition = Targets.currentTarget;
 
         // Initialize SampleMecanumDrive
         drive = new SampleMecanumDrive(hardwareMap);
@@ -230,6 +227,7 @@ public class AlignToPoint {
         FtcDashboard.getInstance().sendTelemetryPacket(packet);
 
         // Print pose to telemetry
+        telemetry.addData("current Target : ", Targets.currentTargetName);
         telemetry.addData("x", poseEstimate.getX());
         telemetry.addData("y", poseEstimate.getY());
         telemetry.addData("x error", errorX);

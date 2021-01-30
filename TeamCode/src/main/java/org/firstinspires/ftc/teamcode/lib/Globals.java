@@ -2,11 +2,16 @@ package org.firstinspires.ftc.teamcode.lib;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-public class G {
+public class Globals {
 
+    public enum Teams {
+        RED,
+        BLU;
+    }
+
+    public static Teams team;
     public static double e = 0.000001;
     public HardwareMap hardwareMap;
-
 
 
     public double NormalizeAngle(double alpha) {

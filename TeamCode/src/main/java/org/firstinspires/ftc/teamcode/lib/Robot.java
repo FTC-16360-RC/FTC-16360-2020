@@ -1,23 +1,15 @@
 package org.firstinspires.ftc.teamcode.lib;
 
 
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.lib.AlignToPoint;
-import org.firstinspires.ftc.teamcode.lib.G;
-import org.firstinspires.ftc.teamcode.lib.Keybindings;
 import org.firstinspires.ftc.teamcode.lib.datatypes.TUtil;
-import org.firstinspires.ftc.teamcode.lib.datatypes.UTuple;
 import org.firstinspires.ftc.teamcode.lib.datatypes.util.Adresses;
 import org.firstinspires.ftc.teamcode.lib.hardware.Intake;
 import org.firstinspires.ftc.teamcode.lib.hardware.Shooter;
 import org.firstinspires.ftc.teamcode.lib.hardware.Transfer;
-
-import java.util.ArrayList;
 
 public class Robot{
 

@@ -109,10 +109,10 @@ public class Keybindings {
         if (mode == 0) {
             //switch between targets
             if (gamepad2.dpad_up) {
-                messages.add(Adresses.SHOOTER, Instructions.NEXT_TARGET);
+                Targets.nextTarget();
             }
             if (gamepad2.dpad_down) {
-                messages.add(Adresses.SHOOTER, Instructions.PREVIOUS_TARGET);
+                Targets.previousTarget();
             }
 
             //AlignToPoint trimming

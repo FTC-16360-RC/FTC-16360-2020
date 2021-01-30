@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.Old;
 
-import org.firstinspires.ftc.teamcode.lib.G;
-
 public class INTuple {/*
 
     private int mode;

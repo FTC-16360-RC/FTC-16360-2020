@@ -400,8 +400,8 @@ public class Controller {
     }
 
     /*
-    ** GETTERS AND SETTERS
-    */
+     ** GETTERS AND SETTERS
+     */
 
     public ButtonState getLeftJoystickX() {
         return leftJoystickX;

@@ -29,6 +29,7 @@ public class Shooter {
     private DcMotorEx shooter2;
 
     private Servo feeder;
+    private Servo flap;
 
     private Mode mode;
 
@@ -47,6 +48,7 @@ public class Shooter {
         shooter1 = hardwaremap.get(DcMotorEx.class, "shooter1");
         shooter2 = hardwaremap.get(DcMotorEx.class, "shooter2");
         feeder = hardwaremap.get(Servo.class, "feeder");
+        flap = hardwaremap.get(Servo.class, "flap");
         feeder.setPosition(feederStartPosition);
         feederState = FeederState.RETRACTED;
         shooter1.setDirection(DcMotorEx.Direction.FORWARD);
@@ -59,7 +61,7 @@ public class Shooter {
         shooter2.setPower(0);
         mode = Mode.IDLE;
 
-        setTargetVelocity(1000);
+        setTargetVelocity(4000);
     }
 
     public Mode getMode() {
@@ -89,6 +91,10 @@ public class Shooter {
     public void reset() { //ONLY for autonomous
         feeder.setPosition(feederStartPosition);
         feederState = FeederState.RETRACTED;
+    }
+
+    public void setServoPos(double servoPos) {
+        flap.setPosition(servoPos);
     }
 
     public void setMode(Mode mode) {
@@ -142,11 +148,11 @@ public class Shooter {
                 case SHOOT_ONE:
                     shoot();
                     break;
-                case SHOOT_THREE:
-                    shoot();
-                    shoot();
+                case SHOOT_THREE:   //dumb fucking code
                     shoot();
                     break;
+                case SET_FLAP_POSITION:
+                    setServoPos(i.b_dbl);
 
                 default:
                     break;

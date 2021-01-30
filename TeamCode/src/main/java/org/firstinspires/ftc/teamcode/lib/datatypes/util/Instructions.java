@@ -26,6 +26,7 @@ public enum Instructions {
     STD_B,
     MODE_DEBUG,
     MODE_SIMPLE,
+    SET_FLAP_POSITION,
 
     ENABLE_INTAKE_DEBUG,
     DISABLE_INTAKE_DEBUG,

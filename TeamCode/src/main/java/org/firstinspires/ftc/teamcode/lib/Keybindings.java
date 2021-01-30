@@ -30,7 +30,7 @@ public class Keybindings {
     Boolean intake_on = true;
     Boolean lift_on = true;
     Boolean shooter_on = false;
-    double servoPos = 0;
+    double servoPos = 0.6;
 
 
     public Keybindings(Gamepad gamepad1, Gamepad gamepad2, Telemetry telemetry) {
@@ -174,8 +174,26 @@ public class Keybindings {
             }
         }
         if (mode == 2) {
-            if (gamepad2.dpad_up) {
-
+            if (controller2.getdPadUp() == Controller.ButtonState.ON_PRESS) {
+                servoPos -= 0.01;
+                messages.add(Adresses.SHOOTER, Instructions.SET_FLAP_POSITION, servoPos);
+            }
+            if (controller2.getdPadDown() == Controller.ButtonState.ON_PRESS) {
+                servoPos += 0.01;
+                messages.add(Adresses.SHOOTER, Instructions.SET_FLAP_POSITION, servoPos);
+            }
+            if (gamepad2.left_trigger > 0) {
+                messages.add(Adresses.SHOOTER, Instructions.SET_FLAP_POSITION, servoPos);
+                telemetry.addData("ServoPos: ", servoPos);
+            }
+            if (controller2.getdPadLeft() == Controller.ButtonState.ON_PRESS) {
+                if (shooter_on) {
+                    messages.add(Adresses.SHOOTER, Instructions.SET_SHOOTER_IDLE);
+                    shooter_on = !shooter_on;
+                } else {
+                    messages.add(Adresses.SHOOTER, Instructions.SET_SHOOTER_ON);
+                    shooter_on = !shooter_on;
+                }
             }
         }
         //Shooting

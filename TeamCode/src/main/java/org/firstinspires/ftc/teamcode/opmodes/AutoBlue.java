@@ -217,7 +217,7 @@ public class AutoBlue extends LinearOpMode {
                 case SHOOT_1:
                     if (!drive.isBusy()) {
                         shooter.shoot();
-                        currentState = State.WAIT_7;
+                        currentState = State.SHOOT_2;
                         waitTimer7.reset();
                         /*shooter.update(getRuntime());
                         if (waitTimer7.seconds() >= waitTime7) {
@@ -228,18 +228,17 @@ public class AutoBlue extends LinearOpMode {
                          */
                     }
                     break;
-                case WAIT_7:
+                /*case WAIT_7:
                     shooter.update(getRuntime());
                     if (waitTimer7.seconds() >= waitTime7) {
-                        shooter.setFlapPosition(0.51);
                         currentState = State.SHOOT_2;
                         waitTimer8.reset();
                     }
                     break;
-
+                 */
                 case SHOOT_2:
-                    if (waitTimer8.seconds() >= waitTime8) {
-                        shooter.setFlapPosition(0.51);
+                    shooter.update(getRuntime());
+                    if (waitTimer7.seconds() >= waitTime7) {
                         shooter.shoot();
                         currentState = State.WAIT_8;
                         waitTimer9.reset();

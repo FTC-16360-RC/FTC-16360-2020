@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.lib.Targets;
 import org.firstinspires.ftc.teamcode.lib.datatypes.TUtil;
 import org.firstinspires.ftc.teamcode.lib.datatypes.UTuple;
 import org.firstinspires.ftc.teamcode.lib.datatypes.util.Instructions;
@@ -109,8 +110,8 @@ public class Shooter {
     }
 
     public void updateFlapPos(double[] position) {
-        //position [0,1] are the robot's coords, [2,3] are the target coords
-        double distance = Math.sqrt(Math.pow(position[0] - position[2], 2) + Math.pow(position[1] - position[3], 2));
+        double distance = Math.sqrt(Math.pow(position[0] - Targets.currentTarget.getX(), 2)
+                + Math.pow(position[1] - Targets.currentTarget.getY(), 2));
     }
 
     public void setMode(Mode mode) {

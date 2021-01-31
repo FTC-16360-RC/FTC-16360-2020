@@ -183,9 +183,9 @@ public class Keybindings {
                 messages.add(Adresses.SHOOTER, Instructions.SET_FLAP_POSITION, servoPos);
             }
             if (gamepad2.left_trigger > 0) {
-                messages.add(Adresses.SHOOTER, Instructions.SET_FLAP_POSITION, servoPos);
-                telemetry.addData("ServoPos: ", servoPos);
+                messages.add(Adresses.SHOOTER, Instructions.ADJUST_FLAP_DEBUG, servoPos);
             }
+            //toggle shooter
             if (controller2.getdPadLeft() == Controller.ButtonState.ON_PRESS) {
                 if (shooter_on) {
                     messages.add(Adresses.SHOOTER, Instructions.SET_SHOOTER_IDLE);
@@ -195,6 +195,7 @@ public class Keybindings {
                     shooter_on = !shooter_on;
                 }
             }
+            telemetry.addData("ServoPos: ", servoPos);
         }
         //Shooting
         if (controller2.getRightTrigger() == Controller.ButtonState.PRESSED) {

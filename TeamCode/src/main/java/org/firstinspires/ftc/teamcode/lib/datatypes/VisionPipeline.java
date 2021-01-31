@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.lib.datatypes.util;
+package org.firstinspires.ftc.teamcode.lib.datatypes;
 
 
 import org.firstinspires.ftc.teamcode.opmodes.EasyOpenCVExample;

@@ -58,8 +58,8 @@ public class AlignToPoint {
         ALIGN_TO_POINT
     }
 
-    int targetX = 138;
-    int targetY = -18;
+    int[] highGoal = {-138, -18};
+    int[] currentTarget = highGoal;
     int errorX = 0;
     int errorY = 0;
     boolean lastState = false;
@@ -72,7 +72,7 @@ public class AlignToPoint {
 
     // Declare a target vector you'd like your bot to align with
     // Can be any x/y coordinate of your choosing
-    private Vector2d targetPosition = new Vector2d(targetX, targetY);
+    private Vector2d targetPosition = new Vector2d(highGoal[0], highGoal[1]);
 
     private void resetOrientation() {
         drive.getLocalizer().setPoseEstimate(new Pose2d(0, 0, 0));
@@ -161,7 +161,7 @@ public class AlignToPoint {
                 );
                 break;
             case ALIGN_TO_POINT:
-                targetPosition = new Vector2d(targetX + errorX, targetY + errorY);
+                targetPosition = new Vector2d(currentTarget[0] + errorX, currentTarget[1] + errorY);
                 // Switch back into normal driver control mode if `b` is pressed
                 if (b) {
                     currentMode = Mode.NORMAL_CONTROL;
@@ -248,7 +248,7 @@ public class AlignToPoint {
                 messages.add(Adresses.TRANSFER, Instructions.SET_TRANSFER_ON);
             }
         }
-        double[] position = {poseEstimate.getX(), poseEstimate.getY()};
+        double[] position = {poseEstimate.getX(), poseEstimate.getY(), currentTarget[0], currentTarget[1]};
         messages.add(Adresses.SHOOTER, Instructions.RECIEVE_POSITION, position);
 
         return messages;

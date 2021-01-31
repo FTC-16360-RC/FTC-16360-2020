@@ -48,10 +48,10 @@ public class Transfer {
                 transfer.setPower(0);
                 break;
             case NORMAL: //intake
-                transfer.setPower(0.6);
+                transfer.setPower(1);
                 break;
             case REVERSE: //outtake
-                transfer.setPower(-0.6);
+                transfer.setPower(-1);
                 break;
         }
     }

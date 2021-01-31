@@ -44,6 +44,8 @@ public class Shooter {
 
     private double targetVelocity;
 
+    private double flapPos = 0.6;
+
     public Shooter(HardwareMap hardwaremap) {
         shooter1 = hardwaremap.get(DcMotorEx.class, "shooter1");
         shooter2 = hardwaremap.get(DcMotorEx.class, "shooter2");
@@ -61,7 +63,7 @@ public class Shooter {
         shooter2.setPower(0);
         mode = Mode.IDLE;
 
-        setTargetVelocity(4000);
+        setTargetVelocity(5000);
     }
 
     public Mode getMode() {
@@ -81,7 +83,7 @@ public class Shooter {
     }
 
     public void shoot() {
-        if(feederState == FeederState.RETRACTED) {
+        if(feederState == FeederState.RETRACTED && shooter1.getPower() != 0) {
             feeder.setPosition(feederExtendedPosition);
             startTime = currentRuntime;
             feederState = FeederState.PUSHING;
@@ -93,8 +95,22 @@ public class Shooter {
         feederState = FeederState.RETRACTED;
     }
 
-    public void setServoPos(double servoPos) {
-        flap.setPosition(servoPos);
+    //flap
+    public void setFlapPos(double flapPos) {
+        this.flapPos = flapPos;
+    }
+
+    public void toggleFlap(Boolean enabled) {
+        if (enabled) {
+            flap.setPosition(flapPos);
+        } else {
+            flap.setPosition(0.51);
+        }
+    }
+
+    public void updateFlapPos(double[] position) {
+        //position [0,1] are the robot's coords, [2,3] are the target coords
+        double distance = Math.sqrt(Math.pow(position[0] - position[2], 2) + Math.pow(position[1] - position[3], 2));
     }
 
     public void setMode(Mode mode) {
@@ -152,8 +168,11 @@ public class Shooter {
                     shoot();
                     break;
                 case SET_FLAP_POSITION:
-                    setServoPos(i.b_dbl);
-
+                    setFlapPos(i.b_dbl);
+                    break;
+                case RECIEVE_POSITION:
+                    updateFlapPos(i.b_arr);
+                    break;
                 default:
                     break;
             }

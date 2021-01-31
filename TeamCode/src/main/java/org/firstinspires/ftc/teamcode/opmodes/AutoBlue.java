@@ -9,10 +9,13 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.drive.opmode.Intake;
 import org.firstinspires.ftc.teamcode.drive.opmode.Shooter;
 import org.firstinspires.ftc.teamcode.lib.Globals;
 import org.firstinspires.ftc.teamcode.lib.PoseStorage;
 import org.firstinspires.ftc.teamcode.lib.Targets;
+import org.firstinspires.ftc.teamcode.lib.Vision;
+import org.opencv.core.Mat;
 
 @Autonomous(group = "opmodes")
 public class AutoBlue extends LinearOpMode {
@@ -35,10 +38,18 @@ public class AutoBlue extends LinearOpMode {
         TRAJECTORY_5,   // go to line
         IDLE,           // Our bot will enter the IDLE state when done
         SHOOT_1,        // shoot the first ring
-        WAIT_7,         // wait to shoot the second ring
+        WAIT_7,         // wait to shoot
         SHOOT_2,        // shoot the second ring
-        WAIT_8,         // wait to shoot the third ring
-        SHOOT_3         // shoot the third ring
+        SHOOT_3,        // shoot the third ring
+        TRAJECTORY_6,   // go to the point to shoot at the high goal
+        TRAJECTORY_7,   // take in the last ring
+        WAIT_8_1,       // wait to shoot
+        WAIT_8_4,       // wait to shoot
+        SHOOT_4,        // shoot the forth ring
+        SHOOT_5,        // shoot the fifth ring
+        SHOOT_6,        // shoot the sixth ring
+        TRAJECTORY_9,   // go to shoot 4,5,6
+        SHOOT_7,        // shoot the forth ring of the staple
     }
 
     // We define the current state we're on
@@ -56,6 +67,10 @@ public class AutoBlue extends LinearOpMode {
         // Initialize the shooter
         Shooter shooter = new Shooter(hardwareMap);
 
+        Vision vision = new Vision(hardwareMap);
+
+        Intake intake = new Intake(hardwareMap);
+
         // Initialize SampleMecanumDrive
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
@@ -72,8 +87,10 @@ public class AutoBlue extends LinearOpMode {
 
         // trajectory moves to the spot to shoot at the high goal
         Trajectory trajectory6 = drive.trajectoryBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(0, 35, Math.toRadians(0+ Globals.headingError)))
+                .splineToLinearHeading(new Pose2d(-15, 19), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(0, 35), Math.toRadians(330))
                 .build();
+
 
         // Time for first shot to be fired
         double waitTime1 = 0.4;
@@ -138,39 +155,89 @@ public class AutoBlue extends LinearOpMode {
         ElapsedTime waitTimer4 = new ElapsedTime();
 
         // Trajectory to pick up the second wobble goal for 0 rings
-        Trajectory trajectory3_0 = drive.trajectoryBuilder(trajectory2_0.end())
-                .splineTo(new Vector2d(-36, 37), Math.toRadians(0))
-                .splineTo(new Vector2d(-36, 47.5), Math.toRadians(0))
+        Trajectory trajectory3_0_0 = drive.trajectoryBuilder(trajectory2_0.end())
+                .lineToLinearHeading(new Pose2d(-23, 55, Math.toRadians(0)))
+                .build();
+        Trajectory trajectory3_0_1 = drive.trajectoryBuilder(trajectory3_0_0.end())
+                .lineTo(new Vector2d(-38, 40))
                 .build();
 
         // Trajectory to pick up the second wobble goal for 1 ring
-        Trajectory trajectory3_1 = drive.trajectoryBuilder(trajectory2_1.end())
-                .splineTo(new Vector2d(-36, 37), Math.toRadians(0))
-                .splineTo(new Vector2d(-36, 47.5), Math.toRadians(0))
+        Trajectory trajectory3_1_0 = drive.trajectoryBuilder(trajectory2_1.end())
+                .lineToLinearHeading(new Pose2d(-23, 55, Math.toRadians(0)))
+                .build();
+        Trajectory trajectory3_1_1 = drive.trajectoryBuilder(trajectory3_1_0.end())
+                .lineTo(new Vector2d(-38, 40))
                 .build();
 
         // Trajectory to pick up the second wobble goal for 4 rings
-        Trajectory trajectory3_4 = drive.trajectoryBuilder(trajectory2_4.end())
-                .splineTo(new Vector2d(-36, 37), Math.toRadians(0))
-                .splineTo(new Vector2d(-36, 47.5), Math.toRadians(0))
+        Trajectory trajectory3_4_0 = drive.trajectoryBuilder(trajectory2_4.end())
+                .lineToLinearHeading(new Pose2d(-23, 55, Math.toRadians(0)))
                 .build();
+        Trajectory trajectory3_4_1 = drive.trajectoryBuilder(trajectory3_4_0.end())
+                .lineTo(new Vector2d(-38, 40))
+                .build();
+
+        // we go to take in the ring if there is only one
+        Trajectory trajectory7_1_0 = drive.trajectoryBuilder(trajectory3_1_1.end())
+                .lineToLinearHeading(new Pose2d(-36, 34, Math.toRadians(0)))
+                .build();
+        Trajectory trajectory7_1_1 = drive.trajectoryBuilder(trajectory7_1_0.end())
+                .lineTo(new Vector2d(0, 35))
+                .build();
+
+        // we go to take in 3 of four rings
+        Trajectory trajectory7_4_0 = drive.trajectoryBuilder(trajectory3_4_1.end())
+                .lineToLinearHeading(new Pose2d(-37.5, 25.5, Math.toRadians(0)))
+                .build();
+        Trajectory trajectory7_4_1 = drive.trajectoryBuilder(trajectory7_4_0.end())
+                .lineTo(new Vector2d(-24, 35))
+                .build();
+
+        // time to shoot
+        double waitTime11 = 0.4;
+        ElapsedTime waitTimer11 = new ElapsedTime();
+
+        // time to shoot
+        double waitTime12 = 0.4;
+        ElapsedTime waitTimer12 = new ElapsedTime();
+
+        // time to shoot
+        double waitTime13 = 0.4;
+        ElapsedTime waitTimer13 = new ElapsedTime();
 
         // Time for wobble goal to be picked up
         double waitTime5 = 1;
         ElapsedTime waitTimer5 = new ElapsedTime();
 
+        // we take in the last ring and go to the point to shoot into the high goal
+        Trajectory trajectory8_0 = drive.trajectoryBuilder(trajectory7_4_1.end())
+                .lineToLinearHeading(new Pose2d(-20, 34, Math.toRadians(0)))
+                .build();
+        Trajectory trajectory8_1 = drive.trajectoryBuilder(trajectory8_0.end())
+                .lineTo(new Vector2d(0, 35))
+                .build();
+
+        // time to shoot
+        double waitTime14 = 0.4;
+        ElapsedTime waitTimer14 = new ElapsedTime();
+
+        // time to shoot
+        double waitTime15 = 0.4;
+        ElapsedTime waitTimer15 = new ElapsedTime();
+
         // Trajectory to deposit second wobble goal with 0 rings
-        Trajectory trajectory4_0 = drive.trajectoryBuilder(trajectory3_0.end())
+        Trajectory trajectory4_0 = drive.trajectoryBuilder(trajectory3_0_1.end())
                 .lineToLinearHeading(new Pose2d(0, 38, Math.toRadians(180)))
                 .build();
 
         // Trajectory to deposit second wobble goal with 1 ring
-        Trajectory trajectory4_1 = drive.trajectoryBuilder(trajectory3_1.end())
+        Trajectory trajectory4_1 = drive.trajectoryBuilder(trajectory7_1_1.end())
                 .lineToLinearHeading(new Pose2d(23.5, 15, Math.toRadians(180)))
                 .build();
 
         // Trajectory to deposit second wobble goal with 4 rings
-        Trajectory trajectory4_4 = drive.trajectoryBuilder(trajectory3_4.end())
+        Trajectory trajectory4_4 = drive.trajectoryBuilder(trajectory7_4_1.end())
                 .lineToLinearHeading(new Pose2d(47, 38, Math.toRadians(180)))
                 .build();
 
@@ -180,18 +247,21 @@ public class AutoBlue extends LinearOpMode {
 
         // Trajectory to the line with 0 rings
         Trajectory trajectory5_0 = drive.trajectoryBuilder(trajectory4_0.end())
-                .lineToLinearHeading(new Pose2d(0, 0, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(10, 0, Math.toRadians(0)))
                 .build();
 
         // Trajectory to the line with 1 ring
         Trajectory trajectory5_1 = drive.trajectoryBuilder(trajectory4_1.end())
-                .lineToLinearHeading(new Pose2d(0, 0, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(10, 0, Math.toRadians(0)))
                 .build();
 
         // Trajectory to the line with 4 rings
         Trajectory trajectory5_4 = drive.trajectoryBuilder(trajectory4_4.end())
-                .lineToLinearHeading(new Pose2d(0, 0, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(10, 0, Math.toRadians(0)))
                 .build();
+
+
+
 
         waitForStart();
 
@@ -201,11 +271,13 @@ public class AutoBlue extends LinearOpMode {
         // Then have it follow that trajectory
         // Make sure we're using the async version of the commands
         // Otherwise it will be blocking and pause the program here until the trajectory finishes
-        currentState = State.SHOOT_1;
+        currentState = State.WAIT_7;
+        sleep(100);
+        rings = vision.getRingAmount();
         //drive.followTrajectoryAsync(trajectory1);
         drive.followTrajectoryAsync(trajectory6);
         //shooter.setTargetVolicty(Globals.powerShotRPM);
-        shooter.setFlapPosition(0.58);
+        shooter.setFlapPosition(0.62);
         shooter.setTargetVolicty(Globals.standardRPM);
         shooter.setMode(Shooter.Mode.SHOOTING);
 
@@ -214,95 +286,47 @@ public class AutoBlue extends LinearOpMode {
 
             // We define the flow of the state machine through this switch statement
             switch (currentState) {
-                case SHOOT_1:
+                case WAIT_7:
                     if (!drive.isBusy()) {
-                        shooter.shoot();
-                        currentState = State.SHOOT_2;
+                        currentState = State.SHOOT_1;
                         waitTimer7.reset();
-                        /*shooter.update(getRuntime());
-                        if (waitTimer7.seconds() >= waitTime7) {
-                            currentState = State.SHOOT_2;
-                            waitTimer8.reset();
-                        }
-
-                         */
                     }
                     break;
-                /*case WAIT_7:
+                    // shoot the first ring into the high goal
+                case SHOOT_1:
                     shooter.update(getRuntime());
                     if (waitTimer7.seconds() >= waitTime7) {
+                        shooter.shoot();
                         currentState = State.SHOOT_2;
                         waitTimer8.reset();
                     }
                     break;
-                 */
+                    // shoot the second ring into the high goal
                 case SHOOT_2:
                     shooter.update(getRuntime());
-                    if (waitTimer7.seconds() >= waitTime7) {
+                    if (waitTimer8.seconds() >= waitTime8) {
                         shooter.shoot();
-                        currentState = State.WAIT_8;
+                        currentState = State.SHOOT_3;
                         waitTimer9.reset();
                     }
                     break;
-                case WAIT_8:
-                    if (waitTimer9.seconds() >= waitTime9) {
-                        shooter.update(getRuntime());
-                        currentState = State.SHOOT_3;
-                        waitTimer10.reset();
-                    }
-                    break;
+                    // shoot the third ring into the high goal
                 case SHOOT_3:
-                    if (waitTimer10.seconds() >= waitTime10) {
+                    shooter.update(getRuntime());
+                    if (waitTimer9.seconds() >= waitTime9) {
                         shooter.shoot();
                         currentState = State.WAIT_3;
                         waitTimer3.reset();
                     }
-                    break;
 
-                /*case TRAJECTORY_1:
-                    if (!drive.isBusy()) {
-                        shooter.shoot();
-                        currentState = State.WAIT_1;
-                        waitTimer1.reset();
-                    }
                     break;
-                case WAIT_1:
-                    // We update our shooter to reset the feeder
-                    shooter.update(getRuntime());
-                    if (waitTimer1.seconds() >= waitTime1) {
-                        currentState = State.TURN_1;
-                        drive.turnAsync(turnAngle1);
-                    }
-                    break;
-                case TURN_1:
-                    if (!drive.isBusy()) {
-                        shooter.shoot();
-                        currentState = State.WAIT_2;
-                        waitTimer2.reset();
-                    }
-                    break;
-                case WAIT_2:
-                    // We update our shooter to reset the feeder
-                    shooter.update(getRuntime());
-                    if (waitTimer2.seconds() >= waitTime2) {
-                        currentState = State.TURN_2;
-                        drive.turnAsync(turnAngle1);
-                    }
-                    break;
-                case TURN_2:
-                    if (!drive.isBusy()) {
-                        shooter.shoot();
-                        currentState = State.WAIT_3;
-                        waitTimer3.reset();
-                    }
-                    break;
-                 */
                 case WAIT_3:
                     // We update our shooter to reset the feeder
                     shooter.update(getRuntime());
                     if (waitTimer3.seconds() >= waitTime3) {
                         shooter.setMode(Shooter.Mode.IDLE);
                         currentState = State.TRAJECTORY_2;
+                        // we deliver the wobble goal
                         switch(rings) {
                             case 0:
                                 drive.followTrajectoryAsync(trajectory2_0);
@@ -322,28 +346,130 @@ public class AutoBlue extends LinearOpMode {
                         waitTimer4.reset();
                     }
                     break;
+                    //we go back to get the second wobble goal
                 case WAIT_4:
                     if (waitTimer4.seconds() >= waitTime4) {
-                        currentState = State.TRAJECTORY_3;
                         switch(rings) {
                             case 0:
-                                drive.followTrajectoryAsync(trajectory3_0);
+                                drive.followTrajectory(trajectory3_0_0);
+                                drive.followTrajectory(trajectory3_0_1);
+                                waitTimer13.reset();
+                                currentState = State.WAIT_5;
                                 break;
                             case 1:
-                                drive.followTrajectoryAsync(trajectory3_1);
+                                drive.followTrajectory(trajectory3_1_0);
+                                drive.followTrajectoryAsync(trajectory3_1_1);
+                                currentState = State.WAIT_8_1;
                                 break;
                             case 4:
-                                drive.followTrajectoryAsync(trajectory3_4);
+                                drive.followTrajectory(trajectory3_4_0);
+                                drive.followTrajectoryAsync(trajectory3_4_1);
+                                sleep(1000);
+                                currentState = State.WAIT_8_4;
                                 break;
                         }
                     }
                     break;
-                case TRAJECTORY_3:
+                    // we take in the ring, if there is only one
+               case WAIT_8_1:
+                    if (!drive.isBusy()){
+                        //intake.setMode(Intake.Mode.NORMAL);
+                        drive.followTrajectory(trajectory7_1_0);
+                        drive.followTrajectory(trajectory7_1_1);
+                        //intake.setMode(Intake.Mode.IDLE);
+                        shooter.setFlapPosition(0.62);
+                        shooter.setTargetVolicty(Globals.standardRPM);
+                        shooter.setMode(Shooter.Mode.SHOOTING);
+                        currentState = State.TRAJECTORY_6;
+                    }
+                    break;
+                    // we take in three rings if there are four
+                case WAIT_8_4:
                     if (!drive.isBusy()) {
+                        //intake.setMode(Intake.Mode.NORMAL);
+                        drive.followTrajectory(trajectory7_4_0);
+                        drive.followTrajectory(trajectory7_4_1);
+                        //intake.setMode(Intake.Mode.IDLE);
+                        currentState = State.TRAJECTORY_7;
+                        sleep(1000);
+                    }
+                    break;
+                case TRAJECTORY_7:
+                    if (!drive.isBusy()) {
+                        currentState = State.SHOOT_7;
+                        shooter.setFlapPosition(0.62);
+                        shooter.setTargetVolicty(Globals.standardRPM);
+                        shooter.setMode(Shooter.Mode.SHOOTING);
+                        waitTimer14.reset();
+                    }
+                    break;
+                    // we shoot one ring into the hogh goal
+                case SHOOT_7:
+                    shooter.update(getRuntime());
+                    if (waitTimer14.seconds() >= waitTime14) {
+                        shooter.shoot();
+                        currentState = State.TRAJECTORY_9;
+                        waitTimer15.reset();
+                    }
+                    break;
+                    // we take in the last ring
+                case TRAJECTORY_9:
+                    if (waitTimer15.seconds() >= waitTime15) {
+                        //intake.setMode(Intake.Mode.NORMAL);
+                        drive.followTrajectory(trajectory8_0);
+                        drive.followTrajectory(trajectory8_1);
+                        //intake.setMode(Intake.Mode.IDLE);
+                        currentState = State.TRAJECTORY_6;
+                    }
+                    break;
+                case TRAJECTORY_6:
+                    if (!drive.isBusy()) {
+                        currentState = State.SHOOT_4;
+                        waitTimer10.reset();
+                    }
+                    break;
+                    // we shoot the next ring
+                case SHOOT_4:
+                    shooter.update(getRuntime());
+                    if (waitTimer10.seconds() >= waitTime10) {
+                        shooter.shoot();
+                        switch (rings) {
+                            case 1:
+                                currentState = State.TRAJECTORY_3;
+                                waitTimer13.reset();
+                                break;
+                            case 4:
+                                currentState = State.SHOOT_5;
+                                waitTimer11.reset();
+                                break;
+                        }
+                    }
+                    break;
+                    // we shoot the next ring
+                case SHOOT_5:
+                    shooter.update(getRuntime());
+                    if (waitTimer11.seconds() >= waitTime11) {
+                        shooter.shoot();
+                        currentState = State.SHOOT_6;
+                        waitTimer12.reset();
+                    }
+                    break;
+                    // we shoot the last ring
+                case SHOOT_6:
+                    shooter.update(getRuntime());
+                    if (waitTimer12.seconds() >= waitTime12) {
+                        shooter.shoot();
+                        currentState = State.TRAJECTORY_3;
+                        waitTimer13.reset();
+                    }
+                case TRAJECTORY_3:
+                    if (waitTimer13.seconds() >= waitTime13) {
                         currentState = State.WAIT_5;
+                        shooter.setMode(Shooter.Mode.IDLE);
                         waitTimer5.reset();
                     }
                     break;
+                    // we deliver the second wobble goal
                 case WAIT_5:
                     if (waitTimer5.seconds() >= waitTime5) {
                         currentState = State.TRAJECTORY_4;
@@ -366,6 +492,7 @@ public class AutoBlue extends LinearOpMode {
                         waitTimer6.reset();
                     }
                     break;
+                    // we go to the white line
                 case WAIT_6:
                     if (waitTimer6.seconds() >= waitTime6) {
                         currentState = State.TRAJECTORY_5;
@@ -409,6 +536,7 @@ public class AutoBlue extends LinearOpMode {
             telemetry.addData("x", poseEstimate.getX());
             telemetry.addData("y", poseEstimate.getY());
             telemetry.addData("heading", poseEstimate.getHeading());
+            telemetry.addData("rings", rings);
             telemetry.update();
         }
     }

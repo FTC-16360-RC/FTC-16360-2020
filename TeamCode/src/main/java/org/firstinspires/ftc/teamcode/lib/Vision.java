@@ -53,6 +53,6 @@ public class Vision {
             case FOUR:
                 return 4;
         }
-        return 0;
+        return -1;
     }
 }

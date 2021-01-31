@@ -45,7 +45,15 @@ public class Vision {
         });
     }
 
-    public VisionPipeline.RingPosition getRingAmount() {
-        return pipeline.position;
+    public int getRingAmount() {
+        switch(pipeline.position) {
+            case NONE:
+                return 0;
+            case ONE:
+                return 1;
+            case FOUR:
+                return 4;
+        }
+        return 0;
     }
 }

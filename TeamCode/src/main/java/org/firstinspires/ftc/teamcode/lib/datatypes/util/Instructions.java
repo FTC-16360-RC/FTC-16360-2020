@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.lib.datatypes.util;
 public enum Instructions {
     NONE,
     SHOOT_ONE,
-    SHOOT_THREE,
     NEXT_TARGET,
     PREVIOUS_TARGET,
     SET_INTAKE_ON,

@@ -105,7 +105,7 @@ public class Keybindings {
 
         //shooting
         if (gamepad1.right_trigger != 0) {
-            messages.add(Adresses.SHOOTER, Instructions.SHOOT_THREE);
+            messages.add(Adresses.SHOOTER, Instructions.SHOOT_ONE);
         }
 
         //AlignToPoint trimming
@@ -198,7 +198,7 @@ public class Keybindings {
         }
         //Shooting
         if (controller2.getRightTrigger() == Controller.ButtonState.PRESSED) {
-            messages.add(Adresses.SHOOTER, Instructions.SHOOT_THREE);
+            messages.add(Adresses.SHOOTER, Instructions.SHOOT_ONE);
         }
 
         //Transfer on / off

@@ -112,6 +112,14 @@ public class Shooter {
     public void updateFlapPos(double[] position) {
         double distance = Math.sqrt(Math.pow(position[0] - Targets.currentTarget.getX(), 2)
                 + Math.pow(position[1] - Targets.currentTarget.getY(), 2));
+        flapPos = flapPos(distance);
+    }
+
+    private double flapPos(double distance) {
+        double baseFlapValue = 0;
+        double a = 0;
+        double b = 0;
+        return baseFlapValue + a * Math.sqrt(b * distance);
     }
 
     public void setMode(Mode mode) {
@@ -147,6 +155,7 @@ public class Shooter {
                     break;
                 case SET_SHOOTER_IDLE:
                     setMode(Mode.IDLE);
+                    toggleFlap(false);
                     break;
                 case SET_SHOOTER_ON:
                     setMode(Mode.SHOOTING);
@@ -164,9 +173,7 @@ public class Shooter {
                     break;
                 case SHOOT_ONE:
                     shoot();
-                    break;
-                case SHOOT_THREE:   //dumb fucking code
-                    shoot();
+                    toggleFlap(true);
                     break;
                 case SET_FLAP_POSITION:
                     setFlapPos(i.b_dbl);

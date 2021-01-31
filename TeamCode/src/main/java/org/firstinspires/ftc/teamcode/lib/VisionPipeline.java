@@ -1,7 +1,6 @@
-package org.firstinspires.ftc.teamcode.lib.datatypes.util;
+package org.firstinspires.ftc.teamcode.lib;
 
 
-import org.firstinspires.ftc.teamcode.opmodes.EasyOpenCVExample;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;

@@ -34,8 +34,11 @@ public class AutoBlue extends LinearOpMode {
         WAIT_6,         // waiting to deposit second wobble goal
         TRAJECTORY_5,   // go to line
         IDLE,           // Our bot will enter the IDLE state when done
-        TRAJECTORY_6,   // drive to the shooting spot for the high goal
-        WAIT_7          // waiting to shoot
+        SHOOT_1,        // shoot the first ring
+        WAIT_7,         // wait to shoot the second ring
+        SHOOT_2,        // shoot the second ring
+        WAIT_8,         // wait to shoot the third ring
+        SHOOT_3         // shoot the third ring
     }
 
     // We define the current state we're on
@@ -64,12 +67,12 @@ public class AutoBlue extends LinearOpMode {
 
         // first trajectory moves to first power shot
         Trajectory trajectory1 = drive.trajectoryBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(0, 20, Math.toRadians(180+Globals.headingError)))
+                .lineToLinearHeading(new Pose2d(0, 20, Math.toRadians(0+Globals.headingError)))
                 .build();
 
         // trajectory moves to the spot to shoot at the high goal
         Trajectory trajectory6 = drive.trajectoryBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(0, 35, Math.toRadians(180+ Globals.headingError)))
+                .lineToLinearHeading(new Pose2d(0, 35, Math.toRadians(0+ Globals.headingError)))
                 .build();
 
         // Time for first shot to be fired
@@ -79,6 +82,18 @@ public class AutoBlue extends LinearOpMode {
         // Time to shoot at high goal
         double waitTime7 = 0.4;
         ElapsedTime waitTimer7 = new ElapsedTime();
+
+        // Time to wait until second shoot
+        double waitTime8 = 0.4;
+        ElapsedTime waitTimer8 = new ElapsedTime();
+
+        // Time for second shoot
+        double waitTime9 = 0.4;
+        ElapsedTime waitTimer9 = new ElapsedTime();
+
+        // Time until  third shoot
+        double waitTime10 = 0.4;
+        ElapsedTime waitTimer10 = new ElapsedTime();
 
         // Calculate the angle to turn from first to second power shot
         // Obtain the target heading
@@ -186,10 +201,11 @@ public class AutoBlue extends LinearOpMode {
         // Then have it follow that trajectory
         // Make sure we're using the async version of the commands
         // Otherwise it will be blocking and pause the program here until the trajectory finishes
-        currentState = State.TRAJECTORY_6;
+        currentState = State.SHOOT_1;
         //drive.followTrajectoryAsync(trajectory1);
         drive.followTrajectoryAsync(trajectory6);
         //shooter.setTargetVolicty(Globals.powerShotRPM);
+        shooter.setFlapPosition(0.58);
         shooter.setTargetVolicty(Globals.standardRPM);
         shooter.setMode(Shooter.Mode.SHOOTING);
 
@@ -198,22 +214,52 @@ public class AutoBlue extends LinearOpMode {
 
             // We define the flow of the state machine through this switch statement
             switch (currentState) {
-                case TRAJECTORY_6:
-                    sleep(4000);
+                case SHOOT_1:
                     if (!drive.isBusy()) {
                         shooter.shoot();
+                        currentState = State.WAIT_7;
                         waitTimer7.reset();
-                        shooter.update(getRuntime());
+                        /*shooter.update(getRuntime());
                         if (waitTimer7.seconds() >= waitTime7) {
-                            shooter.shoot();
+                            currentState = State.SHOOT_2;
+                            waitTimer8.reset();
                         }
-                        waitTimer7.reset();
-                        shooter.update(getRuntime());
-                        if (waitTimer7.seconds() >= waitTime7) {
-                            shooter.shoot();
-                        }
-                        currentState = State.WAIT_3;
+
+                         */
                     }
+                    break;
+                case WAIT_7:
+                    shooter.update(getRuntime());
+                    if (waitTimer7.seconds() >= waitTime7) {
+                        shooter.setFlapPosition(0.51);
+                        currentState = State.SHOOT_2;
+                        waitTimer8.reset();
+                    }
+                    break;
+
+                case SHOOT_2:
+                    if (waitTimer8.seconds() >= waitTime8) {
+                        shooter.setFlapPosition(0.51);
+                        shooter.shoot();
+                        currentState = State.WAIT_8;
+                        waitTimer9.reset();
+                    }
+                    break;
+                case WAIT_8:
+                    if (waitTimer9.seconds() >= waitTime9) {
+                        shooter.update(getRuntime());
+                        currentState = State.SHOOT_3;
+                        waitTimer10.reset();
+                    }
+                    break;
+                case SHOOT_3:
+                    if (waitTimer10.seconds() >= waitTime10) {
+                        shooter.shoot();
+                        currentState = State.WAIT_3;
+                        waitTimer3.reset();
+                    }
+                    break;
+
                 /*case TRAJECTORY_1:
                     if (!drive.isBusy()) {
                         shooter.shoot();

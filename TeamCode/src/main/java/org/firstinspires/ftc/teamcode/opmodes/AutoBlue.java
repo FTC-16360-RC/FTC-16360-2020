@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.drive.opmode.Intake;
 import org.firstinspires.ftc.teamcode.drive.opmode.Shooter;
+import org.firstinspires.ftc.teamcode.drive.opmode.WobbleGoal;
 import org.firstinspires.ftc.teamcode.lib.Globals;
 import org.firstinspires.ftc.teamcode.lib.PoseStorage;
 import org.firstinspires.ftc.teamcode.lib.Targets;
@@ -66,6 +67,8 @@ public class AutoBlue extends LinearOpMode {
 
         // Initialize the shooter
         Shooter shooter = new Shooter(hardwareMap);
+
+        WobbleGoal wobbleGoal = new WobbleGoal(hardwareMap);
 
         Vision vision = new Vision(hardwareMap);
 
@@ -175,7 +178,7 @@ public class AutoBlue extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(-23, 55, Math.toRadians(0)))
                 .build();
         Trajectory trajectory3_4_1 = drive.trajectoryBuilder(trajectory3_4_0.end())
-                .lineTo(new Vector2d(-42, 44))
+                .lineTo(new Vector2d(-38, 40))
                 .build();
 
         // we go to take in the ring if there is only one
@@ -269,13 +272,15 @@ public class AutoBlue extends LinearOpMode {
 
         if (isStopRequested()) return;
 
+
+
         // Set the current state to TRAJECTORY_1
         // Then have it follow that trajectory
         // Make sure we're using the async version of the commands
         // Otherwise it will be blocking and pause the program here until the trajectory finishes
         currentState = State.WAIT_7;
         sleep(500);
-        rings = 4;
+        rings = 1;
         //rings = vision.getRingAmount();
         //drive.followTrajectoryAsync(trajectory1);
         drive.followTrajectoryAsync(trajectory6);
@@ -283,6 +288,8 @@ public class AutoBlue extends LinearOpMode {
         shooter.setFlapPosition(0.52);
         shooter.setTargetVolicty(Globals.standardRPM);
         shooter.setMode(Shooter.Mode.SHOOTING);
+        wobbleGoal.handStart();
+
 
         while (opModeIsActive() && !isStopRequested()) {
             // The state machine logic
@@ -367,6 +374,7 @@ public class AutoBlue extends LinearOpMode {
                             case 4:
                                 drive.followTrajectory(trajectory3_4_0);
                                 drive.followTrajectoryAsync(trajectory3_4_1);
+                                intake.setMode(Intake.Mode.NORMAL);
                                 sleep(100);
                                 currentState = State.WAIT_8_4;
                                 break;
@@ -389,7 +397,7 @@ public class AutoBlue extends LinearOpMode {
                     // we take in three rings if there are four
                 case WAIT_8_4:
                     if (!drive.isBusy()) {
-                        intake.setMode(Intake.Mode.NORMAL);
+                        //intake.setMode(Intake.Mode.NORMAL);
                         //drive.followTrajectory(trajectory7_4_0);
                         drive.followTrajectory(trajectory7_4_1);
                         intake.setMode(Intake.Mode.IDLE);

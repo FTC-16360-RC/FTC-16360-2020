@@ -38,7 +38,7 @@ public class WobbleGoal {
         mode = Mode.NOTHING;
     }
 
-    double waitTime1 = 10;
+    double waitTime1 = 1;
     ElapsedTime waitTimer1 = new ElapsedTime();
 
     double waitTime2 = 1;
@@ -53,7 +53,7 @@ public class WobbleGoal {
         {
             case NOTHING:
                 arm.setPosition(armStartPosition);
-                mode = Mode.WAIT_1;
+                this.mode = Mode.WAIT_1;
                 waitTimer1.reset();
                 break;
             case WAIT_1:
@@ -63,7 +63,7 @@ public class WobbleGoal {
                 break;
             case HOLDING:
                 arm.setPosition(armStartPosition);
-                mode = Mode.WAIT_2;
+                this.mode = Mode.WAIT_2;
                 waitTimer2.reset();
                 break;
             case WAIT_2:
@@ -73,7 +73,7 @@ public class WobbleGoal {
                 break;
             case LIFTING:
                 hand.setPosition(handHoldingPosition);
-                mode = Mode.WAIT_3;
+                this.mode = Mode.WAIT_3;
                 waitTimer3.reset();
                 break;
             case WAIT_3:

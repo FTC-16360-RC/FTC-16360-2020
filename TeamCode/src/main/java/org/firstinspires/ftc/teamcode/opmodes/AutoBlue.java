@@ -110,15 +110,15 @@ public class AutoBlue extends LinearOpMode {
         ElapsedTime waitTimer7 = new ElapsedTime();
 
         // Time to wait until second shoot
-        double waitTime8 = 0.4;
+        double waitTime8 = 0.8; //0.4
         ElapsedTime waitTimer8 = new ElapsedTime();
 
         // Time for second shoot
-        double waitTime9 = 0.4;
+        double waitTime9 = 0.8; //0.4
         ElapsedTime waitTimer9 = new ElapsedTime();
 
         // Time until  third shoot
-        double waitTime10 = 0.4;
+        double waitTime10 = 0.8; //0.4
         ElapsedTime waitTimer10 = new ElapsedTime();
 
         // Calculate the angle to turn from first to second power shot
@@ -156,7 +156,7 @@ public class AutoBlue extends LinearOpMode {
 
         // Trajectory to deposit first wobble goal with 4 rings
         Trajectory trajectory2_4 = drive.trajectoryBuilder(newLastPose)
-                .lineToLinearHeading(new Pose2d(47, 38, Math.toRadians(270)))
+                .lineToLinearHeading(new Pose2d(50, 38, Math.toRadians(270)))
                 .build();
 
         // Time for wobble goal to be dropped
@@ -184,7 +184,7 @@ public class AutoBlue extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(-23, 55, Math.toRadians(0)))
                 .build();
         Trajectory trajectory3_4_1 = drive.trajectoryBuilder(trajectory3_4_0.end())
-                .lineTo(new Vector2d(-38, 40))
+                .lineTo(new Vector2d(-38, 44))
                 .build();
 
         // we go to take in the ring if there is only one
@@ -202,15 +202,16 @@ public class AutoBlue extends LinearOpMode {
                 .build();
          */
         Trajectory trajectory7_4_1 = drive.trajectoryBuilder(trajectory3_4_1.end())
-                .lineTo(new Vector2d(-24, 35))
+                .lineTo(new Vector2d(-32, 33))
                 .build();
 
+
         // time to shoot
-        double waitTime11 = 0.4;
+        double waitTime11 = 0.8; // 0.4
         ElapsedTime waitTimer11 = new ElapsedTime();
 
         // time to shoot
-        double waitTime12 = 0.4;
+        double waitTime12 = 0.8; // 0.4
         ElapsedTime waitTimer12 = new ElapsedTime();
 
         // time to shoot
@@ -242,7 +243,7 @@ public class AutoBlue extends LinearOpMode {
                 .build();
 
         // time to shoot
-        double waitTime14 = 0.4;
+        double waitTime14 = 0.6;
         ElapsedTime waitTimer14 = new ElapsedTime();
 
         // time to shoot
@@ -298,12 +299,12 @@ public class AutoBlue extends LinearOpMode {
         // Otherwise it will be blocking and pause the program here until the trajectory finishes
         currentState = State.WAIT_7;
         sleep(500);
-        rings = 1;
+        rings = 4;
         //rings = vision.getRingAmount();
         //drive.followTrajectoryAsync(trajectory1);
         drive.followTrajectoryAsync(trajectory6);
         //shooter.setTargetVolicty(Globals.powerShotRPM);
-        shooter.setFlapPosition(0.35);
+        shooter.setFlapPosition(0.175);
         shooter.setTargetVolicty(Globals.standardRPM);
         shooter.setMode(Shooter.Mode.SHOOTING);
 
@@ -415,22 +416,19 @@ public class AutoBlue extends LinearOpMode {
                     break;
                 case WAIT_9:
                     if (waitTimer16.seconds() >= waitTime16) {
-                        shooter.setFlapPosition(0.4);
+                        shooter.setFlapPosition(0.175);
+                        shooter.setMode(Shooter.Mode.SHOOTING);
                         shooter.setTargetVolicty(Globals.standardRPM);
                         intake.setMode(Intake.Mode.IDLE);
                         transfer.setMode(Transfer.Mode.IDLE);
-                        shooter.setFlapPosition(0.52);
-                        shooter.setTargetVolicty(Globals.standardRPM);
-                        shooter.setMode(Shooter.Mode.SHOOTING);
                         currentState = State.TRAJECTORY_6;
                     }
                     break;
-                        // we take in three rings if there are four
+                        // we take in two rings if there are four
                 case WAIT_8_4:
                     if (!drive.isBusy()) {
                         transfer.setMode(Transfer.Mode.NORMAL);
                         intake.setMode(Intake.Mode.NORMAL);
-                        //drive.followTrajectory(trajectory7_4_0);
                         drive.followTrajectoryAsync(trajectory7_4_1);
                         currentState = State.WAIT_10;
                         waitTimer17.reset();
@@ -447,7 +445,7 @@ public class AutoBlue extends LinearOpMode {
                         case TRAJECTORY_7:
                     if (!drive.isBusy()) {
                         currentState = State.SHOOT_7;
-                        shooter.setFlapPosition(0.52);
+                        shooter.setFlapPosition(0.35);
                         shooter.setTargetVolicty(Globals.standardRPM);
                         shooter.setMode(Shooter.Mode.SHOOTING);
                         waitTimer14.reset();
@@ -477,6 +475,7 @@ public class AutoBlue extends LinearOpMode {
                     if (waitTimer18.seconds() >= waitTime18) {
                         intake.setMode(Intake.Mode.IDLE);
                         transfer.setMode(Transfer.Mode.IDLE);
+                        shooter.setFlapPosition(0.175);
                         currentState = State.TRAJECTORY_6;
                     }
                         case TRAJECTORY_6:
@@ -519,14 +518,12 @@ public class AutoBlue extends LinearOpMode {
                         currentState = State.WAIT_5;
                         waitTimer13.reset();
                     }
-                /*case TRAJECTORY_3:
+                case TRAJECTORY_3:
                     if (waitTimer13.seconds() >= waitTime13) {
+                        shooter.setMode(Shooter.Mode.IDLE);
                         currentState = State.WAIT_5;
                         waitTimer5.reset();
                     }
-
-                 */
-
                     break;
                     // we deliver the second wobble goal
                 case WAIT_5:

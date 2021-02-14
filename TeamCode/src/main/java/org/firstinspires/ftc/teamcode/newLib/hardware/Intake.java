@@ -1,14 +1,11 @@
-package org.firstinspires.ftc.teamcode.lib.hardware;
+package org.firstinspires.ftc.teamcode.newLib.hardware;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.lib.datatypes.TUtil;
-import org.firstinspires.ftc.teamcode.lib.datatypes.UTuple;
-import org.firstinspires.ftc.teamcode.lib.datatypes.util.Adresses;
-import org.firstinspires.ftc.teamcode.lib.datatypes.util.Instructions;
+import org.firstinspires.ftc.teamcode.newLib.Comms;
 
 @Config
 public class Intake {
@@ -25,9 +22,9 @@ public class Intake {
 
     private Mode mode;
 
-    public Intake(HardwareMap hardwaremap) {
-        servo = hardwaremap.get(Servo.class, "intake");
-        intake = hardwaremap.get(DcMotor.class, "intake");
+    public Intake() {
+        servo = Comms.hardwareMap.get(Servo.class, "intake");
+        intake = Comms.hardwareMap.get(DcMotor.class, "intake");
         intake.setDirection(DcMotor.Direction.REVERSE);
         intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
@@ -58,26 +55,7 @@ public class Intake {
                 break;
         }
     }
-    public TUtil update (TUtil instructions) {
-        TUtil messages = new TUtil();
-        for (UTuple i : instructions.list) {
-            switch (i.a_ins) {
-                case LOWER_INTAKE_DEBUG:
-                    lowerIntake();
-                    break;
-                case SET_INTAKE_IDLE:
-                    setMode(Mode.IDLE);
-                    break;
-                case SET_INTAKE_ON:
-                    setMode(Mode.NORMAL);
-                    break;
-                case SET_INTAKE_REVERSE:
-                    setMode(Mode.REVERSE);
-                    break;
-                default:
-                    break;
-            }
-        }
-        return messages;
+    public void update () {
+
     }
 }

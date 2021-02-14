@@ -225,6 +225,7 @@ public class AlignToPoint {
         FtcDashboard.getInstance().sendTelemetryPacket(packet);
 
         // Print pose to telemetry
+        telemetry.addData("current Mode : ", currentMode.toString());
         telemetry.addData("current Target : ", Targets.currentTargetName);
         telemetry.addData("x", poseEstimate.getX());
         telemetry.addData("y", poseEstimate.getY());

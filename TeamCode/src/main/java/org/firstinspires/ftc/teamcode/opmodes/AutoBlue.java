@@ -16,6 +16,7 @@ import org.firstinspires.ftc.teamcode.lib.Globals;
 import org.firstinspires.ftc.teamcode.lib.PoseStorage;
 import org.firstinspires.ftc.teamcode.lib.Targets;
 import org.firstinspires.ftc.teamcode.lib.Vision;
+import org.firstinspires.ftc.teamcode.drive.opmode.Transfer;
 import org.opencv.core.Mat;
 
 @Autonomous(group = "opmodes")
@@ -51,6 +52,9 @@ public class AutoBlue extends LinearOpMode {
         SHOOT_6,        // shoot the sixth ring
         TRAJECTORY_9,   // go to shoot 4,5,6
         SHOOT_7,        // shoot the forth ring of the staple
+        WAIT_9,         // wait until the ring is through the transfer
+        WAIT_10,        // wait until the ring is through the transfer
+        WAIT_11         // wait until the ring is through the transfer
     }
 
     // We define the current state we're on
@@ -67,6 +71,8 @@ public class AutoBlue extends LinearOpMode {
 
         // Initialize the shooter
         Shooter shooter = new Shooter(hardwareMap);
+
+        Transfer transfer = new Transfer(hardwareMap);
 
         WobbleGoal wobbleGoal = new WobbleGoal(hardwareMap);
 
@@ -211,6 +217,18 @@ public class AutoBlue extends LinearOpMode {
         double waitTime13 = 0.4;
         ElapsedTime waitTimer13 = new ElapsedTime();
 
+        // time to transfer the ring
+        double waitTime16 = 10;
+        ElapsedTime waitTimer16 = new ElapsedTime();
+
+        // time to transfer the ring
+        double waitTime17 = 2.6;
+        ElapsedTime waitTimer17 = new ElapsedTime();
+
+        // time to transfer the ring
+        double waitTime18 = 2.6;
+        ElapsedTime waitTimer18 = new ElapsedTime();
+
         // Time for wobble goal to be picked up
         double waitTime5 = 1;
         ElapsedTime waitTimer5 = new ElapsedTime();
@@ -288,8 +306,6 @@ public class AutoBlue extends LinearOpMode {
         shooter.setFlapPosition(0.52);
         shooter.setTargetVolicty(Globals.standardRPM);
         shooter.setMode(Shooter.Mode.SHOOTING);
-        wobbleGoal.handStart();
-
 
         while (opModeIsActive() && !isStopRequested()) {
             // The state machine logic
@@ -352,6 +368,7 @@ public class AutoBlue extends LinearOpMode {
                     break;
                 case TRAJECTORY_2:
                     if (!drive.isBusy()) {
+                        wobbleGoal.setMode(WobbleGoal.Mode.NOTHING);
                         currentState = State.WAIT_4;
                         waitTimer4.reset();
                     }
@@ -364,16 +381,20 @@ public class AutoBlue extends LinearOpMode {
                                 drive.followTrajectory(trajectory3_0_0);
                                 drive.followTrajectory(trajectory3_0_1);
                                 waitTimer13.reset();
+                                wobbleGoal.setMode(WobbleGoal.Mode.LIFTING);
                                 currentState = State.WAIT_5;
                                 break;
                             case 1:
                                 drive.followTrajectory(trajectory3_1_0);
                                 drive.followTrajectoryAsync(trajectory3_1_1);
+                                wobbleGoal.setMode(WobbleGoal.Mode.LIFTING);
                                 currentState = State.WAIT_8_1;
                                 break;
                             case 4:
                                 drive.followTrajectory(trajectory3_4_0);
-                                drive.followTrajectoryAsync(trajectory3_4_1);
+                                drive.followTrajectory(trajectory3_4_1);
+                                wobbleGoal.setMode(WobbleGoal.Mode.LIFTING);
+                                transfer.setMode(Transfer.Mode.NORMAL);
                                 intake.setMode(Intake.Mode.NORMAL);
                                 sleep(100);
                                 currentState = State.WAIT_8_4;
@@ -385,27 +406,43 @@ public class AutoBlue extends LinearOpMode {
                case WAIT_8_1:
                     if (!drive.isBusy()){
                         intake.setMode(Intake.Mode.NORMAL);
+                        //transfer.setMode(Transfer.Mode.NORMAL);
                         //drive.followTrajectory(trajectory7_1_0);
-                        drive.followTrajectory(trajectory7_1_1);
+                        drive.followTrajectoryAsync(trajectory7_1_1);
+                        currentState = State.WAIT_9;
+                        waitTimer17.reset();
+                    }
+                    break;
+                case WAIT_9:
+                    if (waitTimer16.seconds() >= waitTime16) {
                         intake.setMode(Intake.Mode.IDLE);
+                        transfer.setMode(Transfer.Mode.IDLE);
                         shooter.setFlapPosition(0.52);
                         shooter.setTargetVolicty(Globals.standardRPM);
                         shooter.setMode(Shooter.Mode.SHOOTING);
                         currentState = State.TRAJECTORY_6;
                     }
                     break;
-                    // we take in three rings if there are four
+                        // we take in three rings if there are four
                 case WAIT_8_4:
                     if (!drive.isBusy()) {
-                        //intake.setMode(Intake.Mode.NORMAL);
+                        transfer.setMode(Transfer.Mode.NORMAL);
+                        intake.setMode(Intake.Mode.NORMAL);
                         //drive.followTrajectory(trajectory7_4_0);
-                        drive.followTrajectory(trajectory7_4_1);
+                        drive.followTrajectoryAsync(trajectory7_4_1);
+                        currentState = State.WAIT_10;
+                        waitTimer17.reset();
+
+                    }
+                    break;
+                case WAIT_10:
+                    if (waitTimer17.seconds() >= waitTime17) {
                         intake.setMode(Intake.Mode.IDLE);
+                        transfer.setMode(Transfer.Mode.IDLE);
                         currentState = State.TRAJECTORY_7;
                         sleep(100);
                     }
-                    break;
-                case TRAJECTORY_7:
+                        case TRAJECTORY_7:
                     if (!drive.isBusy()) {
                         currentState = State.SHOOT_7;
                         shooter.setFlapPosition(0.52);
@@ -426,14 +463,21 @@ public class AutoBlue extends LinearOpMode {
                     // we take in the last ring
                 case TRAJECTORY_9:
                     if (waitTimer15.seconds() >= waitTime15) {
+                        transfer.setMode(Transfer.Mode.NORMAL);
                         intake.setMode(Intake.Mode.NORMAL);
                         drive.followTrajectory(trajectory8_0);
-                        drive.followTrajectory(trajectory8_1);
-                        intake.setMode(Intake.Mode.IDLE);
-                        currentState = State.TRAJECTORY_6;
+                        drive.followTrajectoryAsync(trajectory8_1);
+                        currentState = State.WAIT_11;
+                        waitTimer18.reset();
                     }
                     break;
-                case TRAJECTORY_6:
+                case WAIT_11:
+                    if (waitTimer18.seconds() >= waitTime18) {
+                        intake.setMode(Intake.Mode.IDLE);
+                        transfer.setMode(Transfer.Mode.IDLE);
+                        currentState = State.TRAJECTORY_6;
+                    }
+                        case TRAJECTORY_6:
                     if (!drive.isBusy()) {
                         currentState = State.SHOOT_4;
                         waitTimer10.reset();
@@ -480,6 +524,7 @@ public class AutoBlue extends LinearOpMode {
                     }
 
                  */
+
                     break;
                     // we deliver the second wobble goal
                 case WAIT_5:

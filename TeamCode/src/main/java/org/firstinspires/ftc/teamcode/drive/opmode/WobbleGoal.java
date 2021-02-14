@@ -38,7 +38,7 @@ public class WobbleGoal {
         mode = Mode.NOTHING;
     }
 
-    double waitTime1 = 1;
+    double waitTime1 = 10;
     ElapsedTime waitTimer1 = new ElapsedTime();
 
     double waitTime2 = 1;

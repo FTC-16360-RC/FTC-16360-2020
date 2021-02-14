@@ -39,8 +39,8 @@ public class Shooter {
     private final double feederStartPosition = 0.33;
     private final double feederExtendedPosition = 0.5;
 
-    private final double flapMinPosition = 0.59;
-    private final double flapMaxPosition = 0.51;
+    private final double flapMinPosition = 0.49;
+    private final double flapMaxPosition = 0.35;
 
     private double targetVelocity;
 

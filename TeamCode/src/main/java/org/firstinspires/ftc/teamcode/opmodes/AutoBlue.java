@@ -151,7 +151,7 @@ public class AutoBlue extends LinearOpMode {
 
         // Trajectory to deposit first wobble goal with 1 ring
         Trajectory trajectory2_1 = drive.trajectoryBuilder(newLastPose)
-                .lineToLinearHeading(new Pose2d(23.5, 23.5, Math.toRadians(270)))
+                .lineToLinearHeading(new Pose2d(25, 23.5, Math.toRadians(270)))
                 .build();
 
         // Trajectory to deposit first wobble goal with 4 rings
@@ -218,15 +218,15 @@ public class AutoBlue extends LinearOpMode {
         ElapsedTime waitTimer13 = new ElapsedTime();
 
         // time to transfer the ring
-        double waitTime16 = 10;
+        double waitTime16 = 2;
         ElapsedTime waitTimer16 = new ElapsedTime();
 
         // time to transfer the ring
-        double waitTime17 = 2.6;
+        double waitTime17 = 2;
         ElapsedTime waitTimer17 = new ElapsedTime();
 
         // time to transfer the ring
-        double waitTime18 = 2.6;
+        double waitTime18 = 2;
         ElapsedTime waitTimer18 = new ElapsedTime();
 
         // Time for wobble goal to be picked up
@@ -303,7 +303,7 @@ public class AutoBlue extends LinearOpMode {
         //drive.followTrajectoryAsync(trajectory1);
         drive.followTrajectoryAsync(trajectory6);
         //shooter.setTargetVolicty(Globals.powerShotRPM);
-        shooter.setFlapPosition(0.52);
+        shooter.setFlapPosition(0.35);
         shooter.setTargetVolicty(Globals.standardRPM);
         shooter.setMode(Shooter.Mode.SHOOTING);
 
@@ -406,15 +406,17 @@ public class AutoBlue extends LinearOpMode {
                case WAIT_8_1:
                     if (!drive.isBusy()){
                         intake.setMode(Intake.Mode.NORMAL);
-                        //transfer.setMode(Transfer.Mode.NORMAL);
+                        transfer.setMode(Transfer.Mode.NORMAL);
                         //drive.followTrajectory(trajectory7_1_0);
                         drive.followTrajectoryAsync(trajectory7_1_1);
                         currentState = State.WAIT_9;
-                        waitTimer17.reset();
+                        waitTimer16.reset();
                     }
                     break;
                 case WAIT_9:
                     if (waitTimer16.seconds() >= waitTime16) {
+                        shooter.setFlapPosition(0.4);
+                        shooter.setTargetVolicty(Globals.standardRPM);
                         intake.setMode(Intake.Mode.IDLE);
                         transfer.setMode(Transfer.Mode.IDLE);
                         shooter.setFlapPosition(0.52);

@@ -97,35 +97,35 @@ public class Tele extends LinearOpMode {
 
         while (opModeIsActive() && !isStopRequested()) {
             double currentRuntime = getRuntime();
-            if(gamepad2.a) {
+            if(gamepad1.a) { //2
                 intake.setMode(Intake.Mode.NORMAL);
                 transfer.setMode(Transfer.Mode.NORMAL);
             }
-            if(gamepad2.b) {
+            if(gamepad1.b) { //2
                 intake.setMode(Intake.Mode.IDLE);
                 transfer.setMode(Transfer.Mode.IDLE);
             }
-            if(gamepad2.x) {
+            if(gamepad1.x) { //2
                 intake.setMode(Intake.Mode.REVERSE);
                 transfer.setMode(Transfer.Mode.REVERSE);
             }
-            if(gamepad2.right_bumper || gamepad1.a) {
+            if(/*gamepad2.right_bumper ||*/ gamepad1.a) {
                 shooter.setFlapPosition(flapPosition);
                 shooter.setTargetVolicty(5000);
                 shooter.setMode(Shooter.Mode.SHOOTING);
                 intake.setMode(Intake.Mode.IDLE);
             }
-            if(gamepad2.left_bumper || gamepad1.b) {
+            if(/*gamepad2.left_bumper ||*/ gamepad1.b) {
                 shooter.setFlapPosition(0);
                 shooter.setMode(Shooter.Mode.IDLE);
                 intake.setMode(Intake.Mode.NORMAL);
                 transfer.setMode(Transfer.Mode.NORMAL);
             }
             shooter.update(currentRuntime);
-            if(gamepad2.right_trigger != 0) {
+            if(gamepad1.right_trigger != 0) { //2
                 shooter.shoot();
             }
-            if(!gamepad1.dpad_right && !gamepad1.dpad_left && !gamepad2.dpad_up && !gamepad2.dpad_down) {
+            if(!gamepad1.dpad_right && !gamepad1.dpad_left && !gamepad1.dpad_up /*2*/ && !gamepad1.dpad_down) /*2*/{
                 lastState = false;
             }
             if(gamepad1.dpad_right && !lastState) {
@@ -135,7 +135,7 @@ public class Tele extends LinearOpMode {
                 errorY += 5;
                 lastState = true;
             }
-            if (gamepad2.dpad_up && !lastState) {
+            if (gamepad1.dpad_up && !lastState) {//2
                 flapPosition += 0.1;
                 if(flapPosition > 1) {
                     flapPosition = 1;
@@ -143,7 +143,7 @@ public class Tele extends LinearOpMode {
                 shooter.setFlapPosition(flapPosition);
                 lastState = true;
             }
-            if (gamepad2.dpad_down && !lastState) {
+            if (gamepad1.dpad_down && !lastState) { //2
                 flapPosition -= 0.1;
                 if(flapPosition < 0) {
                     flapPosition = 0;

@@ -8,10 +8,20 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import java.util.List;
 
 public class Comms {
+
+    enum Team {
+        RED,
+        BLU
+    }
+
     enum Tasks {
         SHOOT,
         REVERSE_INTAKE,
-        REVERSE_TRANSFER;
+        REVERSE_TRANSFER,
+        TOGGLE_INTAKE,
+        TOGGLE_TRANSFER,
+        RESET_INTAKE,
+        RESET_TRANSFER;
     }
 
     enum DriveMode {
@@ -21,6 +31,7 @@ public class Comms {
         MODIFIED_ROBOT_CENTRIC;
     }
 
+    public static Team team;
     public static DriveMode driveMode;
     public static Gamepad gamepad1;
     public static Gamepad gamepad2;

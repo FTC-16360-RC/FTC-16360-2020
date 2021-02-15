@@ -6,21 +6,16 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.newLib.Comms;
+import org.firstinspires.ftc.teamcode.newLib.Robot;
 
 @Config
 public class Intake {
 
     // Define 3 states. on, off or reverse
-    public enum Mode {
-        NORMAL,
-        IDLE,
-        REVERSE
-    }
-
     private DcMotor intake;
     private Servo servo;
 
-    private Mode mode;
+    private Robot.Mode mode;
 
     public Intake() {
         servo = Comms.hardwareMap.get(Servo.class, "intake");
@@ -29,10 +24,10 @@ public class Intake {
         intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         intake.setPower(0);
-        mode = Mode.IDLE;
+        mode = Robot.Mode.IDLE;
     }
 
-    public Mode getMode() {
+    public Robot.Mode getMode() {
         return this.mode;
     }
 
@@ -40,14 +35,14 @@ public class Intake {
         //servo.setPosition(1);
     }
 
-    public void setMode(Mode mode) {
+    public void setMode(Robot.Mode mode) {
         this.mode = mode;
         switch (this.mode)
         {
             case IDLE: //no power
                 intake.setPower(0);
                 break;
-            case NORMAL: //intake
+            case RUNNING: //intake
                 intake.setPower(1);
                 break;
             case REVERSE: //outtake

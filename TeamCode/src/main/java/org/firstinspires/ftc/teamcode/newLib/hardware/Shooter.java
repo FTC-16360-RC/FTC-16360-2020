@@ -2,20 +2,16 @@ package org.firstinspires.ftc.teamcode.newLib.hardware;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.lib.Targets;
+import org.firstinspires.ftc.teamcode.newLib.Robot;
+import org.firstinspires.ftc.teamcode.newLib.Targets;
 import org.firstinspires.ftc.teamcode.newLib.Comms;
 
 @Config
 public class Shooter {
 
     // Define 3 states. on, off or reverse
-    public enum Mode {
-        SHOOTING,
-        IDLE,
-    }
 
     private enum FeederState {
         PUSHING,
@@ -29,7 +25,7 @@ public class Shooter {
     private Servo feeder;
     private Servo flap;
 
-    private Mode mode;
+    private Robot.Mode mode;
 
     private FeederState feederState;
 
@@ -59,12 +55,12 @@ public class Shooter {
         shooter2.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
         shooter1.setPower(0);
         shooter2.setPower(0);
-        mode = Mode.IDLE;
+        mode = Robot.Mode.IDLE;
 
         setTargetVelocity(5000);
     }
 
-    public Mode getMode() {
+    public Robot.Mode getMode() {
         return mode;
     }
 
@@ -119,7 +115,7 @@ public class Shooter {
         return baseFlapValue + a * Math.sqrt(b * distance);
     }
 
-    public void setMode(Mode mode) {
+    public void setMode(Robot.Mode mode) {
         this.mode = mode;
         switch (this.mode)
         {
@@ -127,7 +123,7 @@ public class Shooter {
                 shooter1.setPower(0);
                 shooter2.setPower(0);
                 break;
-            case SHOOTING: //shoot
+            case RUNNING: //shoot
                 shooter1.setVelocity(targetVelocity);
                 shooter2.setVelocity(targetVelocity);
                 break;

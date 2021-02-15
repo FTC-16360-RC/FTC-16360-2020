@@ -2,14 +2,10 @@ package org.firstinspires.ftc.teamcode.lib;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.canvas.Canvas;
-import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.control.PIDFController;
-import com.acmerobotics.roadrunner.drive.Drive;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -21,9 +17,8 @@ import org.firstinspires.ftc.teamcode.lib.datatypes.TUtil;
 import org.firstinspires.ftc.teamcode.lib.datatypes.UTuple;
 import org.firstinspires.ftc.teamcode.lib.datatypes.util.Adresses;
 import org.firstinspires.ftc.teamcode.lib.datatypes.util.Instructions;
+import org.firstinspires.ftc.teamcode.newLib.Targets;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
-
-import java.util.ArrayList;
 
 /**
  * This opmode demonstrates how one would implement "align to point behavior" in teleop. You specify

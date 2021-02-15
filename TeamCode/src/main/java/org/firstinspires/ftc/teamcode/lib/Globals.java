@@ -11,7 +11,6 @@ public class Globals {
 
     public static Teams team;
     public static double e = 0.000001;
-    public static HardwareMap hardwareMap;
 
 
     public double NormalizeAngle(double alpha) {

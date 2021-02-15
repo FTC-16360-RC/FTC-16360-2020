@@ -9,14 +9,19 @@ public class Robot {
     Intake intake;
     Transfer transfer;
 
-    Shooter.Mode expectedShooterMode;
-    Intake.Mode expectedIntakeMode;
-    Transfer.Mode expectedTransferMode = Transfer.Mode.NORMAL;
+    Mode expectedShooterMode;
+    Mode expectedIntakeMode;
+    Mode expectedTransferMode = Mode.RUNNING;
 
-    Shooter.Mode currentShooterMode;
-    Intake.Mode currentIntakeMode;
-    Transfer.Mode currentTransferMode;
+    Mode shooterToggleMode = Mode.RUNNING;
+    Mode intakeToggleMode = Mode.RUNNING;
+    Mode transferToggleMode = Mode.RUNNING;
 
+    public enum Mode {
+        IDLE,
+        RUNNING,
+        REVERSE;
+    }
 
 
     public Robot() {
@@ -25,22 +30,57 @@ public class Robot {
         transfer = new Transfer();
     }
 
-    private void
+    //sets driveMode to Modified
+    private void setModified() {
+        if (Comms.driveMode == Comms.DriveMode.ROBOT_CENTRIC) {
+            Comms.driveMode = Comms.DriveMode.MODIFIED_ROBOT_CENTRIC;
+        }
+        if (Comms.driveMode == Comms.DriveMode.GOAL_CENTRIC) {
+            Comms.driveMode = Comms.DriveMode.MODIFIED_GOAL_CENTRIC;
+        }
+    }
 
     private void goalCentric() {
-        shooter.setMode(Shooter.Mode.SHOOTING);
-        intake.setMode(Intake.Mode.IDLE);
+        shooter.setMode(Mode.RUNNING);
+        intake.setMode(Mode.IDLE);
 
-        expectedShooterMode = Shooter.Mode.SHOOTING;
-        expectedIntakeMode = Intake.Mode.IDLE;
+        expectedShooterMode = Mode.RUNNING;
+        expectedIntakeMode = Mode.IDLE;
     }
 
     private void robtoCentric() {
-        shooter.setMode(Shooter.Mode.IDLE);
-        intake.setMode(Intake.Mode.NORMAL);
+        shooter.setMode(Mode.IDLE);
+        intake.setMode(Mode.RUNNING);
 
-        expectedShooterMode = Shooter.Mode.IDLE;
-        expectedIntakeMode = Intake.Mode.NORMAL;
+        expectedShooterMode = Mode.IDLE;
+        expectedIntakeMode = Mode.RUNNING;
+    }
+
+    private void checkModified() {
+        if( intake.getMode() == expectedIntakeMode &&
+            shooter.getMode() == expectedShooterMode &&
+            transfer.getMode() == expectedTransferMode)
+        {
+            switch (Comms.driveMode) {
+                case MODIFIED_GOAL_CENTRIC:
+                    Comms.driveMode = Comms.DriveMode.GOAL_CENTRIC;
+                    break;
+                case MODIFIED_ROBOT_CENTRIC:
+                    Comms.driveMode = Comms.DriveMode.ROBOT_CENTRIC;
+                    break;
+            }
+        }
+    }
+
+    private void checkHardware() {
+        if (intake.getMode() == Mode.RUNNING) {
+            transfer.setMode(Mode.RUNNING);
+            setModified();
+        }
+        if (transfer.getMode() == Mode.REVERSE) {
+            intake.setMode(Mode.REVERSE);
+            setModified();
+        }
     }
 
 
@@ -56,9 +96,7 @@ public class Robot {
             case ROBOT_CENTRIC:
                 robtoCentric();
                 break;
-            case MODIFIED_GOAL_CENTRIC:
-                break;
-            case MODIFIED_ROBOT_CENTRIC:
+            default:
                 break;
         }
 
@@ -71,23 +109,67 @@ public class Robot {
                     }
                     break;
                 case REVERSE_INTAKE:
+                    setModified();
+                    intakeToggleMode = intake.getMode();
+                    intake.setMode(Mode.REVERSE);
+                    break;
+                case REVERSE_TRANSFER:
+                    setModified();
+                    intakeToggleMode = intake.getMode();
+                    transferToggleMode = transfer.getMode();
+                    intake.setMode(Mode.REVERSE);
+                    transfer.setMode(Mode.REVERSE);
+                    break;
+                case RESET_INTAKE:
+                    setModified();
+                    intake.setMode(intakeToggleMode);
+                    break;
+                case RESET_TRANSFER:
+                    setModified();
+                    intake.setMode(intakeToggleMode);
+                    transfer.setMode(transferToggleMode);
+                    break;
+                case TOGGLE_INTAKE:
+                    setModified();
+                    switch (intake.getMode()) {
+                        case RUNNING:
+                            intakeToggleMode = Mode.RUNNING;
+                            intake.setMode(Mode.IDLE);
+                            break;
+                        case REVERSE:
+                            intakeToggleMode = Mode.REVERSE;
+                            intake.setMode(Mode.IDLE);
+                            break;
+                        case IDLE:
+                            intake.setMode(intakeToggleMode);
+                            break;
 
+                    }
+                    break;
+                case TOGGLE_TRANSFER:
+                    setModified();
+                    switch (transfer.getMode()) {
+                        case RUNNING:
+                            transferToggleMode = Mode.RUNNING;
+                            transfer.setMode(Mode.IDLE);
+                            break;
+                        case REVERSE:
+                            transferToggleMode = Mode.REVERSE;
+                            transfer.setMode(Mode.IDLE);
+                            break;
+                        case IDLE:
+                            transfer.setMode(transferToggleMode);
+                            break;
+                    }
+                    break;
             }
         }
 
-        //check if current mode is modified
-        if( currentIntakeMode == expectedIntakeMode &&
-            currentShooterMode == expectedShooterMode &&
-            currentTransferMode == expectedTransferMode)
-        {
-            switch (Comms.driveMode) {
-                case MODIFIED_GOAL_CENTRIC:
-                    Comms.driveMode = Comms.DriveMode.GOAL_CENTRIC;
-                    break;
-                case MODIFIED_ROBOT_CENTRIC:
-                    Comms.driveMode = Comms.DriveMode.ROBOT_CENTRIC;
-                    break;
-            }
-        }
+        //check Incompatible hardware modes
+        checkHardware();
+
+        //check if current modes are modified
+        checkModified();
+
     }
 }

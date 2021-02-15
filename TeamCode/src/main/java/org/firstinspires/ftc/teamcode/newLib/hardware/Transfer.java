@@ -6,20 +6,14 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.newLib.Comms;
+import org.firstinspires.ftc.teamcode.newLib.Robot;
 
 @Config
 public class Transfer {
 
-    // Define 3 states. on, off or reverse
-    public enum Mode {
-        NORMAL,
-        IDLE,
-        REVERSE
-    }
-
     private DcMotor transfer;
 
-    private Mode mode;
+    private Robot.Mode mode;
     Telemetry telemetry;
 
     public Transfer() {
@@ -30,21 +24,21 @@ public class Transfer {
         transfer.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         transfer.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         transfer.setPower(0);
-        mode = Mode.IDLE;
+        mode = Robot.Mode.IDLE;
     }
 
-    public Mode getMode() {
+    public Robot.Mode getMode() {
         return this.mode;
     }
 
-    public void setMode(Mode mode) {
+    public void setMode(Robot.Mode mode) {
         this.mode = mode;
         switch (this.mode)
         {
             case IDLE: //no power
                 transfer.setPower(0);
                 break;
-            case NORMAL: //intake
+            case RUNNING: //intake
                 transfer.setPower(1);
                 break;
             case REVERSE: //outtake

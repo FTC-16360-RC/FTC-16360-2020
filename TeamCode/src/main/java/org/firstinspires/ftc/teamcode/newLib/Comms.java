@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.newLib;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -26,6 +27,7 @@ public class Comms {
         RESET_TRANSFER,
         DISABLE_TRANSFER,
         DISABLE_INTAKE,
+        DISABLE_SHOOTER,
         SET_ROBOT_CENTRIC,
         SET_GOAL_CENTRIC;
     }
@@ -36,6 +38,8 @@ public class Comms {
         MODIFIED_GOAL_CENTRIC,
         MODIFIED_ROBOT_CENTRIC;
     }
+
+    public static Pose2d position;
 
     public static Team team;
     public static Gamepad gamepad1;

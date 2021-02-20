@@ -117,9 +117,7 @@ public class Robot {
                     Comms.driveMode = Comms.DriveMode.ROBOT_CENTRIC;
                     break;
                 case SHOOT:
-                    if (Comms.driveMode == Comms.DriveMode.GOAL_CENTRIC) {
-                        shooter.shoot();
-                    }
+                    shooter.shoot();
                     break;
                 case REVERSE_INTAKE:
                     intake.setMode(Mode.REVERSE);
@@ -139,6 +137,9 @@ public class Robot {
                     break;
                 case DISABLE_TRANSFER:
                     transfer.setMode(Mode.IDLE);
+                    break;
+                case DISABLE_SHOOTER:
+                    shooter.setMode(Mode.IDLE);
                     break;
                 case TOGGLE_INTAKE:
                     switch (intake.getMode()) {

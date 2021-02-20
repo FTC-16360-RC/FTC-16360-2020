@@ -23,7 +23,7 @@ public class Inputs {
     }
 
 
-    public void update() {
+    public void update() {      //ToDO Trim heading
         Comms.tasks.clear();
 
         controller1.update();
@@ -54,6 +54,7 @@ public class Inputs {
         if (controller1.getyButton() == Controller.ButtonState.ON_PRESS && controller1.getxButton() != Controller.ButtonState.PRESSED) {
             Comms.tasks.add(Comms.Tasks.DISABLE_INTAKE);
             Comms.tasks.add(Comms.Tasks.DISABLE_TRANSFER);
+            Comms.tasks.add(Comms.Tasks.DISABLE_SHOOTER);
         }
 
 

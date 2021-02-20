@@ -180,6 +180,9 @@ public class AlignToPoint {
         // Send telemetry packet off to dashboard
         FtcDashboard.getInstance().sendTelemetryPacket(packet);
 
+        //get position
+        Comms.position = drive.getLocalizer().getPoseEstimate();
+
         // Print pose to telemetry
         /*telemetry.addData("current Mode : ", currentMode.toString());
         telemetry.addData("current Target : ", Targets.currentTargetName);

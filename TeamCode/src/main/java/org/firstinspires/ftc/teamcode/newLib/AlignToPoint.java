@@ -57,10 +57,10 @@ public class AlignToPoint {
 
     // Declare a target vector you'd like your bot to align with
     // Can be any x/y coordinate of your choosing
-    private Vector2d targetPosition = new Vector2d(138, -8);
+    private Vector2d targetPosition = new Vector2d(138, 18);
 
     private void resetOrientation() {
-        drive.getLocalizer().setPoseEstimate(new Pose2d(0, 0, 90));
+        drive.getLocalizer().setPoseEstimate(new Pose2d(0, 0, 0));
         errorX = 0;
         errorY = 0;
     }

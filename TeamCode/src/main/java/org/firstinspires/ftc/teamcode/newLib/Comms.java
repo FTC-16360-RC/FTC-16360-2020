@@ -5,16 +5,17 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Comms {
 
-    enum Team {
+    public enum Team {
         RED,
         BLU
     }
 
-    enum Tasks {
+    public enum Tasks {
         SHOOT,
         REVERSE_INTAKE,
         REVERSE_TRANSFER,
@@ -24,7 +25,7 @@ public class Comms {
         RESET_TRANSFER;
     }
 
-    enum DriveMode {
+    public enum DriveMode {
         GOAL_CENTRIC,
         ROBOT_CENTRIC,
         MODIFIED_GOAL_CENTRIC,
@@ -32,12 +33,18 @@ public class Comms {
     }
 
     public static Team team;
-    public static DriveMode driveMode;
     public static Gamepad gamepad1;
     public static Gamepad gamepad2;
     public static Telemetry telemetry;
     public static HardwareMap hardwareMap;
 
+    public static DriveMode driveMode;
     public static List<Tasks> tasks;
 
+    public static int TEMP = 0;
+
+    public static void reset() {
+        tasks = new ArrayList<>();
+        driveMode  = DriveMode.ROBOT_CENTRIC;
+    }
 }

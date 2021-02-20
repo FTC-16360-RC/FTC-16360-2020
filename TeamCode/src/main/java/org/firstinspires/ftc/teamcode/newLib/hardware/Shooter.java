@@ -26,6 +26,7 @@ public class Shooter {
     private Servo flap;
 
     private Robot.Mode mode;
+    private Robot.Mode lastMode;
 
     private FeederState feederState;
 
@@ -115,7 +116,14 @@ public class Shooter {
         return baseFlapValue + a * Math.sqrt(b * distance);
     }
 
+    public Robot.Mode getLastMode(){
+        return lastMode;
+    }
+
     public void setMode(Robot.Mode mode) {
+        if (this.mode != mode) {
+            lastMode = this.mode;
+        }
         this.mode = mode;
         switch (this.mode)
         {
@@ -131,6 +139,9 @@ public class Shooter {
     }
 
     public void update(double currentRuntime) {
+        if (Comms.driveMode == Comms.DriveMode.GOAL_CENTRIC) {
+            //updateFlapPos(5);   //ToDo
+        }
         this.currentRuntime = currentRuntime;
     }
 }

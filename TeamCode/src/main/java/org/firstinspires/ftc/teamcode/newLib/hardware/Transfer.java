@@ -14,6 +14,8 @@ public class Transfer {
     private DcMotor transfer;
 
     private Robot.Mode mode;
+    private Robot.Mode lastMode;
+
     Telemetry telemetry;
 
     public Transfer() {
@@ -31,7 +33,15 @@ public class Transfer {
         return this.mode;
     }
 
+    public Robot.Mode getLastMode(){
+        return lastMode;
+    }
+
     public void setMode(Robot.Mode mode) {
+        if (this.mode != mode) {
+            lastMode = this.mode;
+            Comms.TEMP++;
+        }
         this.mode = mode;
         switch (this.mode)
         {

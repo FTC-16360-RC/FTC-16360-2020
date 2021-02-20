@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.newLib;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.newLib.hardware.Intake;
 import org.firstinspires.ftc.teamcode.newLib.hardware.Shooter;
 import org.firstinspires.ftc.teamcode.newLib.hardware.Transfer;
@@ -8,14 +9,13 @@ public class Robot {
     Shooter shooter;
     Intake intake;
     Transfer transfer;
+    AlignToPoint alignToPoint;
 
     Mode expectedShooterMode;
     Mode expectedIntakeMode;
     Mode expectedTransferMode = Mode.RUNNING;
 
-    Mode shooterToggleMode = Mode.RUNNING;
-    Mode intakeToggleMode = Mode.RUNNING;
-    Mode transferToggleMode = Mode.RUNNING;
+    Telemetry telemetry;
 
     public enum Mode {
         IDLE,
@@ -28,6 +28,9 @@ public class Robot {
         shooter = new Shooter();
         intake = new Intake();
         transfer = new Transfer();
+        alignToPoint = new AlignToPoint();
+
+        telemetry = Comms.telemetry;
     }
 
     //sets driveMode to Modified
@@ -43,6 +46,7 @@ public class Robot {
     private void goalCentric() {
         shooter.setMode(Mode.RUNNING);
         intake.setMode(Mode.IDLE);
+        alignToPoint.setCurrentMode(AlignToPoint.Mode.ALIGN_TO_POINT);
 
         expectedShooterMode = Mode.RUNNING;
         expectedIntakeMode = Mode.IDLE;
@@ -51,12 +55,14 @@ public class Robot {
     private void robtoCentric() {
         shooter.setMode(Mode.IDLE);
         intake.setMode(Mode.RUNNING);
+        alignToPoint.setCurrentMode(AlignToPoint.Mode.NORMAL_CONTROL);
 
         expectedShooterMode = Mode.IDLE;
         expectedIntakeMode = Mode.RUNNING;
     }
 
     private void checkModified() {
+        setModified();
         if( intake.getMode() == expectedIntakeMode &&
             shooter.getMode() == expectedShooterMode &&
             transfer.getMode() == expectedTransferMode)
@@ -75,11 +81,9 @@ public class Robot {
     private void checkHardware() {
         if (intake.getMode() == Mode.RUNNING) {
             transfer.setMode(Mode.RUNNING);
-            setModified();
         }
         if (transfer.getMode() == Mode.REVERSE) {
             intake.setMode(Mode.REVERSE);
-            setModified();
         }
     }
 
@@ -87,6 +91,7 @@ public class Robot {
     public void update(double currentRuntime) {
         //update shooter runtime
         shooter.update(currentRuntime);
+        alignToPoint.update();
 
         //make sure every part's state is correct
         switch (Comms.driveMode) {
@@ -109,58 +114,39 @@ public class Robot {
                     }
                     break;
                 case REVERSE_INTAKE:
-                    setModified();
-                    intakeToggleMode = intake.getMode();
                     intake.setMode(Mode.REVERSE);
                     break;
                 case REVERSE_TRANSFER:
-                    setModified();
-                    intakeToggleMode = intake.getMode();
-                    transferToggleMode = transfer.getMode();
                     intake.setMode(Mode.REVERSE);
                     transfer.setMode(Mode.REVERSE);
                     break;
                 case RESET_INTAKE:
-                    setModified();
-                    intake.setMode(intakeToggleMode);
+                    intake.setMode(intake.getLastMode());
                     break;
                 case RESET_TRANSFER:
-                    setModified();
-                    intake.setMode(intakeToggleMode);
-                    transfer.setMode(transferToggleMode);
+                    transfer.setMode(transfer.getLastMode());
                     break;
                 case TOGGLE_INTAKE:
-                    setModified();
                     switch (intake.getMode()) {
-                        case RUNNING:
-                            intakeToggleMode = Mode.RUNNING;
-                            intake.setMode(Mode.IDLE);
-                            break;
-                        case REVERSE:
-                            intakeToggleMode = Mode.REVERSE;
-                            intake.setMode(Mode.IDLE);
-                            break;
                         case IDLE:
-                            intake.setMode(intakeToggleMode);
+                            intake.setMode(Mode.RUNNING);
                             break;
-
+                        default:
+                            intake.setMode(Mode.IDLE);
+                            break;
                     }
                     break;
                 case TOGGLE_TRANSFER:
-                    setModified();
                     switch (transfer.getMode()) {
-                        case RUNNING:
-                            transferToggleMode = Mode.RUNNING;
-                            transfer.setMode(Mode.IDLE);
-                            break;
-                        case REVERSE:
-                            transferToggleMode = Mode.REVERSE;
-                            transfer.setMode(Mode.IDLE);
-                            break;
                         case IDLE:
-                            transfer.setMode(transferToggleMode);
+                            transfer.setMode(Mode.RUNNING);
+                            break;
+                        default:
+                            transfer.setMode(Mode.IDLE);
                             break;
                     }
+                    break;
+                default:
                     break;
             }
         }
@@ -171,5 +157,14 @@ public class Robot {
         //check if current modes are modified
         checkModified();
 
+        telemetry.addData("Target", Targets.currentTargetNum);
+        telemetry.addData("Target", Targets.currentTargetName);
+        telemetry.addData("transfer", transfer.getLastMode());
+        telemetry.addData("transferCurrent", transfer.getMode());
+        telemetry.addData("intake", intake.getLastMode());
+        telemetry.addData("intakeCurrent", intake.getMode());
+        telemetry.addData("transferCalls", Comms.TEMP);
+        telemetry.update();
     }
 }
+

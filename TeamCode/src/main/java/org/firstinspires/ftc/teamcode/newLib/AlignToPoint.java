@@ -13,10 +13,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.lib.datatypes.TUtil;
-import org.firstinspires.ftc.teamcode.lib.datatypes.UTuple;
-import org.firstinspires.ftc.teamcode.lib.datatypes.util.Adresses;
-import org.firstinspires.ftc.teamcode.lib.datatypes.util.Instructions;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
 /**
@@ -72,13 +68,17 @@ public class AlignToPoint {
         errorY = 0;
     }
 
+    public void setCurrentMode(Mode mode) {
+        currentMode = mode;
+    }
 
-    public AlignToPoint(HardwareMap hardwareMap, Telemetry telemetry, Gamepad gamepad1, Gamepad gamepad2) {
 
-        this.hardwareMap = hardwareMap;
-        this.telemetry = telemetry;
-        this.gamepad1 = gamepad1;
-        this.gamepad2 = gamepad2;
+    public AlignToPoint() {
+
+        this.hardwareMap = Comms.hardwareMap;
+        this.telemetry = Comms.telemetry;
+        this.gamepad1 = Comms.gamepad1;
+        this.gamepad2 = Comms.gamepad2;
 
         targetPosition = Targets.currentTarget;
 
@@ -96,34 +96,7 @@ public class AlignToPoint {
         headingController.setInputBounds(-Math.PI, Math.PI);
     }
 
-    public TUtil update(TUtil instructions) {
-
-        a = false;
-        b = false;
-
-        for (UTuple i : instructions.list) {
-            switch (i.a_ins) {
-                case RESET_ORIENTATION:
-                    resetOrientation();
-                    break;
-                case STD_DPAD_LEFT:
-                    errorY += 5;
-                    break;
-                case STD_DPAD_RIGHT:
-                    errorY -= 5;
-                    break;
-                case STD_A:
-                    a = true;
-                    break;
-                case STD_B:
-                    b = true;
-                    break;
-                default:
-                    telemetry.addLine("oh  no oh no oh no something went wrong oh no");
-                    break;
-            }
-        }
-
+    public void update() {
         // Read pose
         Pose2d poseEstimate = drive.getLocalizer().getPoseEstimate();
 
@@ -131,7 +104,7 @@ public class AlignToPoint {
         // Pose representing desired x, y, and angular velocity
         Pose2d driveDirection = new Pose2d();
 
-        telemetry.addData("mode", currentMode);
+        //telemetry.addData("mode", currentMode);
 
         // Declare telemetry packet for dashboard field drawing
         TelemetryPacket packet = new TelemetryPacket();
@@ -140,10 +113,6 @@ public class AlignToPoint {
         switch (currentMode) {
             case NORMAL_CONTROL:
                 // Switch into alignment mode if `a` is pressed
-                if (a && !b) {
-                    currentMode = Mode.ALIGN_TO_POINT;
-                }
-
                 // Standard teleop control
                 // Convert gamepad input into desired pose velocity
                 driveDirection = new Pose2d(
@@ -155,10 +124,6 @@ public class AlignToPoint {
             case ALIGN_TO_POINT:
                 targetPosition = new Vector2d(Targets.currentTarget.getX() + errorX, Targets.currentTarget.getY() + errorY);
                 // Switch back into normal driver control mode if `b` is pressed
-                if (b && !a) {
-                    currentMode = Mode.NORMAL_CONTROL;
-                }
-
                 // Create a vector from the gamepad x/y inputs which is the field relative movement
                 // Then, rotate that vector by the inverse of that heading for field centric control
                 Vector2d fieldFrameInput = new Vector2d(
@@ -219,30 +184,12 @@ public class AlignToPoint {
         FtcDashboard.getInstance().sendTelemetryPacket(packet);
 
         // Print pose to telemetry
-        telemetry.addData("current Mode : ", currentMode.toString());
+        /*telemetry.addData("current Mode : ", currentMode.toString());
         telemetry.addData("current Target : ", Targets.currentTargetName);
         telemetry.addData("x", poseEstimate.getX());
         telemetry.addData("y", poseEstimate.getY());
         telemetry.addData("x error", errorX);
         telemetry.addData("y error", errorY);
-        telemetry.addData("heading", poseEstimate.getHeading());
-        telemetry.update();
-
-        TUtil messages = new TUtil();
-
-        if (a || b) {
-            if (currentMode == Mode.ALIGN_TO_POINT) {
-                messages.add(Adresses.SHOOTER, Instructions.SET_SHOOTER_ON);
-                messages.add(Adresses.INTAKE, Instructions.SET_INTAKE_IDLE);
-            } else if (currentMode == Mode.NORMAL_CONTROL) {
-                messages.add(Adresses.SHOOTER, Instructions.SET_SHOOTER_IDLE);
-                messages.add(Adresses.INTAKE, Instructions.SET_INTAKE_ON);
-                messages.add(Adresses.TRANSFER, Instructions.SET_TRANSFER_ON);
-            }
-        }
-        double[] position = {poseEstimate.getX(), poseEstimate.getY()};
-        messages.add(Adresses.SHOOTER, Instructions.RECIEVE_POSITION, position);
-
-        return messages;
+        telemetry.addData("heading", poseEstimate.getHeading());*/
     }
 }

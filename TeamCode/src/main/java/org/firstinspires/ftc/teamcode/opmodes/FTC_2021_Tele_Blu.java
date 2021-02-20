@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.opmodes;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.newLib.Comms;
 import org.firstinspires.ftc.teamcode.newLib.Inputs;
 import org.firstinspires.ftc.teamcode.newLib.Robot;
 
@@ -15,6 +16,13 @@ public class FTC_2021_Tele_Blu extends OpMode {
 
     @Override
     public void init() {
+        Comms.hardwareMap = hardwareMap;
+        Comms.telemetry = telemetry;
+        Comms.gamepad1 = gamepad1;
+        Comms.gamepad2 = gamepad2;
+        Comms.team = Comms.Team.BLU;
+
+        Comms.reset();
         robot = new Robot();
         inputs = new Inputs();
     }
@@ -31,7 +39,7 @@ public class FTC_2021_Tele_Blu extends OpMode {
 
     @Override
     public void loop() {
-        robot.update(getRuntime());
         inputs.update();
+        robot.update(getRuntime());
     }
 }

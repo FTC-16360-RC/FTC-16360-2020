@@ -2,8 +2,6 @@ package org.firstinspires.ftc.teamcode.newLib;
 
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 
-import org.firstinspires.ftc.teamcode.lib.Globals;
-
 public class Targets {
 
     public static int currentTargetNum = 0;
@@ -35,7 +33,7 @@ public class Targets {
     }
 
     static void getCoords() {
-        switch (Globals.team) {
+        switch (Comms.team) {
             case RED:
                 switch (currentTargetNum) {
                     case 0:

@@ -17,6 +17,7 @@ public class FTC_2021_Tele_Red extends OpMode {
         robot = new Robot(telemetry, hardwareMap, gamepad1, gamepad2);
         robot.init();
         Globals.team = Globals.Teams.RED;
+        Globals.hardwareMap = hardwareMap;
     }
 
     @Override

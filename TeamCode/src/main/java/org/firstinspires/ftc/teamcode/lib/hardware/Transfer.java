@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.lib.Globals;
 import org.firstinspires.ftc.teamcode.lib.datatypes.TUtil;
 import org.firstinspires.ftc.teamcode.lib.datatypes.UTuple;
 import org.firstinspires.ftc.teamcode.lib.datatypes.util.Adresses;
@@ -25,10 +26,10 @@ public class Transfer {
     private Mode mode;
     Telemetry telemetry;
 
-    public Transfer(HardwareMap hardwaremap) {
+    public Transfer() {
         this.telemetry = telemetry;
 
-        transfer = hardwaremap.get(DcMotor.class, "transfer");
+        transfer = Globals.hardwareMap.get(DcMotor.class, "transfer");
         transfer.setDirection(DcMotor.Direction.REVERSE);
         transfer.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         transfer.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

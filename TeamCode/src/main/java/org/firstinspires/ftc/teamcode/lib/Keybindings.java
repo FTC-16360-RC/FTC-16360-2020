@@ -33,7 +33,7 @@ public class Keybindings {
     double servoPos = 0.6;
 
 
-    public Keybindings(Gamepad gamepad1, Gamepad gamepad2, Telemetry telemetry) {
+    public Keybindings(Telemetry telemetry, Gamepad gamepad1, Gamepad gamepad2) {
         controller1 = new Controller(gamepad1);
         controller2 = new Controller(gamepad2);
 

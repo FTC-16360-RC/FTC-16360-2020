@@ -24,11 +24,12 @@ public class EasyOpenCVExample extends OpMode {
 
     @Override
     public void start() {
+        telemetry.addData("w", vision.getRingAmount());
+        telemetry.log();
     }
 
     @Override
     public void loop() {
-        telemetry.addData("w", vision.getRingAmount());
-        telemetry.log();
+
     }
 }

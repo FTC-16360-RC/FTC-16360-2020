@@ -79,12 +79,10 @@ public class AlignToPoint {
     }
 
 
-    public AlignToPoint(HardwareMap hardwareMap, Telemetry telemetry, Gamepad gamepad1, Gamepad gamepad2) {
+    public AlignToPoint(Telemetry telemetry, Gamepad gamepad1, Gamepad gamepad2) {
 
-        this.hardwareMap = hardwareMap;
+        this.hardwareMap = Globals.hardwareMap;
         this.telemetry = telemetry;
-        this.gamepad1 = gamepad1;
-        this.gamepad2 = gamepad2;
 
         targetPosition = Targets.currentTarget;
 

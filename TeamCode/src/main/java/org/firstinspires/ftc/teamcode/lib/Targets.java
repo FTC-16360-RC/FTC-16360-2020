@@ -54,7 +54,7 @@ public class Targets {
                 switch (currentTargetNum) {
                     case 0:
                         currentTarget = blueGoal;
-                        currentTargetName = "blbueGoal";
+                        currentTargetName = "blueGoal";
                     case 1:
                         currentTarget = leftBluePowerShot;
                         currentTargetName = "blueLeftPowerShot";

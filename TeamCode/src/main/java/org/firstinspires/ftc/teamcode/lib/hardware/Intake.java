@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.lib.Globals;
 import org.firstinspires.ftc.teamcode.lib.datatypes.TUtil;
 import org.firstinspires.ftc.teamcode.lib.datatypes.UTuple;
 import org.firstinspires.ftc.teamcode.lib.datatypes.util.Adresses;
@@ -25,9 +26,9 @@ public class Intake {
 
     private Mode mode;
 
-    public Intake(HardwareMap hardwaremap) {
-        servo = hardwaremap.get(Servo.class, "intake");
-        intake = hardwaremap.get(DcMotor.class, "intake");
+    public Intake() {
+        servo = Globals.hardwareMap.get(Servo.class, "intake");
+        intake = Globals.hardwareMap.get(DcMotor.class, "intake");
         intake.setDirection(DcMotor.Direction.REVERSE);
         intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
@@ -40,7 +41,7 @@ public class Intake {
     }
 
     public void lowerIntake() {
-        //servo.setPosition(1);
+        // servo.setPosition(1);
     }
 
     public void setMode(Mode mode) {

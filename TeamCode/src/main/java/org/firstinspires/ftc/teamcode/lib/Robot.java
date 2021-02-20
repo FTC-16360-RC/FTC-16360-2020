@@ -51,11 +51,11 @@ public class Robot{
     }
 
     public void init() {
-        keybindings = new Keybindings(gamepad1, gamepad2, telemetry);
-        alignToPoint = new AlignToPoint(hardwareMap, telemetry, gamepad1, gamepad2);
-        shooter = new Shooter(hardwareMap);
-        intake = new Intake(hardwareMap);
-        transfer = new Transfer(hardwareMap);
+        keybindings = new Keybindings(telemetry, gamepad1, gamepad2);
+        alignToPoint = new AlignToPoint(telemetry, gamepad1, gamepad2);
+        shooter = new Shooter();
+        intake = new Intake();
+        transfer = new Transfer();
 
         comms = new TUtil();
         lastComms = new TUtil();
@@ -83,5 +83,6 @@ public class Robot{
 
         //lastComms is the comms that is used to give back to the classes. Comms picks up information.
         lastComms = comms;
+        telemetry.addData("currentTarget", Targets.currentTargetName);
     }
 }

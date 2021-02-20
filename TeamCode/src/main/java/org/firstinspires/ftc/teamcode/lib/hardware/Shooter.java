@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.lib.Globals;
 import org.firstinspires.ftc.teamcode.lib.Targets;
 import org.firstinspires.ftc.teamcode.lib.datatypes.TUtil;
 import org.firstinspires.ftc.teamcode.lib.datatypes.UTuple;
@@ -47,11 +48,12 @@ public class Shooter {
 
     private double flapPos = 0.6;
 
-    public Shooter(HardwareMap hardwaremap) {
-        shooter1 = hardwaremap.get(DcMotorEx.class, "shooter1");
-        shooter2 = hardwaremap.get(DcMotorEx.class, "shooter2");
-        feeder = hardwaremap.get(Servo.class, "feeder");
-        flap = hardwaremap.get(Servo.class, "flap");
+    public Shooter() {
+        HardwareMap hardwareMap = Globals.hardwareMap;
+        shooter1 = hardwareMap.get(DcMotorEx.class, "shooter1");
+        shooter2 = hardwareMap.get(DcMotorEx.class, "shooter2");
+        feeder = hardwareMap.get(Servo.class, "feeder");
+        flap = hardwareMap.get(Servo.class, "flap");
         feeder.setPosition(feederStartPosition);
         feederState = FeederState.RETRACTED;
         shooter1.setDirection(DcMotorEx.Direction.FORWARD);
@@ -116,10 +118,7 @@ public class Shooter {
     }
 
     private double flapPos(double distance) {
-        double baseFlapValue = 0;
-        double a = 0;
-        double b = 0;
-        return baseFlapValue + a * Math.sqrt(b * distance);
+        return 0.56 + Math.sqrt(0.0005 * (distance-185)/30);
     }
 
     public void setMode(Mode mode) {
@@ -181,6 +180,9 @@ public class Shooter {
                 case RECIEVE_POSITION:
                     updateFlapPos(i.b_arr);
                     break;
+                case ADJUST_FLAP_DEBUG:
+                    toggleFlap(false);
+                    toggleFlap(true);
                 default:
                     break;
             }

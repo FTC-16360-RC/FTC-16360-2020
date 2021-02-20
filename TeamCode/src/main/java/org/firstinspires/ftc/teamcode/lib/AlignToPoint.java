@@ -144,7 +144,7 @@ public class AlignToPoint {
         switch (currentMode) {
             case NORMAL_CONTROL:
                 // Switch into alignment mode if `a` is pressed
-                if (a) {
+                if (a && !b) {
                     currentMode = Mode.ALIGN_TO_POINT;
                 }
 
@@ -159,7 +159,7 @@ public class AlignToPoint {
             case ALIGN_TO_POINT:
                 targetPosition = new Vector2d(Targets.currentTarget.getX() + errorX, Targets.currentTarget.getY() + errorY);
                 // Switch back into normal driver control mode if `b` is pressed
-                if (b) {
+                if (b && !a) {
                     currentMode = Mode.NORMAL_CONTROL;
                 }
 
@@ -223,6 +223,7 @@ public class AlignToPoint {
         FtcDashboard.getInstance().sendTelemetryPacket(packet);
 
         // Print pose to telemetry
+        telemetry.addData("current Mode : ", currentMode.toString());
         telemetry.addData("current Target : ", Targets.currentTargetName);
         telemetry.addData("x", poseEstimate.getX());
         telemetry.addData("y", poseEstimate.getY());
@@ -237,8 +238,7 @@ public class AlignToPoint {
             if (currentMode == Mode.ALIGN_TO_POINT) {
                 messages.add(Adresses.SHOOTER, Instructions.SET_SHOOTER_ON);
                 messages.add(Adresses.INTAKE, Instructions.SET_INTAKE_IDLE);
-            }
-            if (currentMode == Mode.NORMAL_CONTROL) {
+            } else if (currentMode == Mode.NORMAL_CONTROL) {
                 messages.add(Adresses.SHOOTER, Instructions.SET_SHOOTER_IDLE);
                 messages.add(Adresses.INTAKE, Instructions.SET_INTAKE_ON);
                 messages.add(Adresses.TRANSFER, Instructions.SET_TRANSFER_ON);

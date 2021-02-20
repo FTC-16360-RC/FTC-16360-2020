@@ -37,9 +37,6 @@ public class AlignToPoint {
 
     SampleMecanumDrive drive;
 
-    boolean a;
-    boolean b;
-
     public static double DRAWING_TARGET_RADIUS = 2;
 
     // Define 2 states, driver control or alignment control
@@ -60,10 +57,10 @@ public class AlignToPoint {
 
     // Declare a target vector you'd like your bot to align with
     // Can be any x/y coordinate of your choosing
-    private Vector2d targetPosition = new Vector2d(-138, -18);
+    private Vector2d targetPosition = new Vector2d(138, -8);
 
     private void resetOrientation() {
-        drive.getLocalizer().setPoseEstimate(new Pose2d(0, 0, 0));
+        drive.getLocalizer().setPoseEstimate(new Pose2d(0, 0, 90));
         errorX = 0;
         errorY = 0;
     }

@@ -13,13 +13,15 @@ public class Intake {
 
     // Define 3 states. on, off or reverse
     private DcMotor intake;
-    private Servo servo;
+    private Servo servo1;
+    private Servo servo2;
 
     private Robot.Mode mode;
     private Robot.Mode lastMode;
 
     public Intake() {
-        servo = Comms.hardwareMap.get(Servo.class, "intake");
+        servo1 = Comms.hardwareMap.get(Servo.class, "intake1");
+        servo2 = Comms.hardwareMap.get(Servo.class, "intake2");
         intake = Comms.hardwareMap.get(DcMotor.class, "intake");
         intake.setDirection(DcMotor.Direction.REVERSE);
         intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -32,8 +34,14 @@ public class Intake {
         return this.mode;
     }
 
+    public void resetIntake() {
+        servo1.setPosition(0.05);
+        servo2.setPosition(0.05);
+    }
+
     public void lowerIntake() {
-        //servo.setPosition(1);
+        servo1.setPosition(0);
+        servo2.setPosition(0.15);
     }
 
     public Robot.Mode getLastMode(){

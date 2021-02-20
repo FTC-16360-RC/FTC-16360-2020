@@ -21,8 +21,13 @@ public class Comms {
         REVERSE_TRANSFER,
         TOGGLE_INTAKE,
         TOGGLE_TRANSFER,
+        TOGGLE_SHOOTER,
         RESET_INTAKE,
-        RESET_TRANSFER;
+        RESET_TRANSFER,
+        DISABLE_TRANSFER,
+        DISABLE_INTAKE,
+        SET_ROBOT_CENTRIC,
+        SET_GOAL_CENTRIC;
     }
 
     public enum DriveMode {

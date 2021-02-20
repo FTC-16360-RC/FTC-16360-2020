@@ -52,7 +52,7 @@ public class Robot {
         expectedIntakeMode = Mode.IDLE;
     }
 
-    private void robtoCentric() {
+    private void robotCentric() {
         shooter.setMode(Mode.IDLE);
         intake.setMode(Mode.RUNNING);
         alignToPoint.setCurrentMode(AlignToPoint.Mode.NORMAL_CONTROL);
@@ -99,7 +99,7 @@ public class Robot {
                 goalCentric();
                 break;
             case ROBOT_CENTRIC:
-                robtoCentric();
+                robotCentric();
                 break;
             default:
                 break;
@@ -108,6 +108,14 @@ public class Robot {
         //execute instructions
         for (int i = 0; i < Comms.tasks.size(); i++) {
             switch(Comms.tasks.get(i)) {
+                case SET_GOAL_CENTRIC:
+                    goalCentric();
+                    Comms.driveMode = Comms.DriveMode.GOAL_CENTRIC;
+                    break;
+                case SET_ROBOT_CENTRIC:
+                    robotCentric();
+                    Comms.driveMode = Comms.DriveMode.ROBOT_CENTRIC;
+                    break;
                 case SHOOT:
                     if (Comms.driveMode == Comms.DriveMode.GOAL_CENTRIC) {
                         shooter.shoot();
@@ -125,6 +133,12 @@ public class Robot {
                     break;
                 case RESET_TRANSFER:
                     transfer.setMode(transfer.getLastMode());
+                    break;
+                case DISABLE_INTAKE:
+                    intake.setMode(Mode.IDLE);
+                    break;
+                case DISABLE_TRANSFER:
+                    transfer.setMode(Mode.IDLE);
                     break;
                 case TOGGLE_INTAKE:
                     switch (intake.getMode()) {
@@ -146,6 +160,15 @@ public class Robot {
                             break;
                     }
                     break;
+                case TOGGLE_SHOOTER:
+                    switch (shooter.getMode()) {
+                        case IDLE:
+                            shooter.setMode(Mode.RUNNING);
+                            break;
+                        default:
+                            shooter.setMode(Mode.IDLE);
+                            break;
+                    }
                 default:
                     break;
             }

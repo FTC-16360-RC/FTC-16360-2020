@@ -30,19 +30,11 @@ public class Inputs {
         controller2.update();
 
         //drivemodes
-        if (controller1.getaButton() == Controller.ButtonState.ON_PRESS && Comms.driveMode != Comms.DriveMode.MODIFIED_GOAL_CENTRIC) {
-            if (Comms.driveMode == Comms.DriveMode.MODIFIED_ROBOT_CENTRIC) {
-                Comms.driveMode = Comms.DriveMode.MODIFIED_GOAL_CENTRIC;
-            } else {
-                Comms.driveMode = Comms.DriveMode.GOAL_CENTRIC;
-            }
+        if (controller1.getaButton() == Controller.ButtonState.ON_PRESS) {
+            Comms.tasks.add(Comms.Tasks.SET_GOAL_CENTRIC);
         }
-        if (controller1.getbButton() == Controller.ButtonState.ON_PRESS && Comms.driveMode != Comms.DriveMode.MODIFIED_ROBOT_CENTRIC) {
-            if (Comms.driveMode == Comms.DriveMode.MODIFIED_GOAL_CENTRIC) {
-                Comms.driveMode = Comms.DriveMode.MODIFIED_ROBOT_CENTRIC;
-            } else {
-                Comms.driveMode = Comms.DriveMode.ROBOT_CENTRIC;
-            }
+        if (controller1.getbButton() == Controller.ButtonState.ON_PRESS) {
+            Comms.tasks.add(Comms.Tasks.SET_ROBOT_CENTRIC);
         }
 
         //shooting
@@ -60,8 +52,8 @@ public class Inputs {
         }
 
         if (controller1.getyButton() == Controller.ButtonState.ON_PRESS && controller1.getxButton() != Controller.ButtonState.PRESSED) {
-            Comms.tasks.add(Comms.Tasks.TOGGLE_INTAKE);
-            Comms.tasks.add(Comms.Tasks.TOGGLE_TRANSFER);
+            Comms.tasks.add(Comms.Tasks.DISABLE_INTAKE);
+            Comms.tasks.add(Comms.Tasks.DISABLE_TRANSFER);
         }
 
 
@@ -159,14 +151,20 @@ public class Inputs {
             }
         }
 
+        //toggle shooter
+        if (controller2.getdPadLeft() == Controller.ButtonState.ON_PRESS) {
+            Comms.tasks.add(Comms.Tasks.TOGGLE_SHOOTER);
+        }
+
         //Shooting
         if (controller2.getRightTrigger() == Controller.ButtonState.PRESSED) {
             Comms.tasks.add(Comms.Tasks.SHOOT);
         }
 
         //Transfer on / off
-        if (controller2.getxButton() == Controller.ButtonState.ON_PRESS) {
+        if (controller2.getyButton() == Controller.ButtonState.ON_PRESS) {
             Comms.tasks.add(Comms.Tasks.TOGGLE_TRANSFER);
+            Comms.tasks.add(Comms.Tasks.DISABLE_INTAKE);
         }
         //Transfer reverse
         if (controller2.getxButton() == Controller.ButtonState.ON_PRESS) {
@@ -174,20 +172,23 @@ public class Inputs {
         }
         if (controller2.getxButton() == Controller.ButtonState.ON_RELEASE) {
             Comms.tasks.add(Comms.Tasks.RESET_TRANSFER);
+            Comms.tasks.add(Comms.Tasks.RESET_INTAKE);
         }
 
         //Intake on / off
-        if (controller2.getaButton() == Controller.ButtonState.ON_PRESS) {
+        if (controller2.getbButton() == Controller.ButtonState.ON_PRESS) {
             Comms.tasks.add(Comms.Tasks.TOGGLE_INTAKE);
+            Comms.tasks.add(Comms.Tasks.DISABLE_TRANSFER);
         }
 
         //Intake reverse
-        if (controller2.getxButton() == Controller.ButtonState.ON_PRESS) {
+        if (controller2.getaButton() == Controller.ButtonState.ON_PRESS) {
             Comms.tasks.add(Comms.Tasks.REVERSE_INTAKE);
         }
-        if (controller2.getxButton() == Controller.ButtonState.ON_RELEASE) {
+        if (controller2.getaButton() == Controller.ButtonState.ON_RELEASE) {
             Comms.tasks.add(Comms.Tasks.RESET_INTAKE);
         }
     }
 }
+
 

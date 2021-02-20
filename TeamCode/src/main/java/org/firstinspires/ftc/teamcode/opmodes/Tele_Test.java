@@ -6,13 +6,13 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.newLib.Comms;
 import org.firstinspires.ftc.teamcode.newLib.Inputs;
 import org.firstinspires.ftc.teamcode.newLib.Robot;
+import org.firstinspires.ftc.teamcode.newLib.hardware.Intake;
 
-@TeleOp(name="2021 Tele Red", group="Iterative Opmode")
+@TeleOp(name="$$€ⓅιV££", group="Iterative Opmode")
 //@Disabled
-public class FTC_2021_Tele_Red extends OpMode {
+public class Tele_Test extends OpMode {
 
-    Robot robot;
-    Inputs inputs;
+    Intake intake;
 
     @Override
     public void init() {
@@ -20,26 +20,23 @@ public class FTC_2021_Tele_Red extends OpMode {
         Comms.telemetry = telemetry;
         Comms.gamepad1 = gamepad1;
         Comms.gamepad2 = gamepad2;
-        Comms.team = Comms.Team.RED;
+        Comms.team = Comms.Team.BLU;
 
         Comms.reset();
-        robot = new Robot();
-        inputs = new Inputs();
+        intake = new Intake();
     }
 
     @Override
     public void init_loop() {
-
+        intake.lowerIntake();
     }
 
     @Override
     public void start() {
-
     }
 
     @Override
     public void loop() {
-        inputs.update();
-        robot.update(getRuntime());
+        intake.resetIntake();
     }
 }

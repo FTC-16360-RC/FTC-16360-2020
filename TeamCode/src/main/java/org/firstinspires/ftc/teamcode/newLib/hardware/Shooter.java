@@ -27,6 +27,7 @@ public class Shooter {
 
     private Robot.Mode mode;
     private Robot.Mode lastMode;
+    private Robot.Mode nextMode;
 
     private FeederState feederState;
 
@@ -120,12 +121,16 @@ public class Shooter {
         return lastMode;
     }
 
-    public void setMode(Robot.Mode mode) {
-        if (this.mode != mode) {
+    public void setNextMode(Robot.Mode mode) {
+        nextMode = mode;
+    }
+
+    public void updateMode() {
+        if (mode != nextMode) {
             lastMode = this.mode;
         }
-        this.mode = mode;
-        switch (this.mode)
+        mode = nextMode;
+        switch (mode)
         {
             case IDLE: //no power
                 shooter1.setPower(0);

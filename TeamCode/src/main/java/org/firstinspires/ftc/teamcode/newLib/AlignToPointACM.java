@@ -28,7 +28,7 @@ import org.firstinspires.ftc.teamcode.util.DashboardUtil;
  *
  */
 
-public class AlignToPoint {
+public class AlignToPointACM {
 
     HardwareMap hardwareMap;
     Telemetry telemetry;
@@ -70,7 +70,7 @@ public class AlignToPoint {
     }
 
 
-    public AlignToPoint() {
+    public AlignToPointACM() {
 
         this.hardwareMap = Comms.hardwareMap;
         this.telemetry = Comms.telemetry;

@@ -9,7 +9,7 @@ public class Robot {
     Shooter shooter;
     Intake intake;
     Transfer transfer;
-    AlignToPoint alignToPoint;
+    AlignToPointACM alignToPoint;
 
     Mode expectedShooterMode;
     Mode expectedIntakeMode;
@@ -28,7 +28,7 @@ public class Robot {
         shooter = new Shooter();
         intake = new Intake();
         transfer = new Transfer();
-        alignToPoint = new AlignToPoint();
+        alignToPoint = new AlignToPointACM();
 
         telemetry = Comms.telemetry;
     }
@@ -46,7 +46,7 @@ public class Robot {
     private void goalCentric() {
         shooter.setMode(Mode.RUNNING);
         intake.setMode(Mode.IDLE);
-        alignToPoint.setCurrentMode(AlignToPoint.Mode.ALIGN_TO_POINT);
+        alignToPoint.setCurrentMode(AlignToPointACM.Mode.ALIGN_TO_POINT);
 
         expectedShooterMode = Mode.RUNNING;
         expectedIntakeMode = Mode.IDLE;
@@ -55,7 +55,7 @@ public class Robot {
     private void robotCentric() {
         shooter.setMode(Mode.IDLE);
         intake.setMode(Mode.RUNNING);
-        alignToPoint.setCurrentMode(AlignToPoint.Mode.NORMAL_CONTROL);
+        alignToPoint.setCurrentMode(AlignToPointACM.Mode.NORMAL_CONTROL);
 
         expectedShooterMode = Mode.IDLE;
         expectedIntakeMode = Mode.RUNNING;

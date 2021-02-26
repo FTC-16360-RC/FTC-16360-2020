@@ -27,6 +27,7 @@ public class Shooter {
 
     private Robot.Mode mode;
     private Robot.Mode lastMode;
+    private Robot.Mode nextMode;
 
     private FeederState feederState;
 
@@ -116,16 +117,20 @@ public class Shooter {
         return baseFlapValue + a * Math.sqrt(b * distance);
     }
 
+    public void setNextMode(Robot.Mode mode) {
+        nextMode = mode;
+    }
+
     public Robot.Mode getLastMode(){
         return lastMode;
     }
 
-    public void setMode(Robot.Mode mode) {
-        if (this.mode != mode) {
-            lastMode = this.mode;
+    public void setMode() {
+        if (mode != nextMode) {
+            lastMode = mode;
         }
-        this.mode = mode;
-        switch (this.mode)
+        mode = nextMode;
+        switch (mode)
         {
             case IDLE: //no power
                 shooter1.setPower(0);
@@ -139,6 +144,16 @@ public class Shooter {
     }
 
     public void update(double currentRuntime) {
+        this.currentRuntime = currentRuntime;
+        if(feederState == FeederState.PUSHING && (this.currentRuntime-startTime > actuationTime)) {
+            feeder.setPosition(feederStartPosition);
+            startTime = this.currentRuntime;
+            feederState = FeederState.RETRACTING;
+        }
+        if(feederState == FeederState.RETRACTING && (this.currentRuntime-startTime > actuationTime)) {
+            feederState = FeederState.RETRACTED;
+        }
+
         if (Comms.driveMode == Comms.DriveMode.GOAL_CENTRIC) {
             //updateFlapPos(5);   //ToDo
         }

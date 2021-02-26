@@ -15,6 +15,7 @@ public class Transfer {
 
     private Robot.Mode mode;
     private Robot.Mode lastMode;
+    private Robot.Mode nextMode;
 
     Telemetry telemetry;
 
@@ -33,17 +34,20 @@ public class Transfer {
         return this.mode;
     }
 
+    public void setNextMode(Robot.Mode mode) {
+        nextMode = mode;
+    }
+
     public Robot.Mode getLastMode(){
         return lastMode;
     }
 
-    public void setMode(Robot.Mode mode) {
-        if (this.mode != mode) {
-            lastMode = this.mode;
-            Comms.TEMP++;
+    public void setMode() {
+        if (mode != nextMode) {
+            lastMode = mode;
         }
-        this.mode = mode;
-        switch (this.mode)
+        mode = nextMode;
+        switch (mode)
         {
             case IDLE: //no power
                 transfer.setPower(0);

@@ -18,6 +18,7 @@ public class Intake {
 
     private Robot.Mode mode;
     private Robot.Mode lastMode;
+    private Robot.Mode nextMode;
 
     public Intake() {
         servo1 = Comms.hardwareMap.get(Servo.class, "intake1");
@@ -44,16 +45,20 @@ public class Intake {
         servo2.setPosition(0.15);
     }
 
+    public void setNextMode(Robot.Mode mode) {
+        nextMode = mode;
+    }
+
     public Robot.Mode getLastMode(){
         return lastMode;
     }
 
-    public void setMode(Robot.Mode mode) {
-        if (this.mode != mode) {
-            lastMode = this.mode;
+    public void setMode() {
+        if (mode != nextMode) {
+            lastMode = mode;
         }
-        this.mode = mode;
-        switch (this.mode)
+        mode = nextMode;
+        switch (mode)
         {
             case IDLE: //no power
                 intake.setPower(0);

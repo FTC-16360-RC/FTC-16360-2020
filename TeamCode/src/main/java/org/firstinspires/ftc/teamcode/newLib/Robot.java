@@ -44,8 +44,8 @@ public class Robot {
     }
 
     private void goalCentric() {
-        shooter.setMode(Mode.RUNNING);
-        intake.setMode(Mode.IDLE);
+        shooter.setNextMode(Mode.RUNNING);
+        intake.setNextMode(Mode.IDLE);
         alignToPoint.setCurrentMode(AlignToPointACM.Mode.ALIGN_TO_POINT);
 
         expectedShooterMode = Mode.RUNNING;
@@ -53,8 +53,8 @@ public class Robot {
     }
 
     private void robotCentric() {
-        shooter.setMode(Mode.IDLE);
-        intake.setMode(Mode.RUNNING);
+        shooter.setNextMode(Mode.IDLE);
+        intake.setNextMode(Mode.RUNNING);
         alignToPoint.setCurrentMode(AlignToPointACM.Mode.NORMAL_CONTROL);
 
         expectedShooterMode = Mode.IDLE;
@@ -80,10 +80,10 @@ public class Robot {
 
     private void checkHardware() {
         if (intake.getMode() == Mode.RUNNING) {
-            transfer.setMode(Mode.RUNNING);
+            transfer.setNextMode(Mode.RUNNING);
         }
         if (transfer.getMode() == Mode.REVERSE) {
-            intake.setMode(Mode.REVERSE);
+            intake.setNextMode(Mode.REVERSE);
         }
     }
 
@@ -120,54 +120,54 @@ public class Robot {
                     shooter.shoot();
                     break;
                 case REVERSE_INTAKE:
-                    intake.setMode(Mode.REVERSE);
+                    intake.setNextMode(Mode.REVERSE);
                     break;
                 case REVERSE_TRANSFER:
-                    intake.setMode(Mode.REVERSE);
-                    transfer.setMode(Mode.REVERSE);
+                    intake.setNextMode(Mode.REVERSE);
+                    transfer.setNextMode(Mode.REVERSE);
                     break;
                 case RESET_INTAKE:
-                    intake.setMode(intake.getLastMode());
+                    intake.setNextMode(intake.getLastMode());
                     break;
                 case RESET_TRANSFER:
-                    transfer.setMode(transfer.getLastMode());
+                    transfer.setNextMode(transfer.getLastMode());
                     break;
                 case DISABLE_INTAKE:
-                    intake.setMode(Mode.IDLE);
+                    intake.setNextMode(Mode.IDLE);
                     break;
                 case DISABLE_TRANSFER:
-                    transfer.setMode(Mode.IDLE);
+                    transfer.setNextMode(Mode.IDLE);
                     break;
                 case DISABLE_SHOOTER:
-                    shooter.setMode(Mode.IDLE);
+                    shooter.setNextMode(Mode.IDLE);
                     break;
                 case TOGGLE_INTAKE:
                     switch (intake.getMode()) {
                         case IDLE:
-                            intake.setMode(Mode.RUNNING);
+                            intake.setNextMode(Mode.RUNNING);
                             break;
                         default:
-                            intake.setMode(Mode.IDLE);
+                            intake.setNextMode(Mode.IDLE);
                             break;
                     }
                     break;
                 case TOGGLE_TRANSFER:
                     switch (transfer.getMode()) {
                         case IDLE:
-                            transfer.setMode(Mode.RUNNING);
+                            transfer.setNextMode(Mode.RUNNING);
                             break;
                         default:
-                            transfer.setMode(Mode.IDLE);
+                            transfer.setNextMode(Mode.IDLE);
                             break;
                     }
                     break;
                 case TOGGLE_SHOOTER:
                     switch (shooter.getMode()) {
                         case IDLE:
-                            shooter.setMode(Mode.RUNNING);
+                            shooter.setNextMode(Mode.RUNNING);
                             break;
                         default:
-                            shooter.setMode(Mode.IDLE);
+                            shooter.setNextMode(Mode.IDLE);
                             break;
                     }
                 default:
@@ -189,6 +189,12 @@ public class Robot {
         telemetry.addData("intakeCurrent", intake.getMode());
         telemetry.addData("transferCalls", Comms.TEMP);
         telemetry.update();
+
+        shooter.setMode();
+        intake.setMode();
+        transfer.setMode();
     }
+
+
 }
 

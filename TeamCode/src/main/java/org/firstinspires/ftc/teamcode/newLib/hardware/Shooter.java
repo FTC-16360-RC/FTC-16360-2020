@@ -104,9 +104,15 @@ public class Shooter {
         }
     }
 
-    public void updateFlapPos(double[] position) {
-        double distance = Math.sqrt(Math.pow(position[0] - Targets.currentTarget.getX(), 2)
-                + Math.pow(position[1] - Targets.currentTarget.getY(), 2));
+    public void adjustFlap() {
+        flap.setPosition(flapPos);
+    }
+
+    public void updateFlapPos() {
+        double posX = Comms.position.getX();
+        double posY = Comms.position.getY();
+        double distance = Math.sqrt(Math.pow(posX - Targets.currentTarget.getX(), 2)
+                + Math.pow(posY - Targets.currentTarget.getY(), 2));
         flapPos = flapPos(distance);
     }
 
@@ -144,9 +150,19 @@ public class Shooter {
     }
 
     public void update(double currentRuntime) {
-        if (Comms.driveMode == Comms.DriveMode.GOAL_CENTRIC) {
-            //updateFlapPos(5);   //ToDo
-        }
         this.currentRuntime = currentRuntime;
+        if(feederState == FeederState.PUSHING && (this.currentRuntime-startTime > actuationTime)) {
+            feeder.setPosition(feederStartPosition);
+            startTime = this.currentRuntime;
+            feederState = FeederState.RETRACTING;
+        }
+        if(feederState == FeederState.RETRACTING && (this.currentRuntime-startTime > actuationTime)) {
+            feederState = FeederState.RETRACTED;
+        }
+
+        if (Comms.driveMode == Comms.DriveMode.GOAL_CENTRIC) {
+            updateFlapPos();
+            adjustFlap();
+        }
     }
 }

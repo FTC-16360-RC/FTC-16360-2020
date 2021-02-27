@@ -40,7 +40,7 @@ public class Comms {
         MODIFIED_ROBOT_CENTRIC;
     }
 
-    public static Pose2d position;
+    public static Pose2d position = new Pose2d(0,0);
 
     public static Team team;
     public static Gamepad gamepad1;

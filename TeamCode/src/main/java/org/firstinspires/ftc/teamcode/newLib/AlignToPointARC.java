@@ -1,5 +1,5 @@
 package org.firstinspires.ftc.teamcode.newLib;
-
+/*
 import com.arcrobotics.ftclib.command.OdometrySubsystem;
 import com.arcrobotics.ftclib.controller.PIDFController;
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
@@ -9,6 +9,8 @@ import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.Motor.Encoder;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.arcrobotics.ftclib.kinematics.HolonomicOdometry;
+*/
+
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -35,6 +37,7 @@ import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
 public class AlignToPointARC {
 
+    /*
     HardwareMap hardwareMap;
     Telemetry telemetry;
     Gamepad gamepad1;
@@ -193,6 +196,6 @@ public class AlignToPointARC {
         telemetry.addData("y", poseEstimate.getY());
         telemetry.addData("x error", errorX);
         telemetry.addData("y error", errorY);
-        telemetry.addData("heading", poseEstimate.getHeading());*/
-    }
+        telemetry.addData("heading", poseEstimate.getHeading());
+    }*/
 }

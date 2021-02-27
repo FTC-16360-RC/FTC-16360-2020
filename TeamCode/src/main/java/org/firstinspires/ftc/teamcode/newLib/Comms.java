@@ -49,7 +49,7 @@ public class Comms {
     public static HardwareMap hardwareMap;
 
     public static DriveMode driveMode;
-    public static List<Tasks> tasks;
+    public static List<Tasks> tasks = new ArrayList<>();
 
     public static int TEMP = 0;
 

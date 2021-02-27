@@ -28,7 +28,9 @@ public class Intake {
         intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         intake.setPower(0);
+        lastMode = Robot.Mode.IDLE;
         mode = Robot.Mode.IDLE;
+        nextMode = Robot.Mode.IDLE;
     }
 
     public Robot.Mode getMode() {
@@ -39,22 +41,26 @@ public class Intake {
         nextMode = mode;
     }
 
+    public Robot.Mode getNextMode() {
+        return nextMode;
+    }
+
     public void updateMode() {
         if (mode != nextMode) {
-            lastMode = this.mode;
-        }
-        mode = nextMode;
-        switch (mode)
-        {
-            case IDLE: //no power
-                intake.setPower(0);
-                break;
-            case RUNNING: //intake
-                intake.setPower(1);
-                break;
-            case REVERSE: //outtake
-                intake.setPower(-1);
-                break;
+            lastMode = mode;
+            mode = nextMode;
+
+            switch (mode) {
+                case IDLE: //no power
+                    intake.setPower(0);
+                    break;
+                case RUNNING: //intake
+                    intake.setPower(1);
+                    break;
+                case REVERSE: //outtake
+                    intake.setPower(-1);
+                    break;
+            }
         }
     }
 

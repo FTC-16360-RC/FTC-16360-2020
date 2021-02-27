@@ -46,6 +46,7 @@ public class Robot {
     private void goalCentric() {
         shooter.setNextMode(Mode.RUNNING);
         intake.setNextMode(Mode.IDLE);
+        transfer.setNextMode(Mode.RUNNING);
         alignToPoint.setCurrentMode(AlignToPointACM.Mode.ALIGN_TO_POINT);
 
         expectedShooterMode = Mode.RUNNING;
@@ -55,6 +56,7 @@ public class Robot {
     private void robotCentric() {
         shooter.setNextMode(Mode.IDLE);
         intake.setNextMode(Mode.RUNNING);
+        transfer.setNextMode(Mode.RUNNING);
         alignToPoint.setCurrentMode(AlignToPointACM.Mode.NORMAL_CONTROL);
 
         expectedShooterMode = Mode.IDLE;
@@ -89,11 +91,15 @@ public class Robot {
 
 
     public void update(double currentRuntime) {
+        //check Incompatible hardware modes
+        //checkHardware();
+
         //update shooter runtime
         shooter.update(currentRuntime);
         alignToPoint.update();
 
         //make sure every part's state is correct
+        /*
         switch (Comms.driveMode) {
             case GOAL_CENTRIC:
                 goalCentric();
@@ -104,6 +110,7 @@ public class Robot {
             default:
                 break;
         }
+        */
 
         //execute instructions
         for (int i = 0; i < Comms.tasks.size(); i++) {
@@ -175,9 +182,6 @@ public class Robot {
             }
         }
 
-        //check Incompatible hardware modes
-        checkHardware();
-
         //check if current modes are modified
         checkModified();
 
@@ -185,14 +189,15 @@ public class Robot {
         transfer.updateMode();
         intake.updateMode();
 
+        /*
         telemetry.addData("Target", Targets.currentTargetNum);
         telemetry.addData("Target", Targets.currentTargetName);
-        telemetry.addData("transfer", transfer.getLastMode());
+        telemetry.addData("transferNext", transfer.getNextMode());
         telemetry.addData("transferCurrent", transfer.getMode());
-        telemetry.addData("intake", intake.getLastMode());
+        telemetry.addData("intakeNext", intake.getNextMode());
         telemetry.addData("intakeCurrent", intake.getMode());
         telemetry.addData("transferCalls", Comms.TEMP);
-        telemetry.update();
+        telemetry.update();*/
     }
 }
 

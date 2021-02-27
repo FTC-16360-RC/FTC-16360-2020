@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.newLib.hardware;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -27,7 +28,9 @@ public class Transfer {
         transfer.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         transfer.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         transfer.setPower(0);
+        lastMode = Robot.Mode.IDLE;
         mode = Robot.Mode.IDLE;
+        nextMode = Robot.Mode.IDLE;
     }
 
     public Robot.Mode getMode() {
@@ -42,22 +45,26 @@ public class Transfer {
         nextMode = mode;
     }
 
+    public Robot.Mode getNextMode() {
+        return nextMode;
+    }
+
     public void updateMode() {
         if (mode != nextMode) {
-            lastMode = this.mode;
-        }
-        mode = nextMode;
-        switch (mode)
-        {
-            case IDLE: //no power
-                transfer.setPower(0);
-                break;
-            case RUNNING: //intake
-                transfer.setPower(1);
-                break;
-            case REVERSE: //outtake
-                transfer.setPower(-1);
-                break;
+            lastMode = mode;
+            mode = nextMode;
+
+            switch (mode) {
+                case IDLE: //no power
+                    transfer.setPower(0);
+                    break;
+                case RUNNING: //intake
+                    transfer.setPower(1);
+                    break;
+                case REVERSE: //outtake
+                    transfer.setPower(-1);
+                    break;
+            }
         }
     }
 

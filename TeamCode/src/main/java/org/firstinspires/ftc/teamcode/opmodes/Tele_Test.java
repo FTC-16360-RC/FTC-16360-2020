@@ -26,10 +26,7 @@ public class Tele_Test extends OpMode {
         Comms.team = Comms.Team.BLU;
 
         Comms.reset();
-        servo1 = Comms.hardwareMap.get(Servo.class, "intake1");
-        servo2 = Comms.hardwareMap.get(Servo.class, "intake2");
-        servo1.setPosition(1);
-        servo2.setPosition(1);
+        servo1 = Comms.hardwareMap.get(Servo.class, "feeder");
     }
 
     @Override
@@ -39,12 +36,17 @@ public class Tele_Test extends OpMode {
 
     @Override
     public void start() {
-        servo1.setPosition(0);
-        servo2.setPosition(0);
+
     }
 
     @Override
     public void loop() {
+        if(gamepad1.a) {
+            servo1.setPosition(1);
+        }
+        if(gamepad1.b) {
+            servo1.setPosition(0);
+        }
 
     }
 }

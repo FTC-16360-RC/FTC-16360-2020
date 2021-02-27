@@ -57,7 +57,9 @@ public class Shooter {
         shooter2.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
         shooter1.setPower(0);
         shooter2.setPower(0);
+        lastMode = Robot.Mode.IDLE;
         mode = Robot.Mode.IDLE;
+        nextMode = Robot.Mode.IDLE;
 
         setTargetVelocity(5000);
     }
@@ -79,7 +81,7 @@ public class Shooter {
     }
 
     public void shoot() {
-        if(feederState == FeederState.RETRACTED && shooter1.getPower() != 0) {
+        if(feederState == FeederState.RETRACTED){// && shooter1.getPower() != 0) {
             feeder.setPosition(feederExtendedPosition);
             startTime = currentRuntime;
             feederState = FeederState.PUSHING;
@@ -131,21 +133,25 @@ public class Shooter {
         nextMode = mode;
     }
 
+    public Robot.Mode getNextMode() {
+        return nextMode;
+    }
+
     public void updateMode() {
         if (mode != nextMode) {
-            lastMode = this.mode;
-        }
-        mode = nextMode;
-        switch (mode)
-        {
-            case IDLE: //no power
-                shooter1.setPower(0);
-                shooter2.setPower(0);
-                break;
-            case RUNNING: //shoot
-                shooter1.setVelocity(targetVelocity);
-                shooter2.setVelocity(targetVelocity);
-                break;
+            lastMode = mode;
+            mode = nextMode;
+
+            switch (mode) {
+                case IDLE: //no power
+                    shooter1.setPower(0);
+                    shooter2.setPower(0);
+                    break;
+                case RUNNING: //shoot
+                    shooter1.setVelocity(targetVelocity);
+                    shooter2.setVelocity(targetVelocity);
+                    break;
+            }
         }
     }
 

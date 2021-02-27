@@ -38,8 +38,8 @@ public class AlignToPoint extends LinearOpMode {
         ALIGN_TO_POINT
     }
 
-    int targetX = 138;
-    int targetY = -18;
+    int targetX = 35;
+    int targetY = -72;
     int errorX = 0;
     int errorY = 0;
     boolean lastState = false;

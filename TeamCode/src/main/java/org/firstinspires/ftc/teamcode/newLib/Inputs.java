@@ -57,6 +57,7 @@ public class Inputs {
             Comms.tasks.add(Comms.Tasks.DISABLE_INTAKE);
             Comms.tasks.add(Comms.Tasks.DISABLE_TRANSFER);
             Comms.tasks.add(Comms.Tasks.DISABLE_SHOOTER);
+            Comms.tasks.add(Comms.Tasks.SET_ROBOT_CENTRIC);
         }
 
 

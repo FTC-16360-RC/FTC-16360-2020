@@ -104,9 +104,15 @@ public class Shooter {
         }
     }
 
-    public void updateFlapPos(double[] position) {
-        double distance = Math.sqrt(Math.pow(position[0] - Targets.currentTarget.getX(), 2)
-                + Math.pow(position[1] - Targets.currentTarget.getY(), 2));
+    public void moveFlap() {
+        flap.setPosition(flapPos);
+    }
+
+    public void updateFlapPos() {
+        double posX = Comms.position.component1();
+        double posY = Comms.position.component2();
+        double distance = Math.sqrt(Math.pow(posX - Targets.currentTarget.getX(), 2)
+                + Math.pow(posY - Targets.currentTarget.getY(), 2));
         flapPos = flapPos(distance);
     }
 

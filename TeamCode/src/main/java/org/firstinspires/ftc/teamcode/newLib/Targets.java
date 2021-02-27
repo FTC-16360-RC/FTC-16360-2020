@@ -6,7 +6,7 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 public class Targets {
 
     public static int currentTargetNum = 0;
-    public static Vector2d currentTarget = new Vector2d(72, 35);
+    public static Vector2d currentTarget = new Vector2d(35, -72);
     public static String currentTargetName;
 
     //blue targets

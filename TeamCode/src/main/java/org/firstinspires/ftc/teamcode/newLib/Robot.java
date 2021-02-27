@@ -50,6 +50,8 @@ public class Robot {
 
         expectedShooterMode = Mode.RUNNING;
         expectedIntakeMode = Mode.IDLE;
+        shooter.updateFlapPos();
+        shooter.moveFlap();
     }
 
     private void robotCentric() {

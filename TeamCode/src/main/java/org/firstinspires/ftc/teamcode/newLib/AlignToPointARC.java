@@ -34,7 +34,7 @@ import org.firstinspires.ftc.teamcode.util.DashboardUtil;
  */
 
 public class AlignToPointARC {
-
+    /*
     HardwareMap hardwareMap;
     Telemetry telemetry;
     Gamepad gamepad1;

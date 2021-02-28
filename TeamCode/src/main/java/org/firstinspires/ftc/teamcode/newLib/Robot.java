@@ -81,18 +81,16 @@ public class Robot {
     }
 
     private void checkHardware() {
-        if (intake.getMode() == Mode.RUNNING) {
+        if (intake.getNextMode() == Mode.RUNNING) {
             transfer.setNextMode(Mode.RUNNING);
         }
-        if (transfer.getMode() == Mode.REVERSE) {
+        if (transfer.getNextMode() == Mode.REVERSE) {
             intake.setNextMode(Mode.REVERSE);
         }
     }
 
 
     public void update(double currentRuntime) {
-        //check Incompatible hardware modes
-        //checkHardware();
 
         //update shooter runtime
         shooter.update(currentRuntime);
@@ -182,8 +180,11 @@ public class Robot {
             }
         }
 
+        //check Incompatible hardware modes
+        checkHardware();
+
         //check if current modes are modified
-        checkModified();
+        //checkModified();
 
         shooter.updateMode();
         transfer.updateMode();

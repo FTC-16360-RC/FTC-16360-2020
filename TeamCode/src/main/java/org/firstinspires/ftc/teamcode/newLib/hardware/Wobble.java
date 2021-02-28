@@ -23,7 +23,6 @@ public class Wobble {
         arm1 = hardwareMap.get(Servo.class, "Arm 1");
         arm2 = hardwareMap.get(Servo.class, "Arm 2");
         hand = hardwareMap.get(Servo.class, "Hand");
-
     }
 
     public void setPosition(Position position) {

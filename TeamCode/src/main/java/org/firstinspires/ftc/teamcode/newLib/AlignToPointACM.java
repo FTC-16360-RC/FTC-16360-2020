@@ -94,6 +94,20 @@ public class AlignToPointACM {
     }
 
     public void update() {
+
+        //Fuck it I'm not using 'Inputs'
+        if(!gamepad1.dpad_right && !gamepad1.dpad_left) {
+            lastState = false;
+        }
+        if(gamepad1.dpad_right && !lastState) {
+            errorY -= 5;
+            lastState = true;
+        } else if(gamepad1.dpad_left && !lastState) {
+            errorY += 5;
+            lastState = true;
+        }
+
+
         // Read pose
         Pose2d poseEstimate = drive.getLocalizer().getPoseEstimate();
 

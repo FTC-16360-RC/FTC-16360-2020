@@ -3,8 +3,11 @@ package org.firstinspires.ftc.teamcode.opmodes;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsUsbDevice;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -62,7 +65,7 @@ public class AutoBlue extends LinearOpMode {
     State currentState = State.IDLE;
 
     // Define our start pose
-    Pose2d startPose = new Pose2d(-62, 23, Math.toRadians(0));
+    Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));//new Pose2d(-62, 23, Math.toRadians(0));
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -297,7 +300,7 @@ public class AutoBlue extends LinearOpMode {
         // Then have it follow that trajectory
         // Make sure we're using the async version of the commands
         // Otherwise it will be blocking and pause the program here until the trajectory finishes
-        currentState = State.WAIT_7;
+        /*currentState = State.WAIT_7;
         sleep(500);
         rings = vision.getRingAmount();
         //drive.followTrajectoryAsync(trajectory1);
@@ -597,5 +600,7 @@ public class AutoBlue extends LinearOpMode {
             telemetry.addData("rings", rings);
             telemetry.update();
         }
+
+         */
     }
 }

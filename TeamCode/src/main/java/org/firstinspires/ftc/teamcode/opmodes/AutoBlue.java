@@ -299,8 +299,7 @@ public class AutoBlue extends LinearOpMode {
         // Otherwise it will be blocking and pause the program here until the trajectory finishes
         currentState = State.WAIT_7;
         sleep(500);
-        rings = 4;
-        //rings = vision.getRingAmount();
+        rings = vision.getRingAmount();
         //drive.followTrajectoryAsync(trajectory1);
         drive.followTrajectoryAsync(trajectory6);
         //shooter.setTargetVolicty(Globals.powerShotRPM);

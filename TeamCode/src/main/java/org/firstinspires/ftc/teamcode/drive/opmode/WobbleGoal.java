@@ -17,12 +17,16 @@ public class WobbleGoal {
         WAIT_3
     }
 
-    private Servo arm; //the one that goes up
+    private Servo arm1; //the one that goes up
+    private Servo arm2;
 
     private Servo hand; // the one that holds the wobble goal
 
-    private final double armStartPosition = 0.9;
-    private final double armLiftingPosition = 0.375;
+    private final double arm1StartPosition = 1;
+    private final double arm1LiftingPosition = 0.05;
+
+    private final double arm2StartPosition = 0;
+    private final double arm2LiftingPosition = 0.95;
 
     private final double handStartPosition = 0.9;
     private final double handHoldingPosition = 0.3;
@@ -31,9 +35,11 @@ public class WobbleGoal {
 
 
     public WobbleGoal(HardwareMap hardwaremap){
-        arm = hardwaremap.get(Servo.class, "arm");
+        arm1 = hardwaremap.get(Servo.class, "arm1");
+        arm2 = hardwaremap.get(Servo.class, "arm2");
         hand = hardwaremap.get(Servo.class, "hand");
-        arm.setPosition(armLiftingPosition);
+        arm1.setPosition(arm1LiftingPosition);
+        arm2.setPosition(arm2LiftingPosition);
         hand.setPosition(handHoldingPosition);
         mode = Mode.NOTHING;
     }
@@ -52,7 +58,8 @@ public class WobbleGoal {
         switch (this.mode)
         {
             case NOTHING:
-                arm.setPosition(armStartPosition);
+                arm1.setPosition(arm1StartPosition);
+                arm2.setPosition(arm2StartPosition);
                 this.mode = Mode.WAIT_1;
                 waitTimer1.reset();
                 break;
@@ -62,7 +69,8 @@ public class WobbleGoal {
                 }
                 break;
             case HOLDING:
-                arm.setPosition(armStartPosition);
+                arm1.setPosition(arm1StartPosition);
+                arm2.setPosition(arm2StartPosition);
                 this.mode = Mode.WAIT_2;
                 waitTimer2.reset();
                 break;
@@ -78,7 +86,8 @@ public class WobbleGoal {
                 break;
             case WAIT_3:
                 if (waitTimer3.seconds() >= waitTime3){
-                    arm.setPosition(armLiftingPosition);
+                    arm1.setPosition(arm1LiftingPosition);
+                    arm2.setPosition(arm2LiftingPosition);
                 }
                 break;
         }

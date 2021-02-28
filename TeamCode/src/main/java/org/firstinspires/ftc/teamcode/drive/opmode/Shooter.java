@@ -36,7 +36,7 @@ public class Shooter {
     private double actuationTime = 0.19;
     private double startTime;
 
-    private final double feederStartPosition = 0.33;
+    private final double feederStartPosition = 0.24; //0.33
     private final double feederExtendedPosition = 0.5;
 
     private final double flapMinPosition = 0.49;

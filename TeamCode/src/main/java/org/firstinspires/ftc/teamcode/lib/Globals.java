@@ -6,7 +6,7 @@ public class Globals {
     public static double headingError = -10;
 
     // Normal RPM to shoot at for high goal
-    public static double standardRPM = 5000;
+    public static double standardRPM = 3000;
 
     // RPM to shoot at for power shot
     public static double powerShotRPM = 3000;

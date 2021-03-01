@@ -1,95 +1,76 @@
 package org.firstinspires.ftc.teamcode.lib.hardware;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.lib.G;
+
 import org.firstinspires.ftc.teamcode.lib.datatypes.UTuple;
 
 import java.util.ArrayList;
 
 public class Intake {
 
-    HardwareMap hardwareMap;
-    Telemetry telemetry;
-    DcMotor motor1;
-    DcMotor motor2;
-    Servo servo;
+    private DcMotorEx intakeMotor;
 
-    public Intake(HardwareMap hardwareMap, Telemetry telemetry) {
-        this.hardwareMap = hardwareMap;
-        this.telemetry = telemetry;
+    private Servo intakeHolder1, intakeHolder2;
 
-        motor1 = hardwareMap.get(DcMotor.class, "intake");
-        motor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        motor2 = hardwareMap.get(DcMotor.class, "lift");
-        motor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+    private final double intakeHolder1StartPos = 0;
+    private final double intakeHolder1EndPos = 0;
+    private final double intakeHolder2StartPos = 0;
+    private final double intakeHolder2EndPos = 0;
 
-        servo = hardwareMap.get(Servo.class, "intake");
+    public enum Mode {
+        IDLE,
+        FORWARD,
+        REVERSE
     }
 
-    public void lowerIntake() {
-        servo.setPosition(1);
-    }
-    private void enableIntake() {
-        motor1.setPower(1);
-        motor2.setPower(1);
-        telemetry.addLine("Succ mode activated");
-    }
-    private void disableIntake() {
-        motor1.setPower(0);
-        motor2.setPower(0);
+    private Mode mode;
+
+    public Intake(HardwareMap hardwareMap) {
+        intakeMotor = hardwareMap.get(DcMotorEx.class, "lift");
+
+        intakeMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+        intakeMotor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        //intakeMotor.setDirection(DcMotorEx.Direction.REVERSE);
+
+        setMode(Mode.IDLE);
     }
 
-    //debugging stuff
-    private void enableIntakeOnly() {
-        motor1.setPower(1);
-    }
-    private void disableIntakeOnly() {
-        motor1.setPower(0);
-    }
-    private void enableLiftOnly() {
-        motor2.setPower(1);
-    }
-    private void disableLiftOnly() {
-        motor2.setPower(0);
+    public void holdIntake() {
+        intakeHolder1.setPosition(intakeHolder1StartPos);
+        intakeHolder2.setPosition(intakeHolder2StartPos);
     }
 
-    public ArrayList<UTuple> update(ArrayList<UTuple> instructions) {
+    public void releaseIntake() {
+        intakeHolder1.setPosition(intakeHolder1EndPos);
+        intakeHolder2.setPosition(intakeHolder2EndPos);
+    }
 
-        for (UTuple i : instructions) {
-            switch (i.a_ins) {
-                case ENABLE_INTAKE:
-                    enableIntake();
-                    break;
-                case DISABLE_INTAKE:
-                    disableIntake();
-                    break;
+    public Mode getMode() {
+        return mode;
+    }
 
-                case ENABLE_INTAKE_DEBUG:
-                    enableIntakeOnly();
-                    break;
-                case DISABLE_INTAKE_DEBUG:
-                    disableIntakeOnly();
-                    break;
-                case ENABLE_LIFT_DEBUG:
-                    enableLiftOnly();
-                    break;
-                case DISABLE_LIFT_DEBUG:
-                    disableLiftOnly();
-                    break;
-                case LOWER_INTAKE_DEBUG:
-                    lowerIntake();
-                    break;
-                default:
-                    break;
-            }
+    public void setMode(Mode mode) {
+        this.mode = mode;
+        changeMode();
+    }
+
+    private void changeMode() {
+        switch (mode) {
+            case IDLE:
+                intakeMotor.setPower(0);
+                break;
+            case FORWARD:
+                intakeMotor.setPower(1);
+                break;
+            case REVERSE:
+                intakeMotor.setPower(-0.4);
+                break;
+
         }
-
-        ArrayList<UTuple> output = new ArrayList<>();
-        return output;
     }
 
 }

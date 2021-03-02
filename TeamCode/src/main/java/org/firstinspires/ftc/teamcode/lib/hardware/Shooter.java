@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode.lib.hardware;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -9,6 +12,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.lib.Globals;
 import org.firstinspires.ftc.teamcode.lib.VelocityPIDFController;
 import org.firstinspires.ftc.teamcode.lib.datatypes.UTuple;
 
@@ -27,10 +32,14 @@ public class Shooter {
     // Timer for calculating desired acceleration
     // Necessary for kA to have an affect
     private final ElapsedTime veloTimer = new ElapsedTime();
-    private double lastTargetVelo = 0.0;
+    private double lastTargetVelocity = 0.0;
+
+    private double currentVelocity = 0.0;
 
     // Our velocity controller
     private final VelocityPIDFController veloController = new VelocityPIDFController(MOTOR_VELO_PID, kV, kA, kStatic);
+
+    private final FtcDashboard dashboard = FtcDashboard.getInstance();
 
     // Define 3 states. on, off or coast
     public enum Mode {
@@ -94,58 +103,85 @@ public class Shooter {
     }
 
     public double getShooterVelocity() {
-        return shooter1.getVelocity();
+        return Globals.ticksPerSecondToRpm(currentVelocity, 1);
     }
 
     public double getTargetVelocity() {
-        return targetVelocity;
+        return Globals.ticksPerSecondToRpm(targetVelocity, 1);
     }
 
     public void setTargetVolicty(double targetVelocity) {
-        this.targetVelocity = targetVelocity;
+        this.targetVelocity = Globals.rpmToTicksPerSecond(targetVelocity, 1);
     }
 
-    public void shoot() {
-        if(feederState == FeederState.RETRACTED) {
+    public void shoot(boolean onTarget) {
+        // check if all requirements are met
+        if(feederState == FeederState.RETRACTED && mode == Mode.SHOOTING && targetVelocity * 0.95 <= currentRuntime && currentVelocity <= targetVelocity * 1.05 && onTarget) {
             feeder.setPosition(feederExtendedPosition);
-            //startTime = currentRuntime;
+            feederTimer.reset();
             feederState = FeederState.PUSHING;
         }
     }
 
-
-
-    public void reset() { //ONLY for autonomous
-        feeder.setPosition(feederStartPosition);
-        feederState = FeederState.RETRACTED;
-    }
-
     public void setMode(Mode mode) {
         this.mode = mode;
+        if(this.mode == Mode.SHOOTING)
+            veloTimer.reset();
+    }
+
+    public void update() {
+        // Get the velocity from the motor with the encoder
+        currentVelocity = shooter1.getVelocity();
+
+        //packet for dashboard graph
+        TelemetryPacket packet = new TelemetryPacket();
+
+        // values to make graph look better
+        packet.put("lower bound", 0.0);
+        packet.put("upper bound", 6000.0);
+
         switch (this.mode)
         {
-            case IDLE: //no power
+            case IDLE: // no power
                 shooter1.setPower(0);
                 shooter2.setPower(0);
                 break;
-            case SHOOTING: //shoot
+            case COASTING: // coasting power to keep inertia
+                shooter1.setPower(0.3);
+                shooter2.setPower(0.3);
+                break;
+            case SHOOTING: // shooting speed including pidf
+                // Call necessary controller methods
+                veloController.setTargetVelocity(targetVelocity);
+                veloController.setTargetAcceleration((targetVelocity - lastTargetVelocity) / veloTimer.seconds());
+                veloTimer.reset();
 
-                shooter1.setVelocity(targetVelocity);
-                shooter2.setVelocity(targetVelocity);
+                lastTargetVelocity = targetVelocity;
+
+                // Get the position from the motor with the encoder
+                double motorPos = shooter1.getCurrentPosition();
+
+                // Update the controller and set the power for each motor
+                double power = veloController.update(motorPos, currentVelocity);
+                shooter1.setPower(power);
+                shooter2.setPower(power);
                 break;
         }
-    }
+        packet.put("currentVelo", Globals.ticksPerSecondToRpm(currentVelocity, 1));
+        packet.put("targetVelo", Globals.ticksPerSecondToRpm(targetVelocity, 1));
 
-    public void update(double currentRuntime) {
-        this.currentRuntime = currentRuntime;
-        if(feederState == FeederState.PUSHING && (this.currentRuntime-startTime > actuationTime)) {
+        // control feeder arm
+        if(feederState == FeederState.PUSHING && feederTimer.seconds() > actuationTime) {
             feeder.setPosition(feederStartPosition);
-            startTime = this.currentRuntime;
+            feederTimer.reset();
             feederState = FeederState.RETRACTING;
         }
-        if(feederState == FeederState.RETRACTING && (this.currentRuntime-startTime > actuationTime)) {
+        if(feederState == FeederState.RETRACTING && feederTimer.seconds() > actuationTime) {
             feederState = FeederState.RETRACTED;
         }
+
+        // send shooter speeds to dashboard
+        dashboard.sendTelemetryPacket(packet);
     }
 
 }

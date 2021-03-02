@@ -30,13 +30,17 @@ public class Intake {
     private Mode mode;
 
     public Intake(HardwareMap hardwareMap) {
-        intakeMotor = hardwareMap.get(DcMotorEx.class, "lift");
+        intakeMotor = hardwareMap.get(DcMotorEx.class, "intake");
 
         intakeMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
         intakeMotor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+
         //intakeMotor.setDirection(DcMotorEx.Direction.REVERSE);
 
         setMode(Mode.IDLE);
+
+        intakeHolder1 = hardwareMap.get(Servo.class, "intakeHolderLeft");
+        intakeHolder2 = hardwareMap.get(Servo.class, "intakeHolderRight");
     }
 
     public void holdIntake() {

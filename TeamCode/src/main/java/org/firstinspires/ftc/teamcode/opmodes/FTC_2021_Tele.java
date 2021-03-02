@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
 
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -47,10 +48,15 @@ public class FTC_2021_Tele extends OpMode {
         keybindings = new Keybindings(gamepad1, gamepad2, telemetry);
         alignToPoint = new AlignToPoint(hardwareMap, telemetry, gamepad1, gamepad2);
         shooter = new Shooter(hardwareMap);
-        intake = new Intake(hardwareMap, telemetry);
+        intake = new Intake(hardwareMap);
 
         comms = new ArrayList<UTuple>();
         lastComms = new ArrayList<UTuple>();
+
+    //turn on bulk reading
+    for (LynxModule module : this.hardwareMap.getAll(LynxModule.class)) {
+        module.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+        }
     }
 
     @Override
@@ -64,6 +70,8 @@ public class FTC_2021_Tele extends OpMode {
 
     @Override
     public void loop() {
+        for (LynxModule module : this.hardwareMap.getAll(LynxModule.class)) {
+            module.clearBulkCache();
         //clear comms
         comms.clear();
 

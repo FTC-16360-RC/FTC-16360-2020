@@ -5,6 +5,8 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
+import com.arcrobotics.ftclib.util.InterpLUT;
+import com.arcrobotics.ftclib.util.LUT;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -14,6 +16,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.lib.Globals;
+import org.firstinspires.ftc.teamcode.lib.Targets;
 import org.firstinspires.ftc.teamcode.lib.VelocityPIDFController;
 import org.firstinspires.ftc.teamcode.lib.datatypes.UTuple;
 
@@ -70,8 +73,14 @@ public class Shooter {
     private final double feederExtendedPosition = 0.5;
 
     private final double flapRestPosition = 0.59;
+    private final double flapReadyPosition = 0.65;
 
     private double targetVelocity;
+
+    //Init the Look up table
+    InterpLUT lutHighgoal = new InterpLUT();
+    InterpLUT lutPowershots = new InterpLUT();
+
 
     public Shooter(HardwareMap hardwaremap) {
         // motors
@@ -96,6 +105,26 @@ public class Shooter {
         feederState = FeederState.RETRACTED;
 
         mode = Mode.IDLE;
+
+        // values for high goal lut
+        lutHighgoal.add(5, 1);
+        lutHighgoal.add(4.1, 0.9);
+        lutHighgoal.add(3.6, 0.75);
+        lutHighgoal.add(2.7, .5);
+        lutHighgoal.add(1.1, 0.2);
+
+        //generating final equation for lutHighgoal
+        lutHighgoal.createLUT();
+
+        // same for power shots
+        lutPowershots.add(5, 1);
+        lutPowershots.add(4.1, 0.9);
+        lutPowershots.add(3.6, 0.75);
+        lutPowershots.add(2.7, .5);
+        lutPowershots.add(1.1, 0.2);
+
+        //generating final equation for lutPowershots
+        lutPowershots.createLUT();
     }
 
     public Mode getMode() {
@@ -114,19 +143,29 @@ public class Shooter {
         this.targetVelocity = Globals.rpmToTicksPerSecond(targetVelocity, 1);
     }
 
-    public void shoot(boolean onTarget) {
+    public void shoot(boolean onTarget, double distance) {
         // check if all requirements are met
         if(feederState == FeederState.RETRACTED && mode == Mode.SHOOTING && targetVelocity * 0.95 <= currentRuntime && currentVelocity <= targetVelocity * 1.05 && onTarget) {
             feeder.setPosition(feederExtendedPosition);
+            if(Globals.targetType == Targets.TargetType.HIGHGOAL) {
+                flap.setPosition(lutHighgoal.get(distance));
+            } else {
+                flap.setPosition(lutPowershots.get(distance));
+            }
             feederTimer.reset();
             feederState = FeederState.PUSHING;
         }
     }
 
     public void setMode(Mode mode) {
-        this.mode = mode;
-        if(this.mode == Mode.SHOOTING)
+        if (this.mode != Mode.SHOOTING && mode == Mode.SHOOTING) {
             veloTimer.reset();
+            flap.setPosition(flapReadyPosition);
+         }
+        if(this.mode == Mode.SHOOTING && mode != Mode.SHOOTING)
+            flap.setPosition(flapRestPosition);
+
+        this.mode = mode;
     }
 
     public void update() {

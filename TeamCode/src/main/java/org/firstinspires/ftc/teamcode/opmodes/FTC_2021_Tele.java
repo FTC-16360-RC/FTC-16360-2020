@@ -9,6 +9,7 @@ import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.control.PIDFController;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -85,6 +86,11 @@ public class Tele extends LinearOpMode {
         if (isStopRequested()) return;
 
         while (opModeIsActive() && !isStopRequested()) {
+            // clear cache for bulk reading
+            for (LynxModule module : this.hardwareMap.getAll(LynxModule.class)) {
+                module.clearBulkCache();
+            }
+
             double currentRuntime = getRuntime();
             if(gamepad2.a) {
                 intake.setMode(Intake.Mode.NORMAL);

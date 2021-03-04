@@ -143,9 +143,9 @@ public class Shooter {
         this.targetVelocity = Globals.rpmToTicksPerSecond(targetVelocity, 1);
     }
 
-    public void shoot(boolean onTarget, double distance) {
+    public void shoot(double distance) {
         // check if all requirements are met
-        if(feederState == FeederState.RETRACTED && mode == Mode.SHOOTING && targetVelocity * 0.95 <= currentRuntime && currentVelocity <= targetVelocity * 1.05 && onTarget) {
+        if(feederState == FeederState.RETRACTED && mode == Mode.SHOOTING && targetVelocity * 0.95 <= currentVelocity && currentVelocity <= targetVelocity * 1.05) {
             feeder.setPosition(feederExtendedPosition);
             if(Globals.targetType == Targets.TargetType.HIGHGOAL) {
                 flap.setPosition(lutHighgoal.get(distance));

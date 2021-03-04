@@ -35,7 +35,7 @@ public class Globals {
                 break;
         }
         int mirrorCoefficient = 1;
-        if(alliance==Alliance.RED)
+        if(alliance == Alliance.RED)
             mirrorCoefficient = -1;
         currentTarget = new Vector2D(Targets.targetX, mirrorCoefficient*Targets.targetsY[targetYArrayIndex]);
     }

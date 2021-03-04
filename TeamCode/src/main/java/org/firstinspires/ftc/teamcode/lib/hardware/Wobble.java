@@ -16,6 +16,7 @@ public class Wobble {
     public enum ArmState {
         START_POS,
         INTAKE,
+        OUTTAKE,
         STORED,
         RELEASE
     }
@@ -63,6 +64,9 @@ public class Wobble {
                 break;
             case RELEASE:
                 setWobbleArmPosition(0.5);
+                break;
+            case OUTTAKE:
+                setWobbleArmPosition(0.75);
                 break;
             case START_POS:
                 setWobbleArmPosition(1);

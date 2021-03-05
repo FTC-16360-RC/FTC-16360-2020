@@ -1,9 +1,6 @@
 package org.firstinspires.ftc.teamcode.lib;
 
-import com.sun.tools.javac.code.TargetType;
-
-import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
-import org.firstinspires.ftc.teamcode.lib.datatypes.Vector;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 
 public class Globals {
 
@@ -14,13 +11,17 @@ public class Globals {
 
     public static Alliance alliance;
 
-    public static Targets.TargetType targetType;
+    public static Targets.TargetType currentTargetType;
 
-    public static Vector2D currentTarget;
+    public static Vector2d currentTarget = new Vector2d();
+
+    public static void setTarget(Targets.TargetType targetType) {
+        currentTargetType = targetType;
+    }
 
     public static void updateTarget() {
         int targetYArrayIndex = 0;
-        switch (targetType) {
+        switch (currentTargetType) {
             case HIGHGOAL:
                 targetYArrayIndex = 0;
                 break;
@@ -37,7 +38,7 @@ public class Globals {
         int mirrorCoefficient = 1;
         if(alliance == Alliance.RED)
             mirrorCoefficient = -1;
-        currentTarget = new Vector2D(Targets.targetX, mirrorCoefficient*Targets.targetsY[targetYArrayIndex]);
+        currentTarget = new Vector2d(Targets.targetX, mirrorCoefficient*Targets.targetsY[targetYArrayIndex]);
     }
 
     public static double rpmToTicksPerSecond(double rpm, double gearRatio) {

@@ -3,11 +3,13 @@ package org.firstinspires.ftc.teamcode.lib.hardware;
 import com.acmerobotics.roadrunner.drive.Drive;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.lib.AutoAim;
 import org.firstinspires.ftc.teamcode.lib.Globals;
 import org.firstinspires.ftc.teamcode.lib.PoseStorage;
 
@@ -21,6 +23,7 @@ public class Robot {
     protected Intake intake;
     protected Transfer transfer;
     protected Wobble wobble;
+    protected AutoAim autoAim;
 
     public enum RobotState {
         INTAKING,
@@ -40,8 +43,14 @@ public class Robot {
         intake = new Intake(hardwareMap);
         transfer = new Transfer(hardwareMap);
 
+        // initialize aiming class
+        autoAim = new AutoAim();
+
         // set robot state to idle
         robotState = RobotState.DRIVING;
+
+        // Velocity control per wheel is not necessary outside of motion profiled auto
+        drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         //turn on bulk reading
         for (LynxModule module : this.hardwareMap.getAll(LynxModule.class)) {
@@ -133,7 +142,7 @@ public class Robot {
         wobble.setGripperState(Wobble.GripperState.CLOSED_LOOSE);
     }
 
-    public void wobbleDrop() {
+    public void wobblegripperOpen() {
         wobble.setGripperState(Wobble.GripperState.OPEN);
     }
 

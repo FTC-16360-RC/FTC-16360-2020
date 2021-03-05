@@ -147,7 +147,7 @@ public class Shooter {
         // check if all requirements are met
         if(feederState == FeederState.RETRACTED && mode == Mode.SHOOTING && targetVelocity * 0.95 <= currentVelocity && currentVelocity <= targetVelocity * 1.05) {
             feeder.setPosition(feederExtendedPosition);
-            if(Globals.targetType == Targets.TargetType.HIGHGOAL) {
+            if(Globals.currentTargetType == Targets.TargetType.HIGHGOAL) {
                 flap.setPosition(lutHighgoal.get(distance));
             } else {
                 flap.setPosition(lutPowershots.get(distance));

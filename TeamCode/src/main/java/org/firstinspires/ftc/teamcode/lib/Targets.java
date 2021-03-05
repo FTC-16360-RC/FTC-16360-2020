@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.lib;
 
-import com.acmerobotics.roadrunner.geometry.Vector2d;
-
 public class Targets {
     // differentiate between high goal and powershot
     public enum TargetType {

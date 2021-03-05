@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.lib.hardware.Intake;
 import org.firstinspires.ftc.teamcode.lib.hardware.Robot;
 import org.firstinspires.ftc.teamcode.lib.hardware.Transfer;
+import org.firstinspires.ftc.teamcode.lib.hardware.Wobble;
 
 public class RobotTele extends Robot {
     Controller controller1, controller2;
@@ -18,6 +19,9 @@ public class RobotTele extends Robot {
         // initialise controllers
         controller1 = new Controller(gamepad1);
         controller2 = new Controller(gamepad2);
+
+        // set target to high goal
+        Globals.setTarget(Targets.TargetType.HIGHGOAL);
     }
 
     public void update() {
@@ -43,6 +47,9 @@ public class RobotTele extends Robot {
             intake.setMode(Intake.Mode.REVERSE);
         }
 
+        // set drive motor power
+        drive.setWeightedDrivePower(autoAim.getDriveDirection());
+
         // Read pose
         Pose2d poseEstimate = drive.getPoseEstimate();
 
@@ -58,9 +65,46 @@ public class RobotTele extends Robot {
         if(controller1.getbButton() == Controller.ButtonState.ON_PRESS) // set to intaking mode
             setRobotState(RobotState.INTAKING);
 
+        if(controller1.getxButton() == Controller.ButtonState.ON_PRESS) // reset y and heading components of pose
+            drive.setPoseEstimate(new Pose2d(drive.getPoseEstimate().getX(), 0, 0));
+
+        if(controller1.getyButton() == Controller.ButtonState.ON_PRESS) // reset pose
+            drive.setPoseEstimate(new Pose2d(0, 0, 0));
+
         if(controller1.getRightTrigger() == Controller.ButtonState.PRESSED) { // shoot
             setRobotState(RobotState.SHOOTING);
             shoot();
+        }
+
+        if(controller1.getRightBumper() == Controller.ButtonState.PRESSED) { // close / lift wobble arm
+            if(wobble.getArmState() == Wobble.ArmState.INTAKE) {
+                if(wobble.getGripperState() == Wobble.GripperState.OPEN) {
+                    wobbleGrab();
+                } else {
+                    wobbleDroppingPos();
+                }
+            } else {
+                wobbleStoringPos();
+                if(wobble.getGripperState() == Wobble.GripperState.CLOSED_TIGHT) {
+                    wobbleLoosenGrip();
+                }
+            }
+        }
+
+        if(controller1.getLeftBumper() == Controller.ButtonState.PRESSED) { // open / drop wobble arm
+            if(wobble.getArmState() == Wobble.ArmState.RELEASE) {
+                if(wobble.getGripperState() != Wobble.GripperState.OPEN) {
+                    wobblegripperOpen();
+                } else {
+                    wobbleIntakingPos();
+                }
+            } else {
+                if(wobble.getArmState() == Wobble.ArmState.STORED && wobble.getGripperState() != Wobble.GripperState.OPEN) {
+                    wobbleDroppingPos();
+                } else {
+                    wobbleIntakingPos();
+                }
+            }
         }
 
 
@@ -77,5 +121,69 @@ public class RobotTele extends Robot {
         if(controller2.getdPadRight() == Controller.ButtonState.ON_PRESS) // correct heading by subtracting 1 degree
             drive.setPoseEstimate(drive.getPoseEstimate().plus(new Pose2d(0, 0, Math.toRadians(-1))));
 
+        if(controller2.getRightBumper() == Controller.ButtonState.ON_PRESS) { // change to the next right target
+            switch (Globals.currentTargetType) {
+                case HIGHGOAL:
+                if(Globals.alliance == Globals.Alliance.BLUE)
+                    Globals.setTarget(Targets.TargetType.OUTER_POWERSHOT);
+                break;
+                case OUTER_POWERSHOT:
+                    if(Globals.alliance == Globals.Alliance.BLUE)
+                        Globals.setTarget(Targets.TargetType.CENTER_POWERSHOT);
+                    else
+                        Globals.setTarget(Targets.TargetType.HIGHGOAL);
+                    break;
+                case CENTER_POWERSHOT:
+                    if(Globals.alliance == Globals.Alliance.BLUE)
+                        Globals.setTarget(Targets.TargetType.INNER_POWERSHOT);
+                    else
+                        Globals.setTarget(Targets.TargetType.OUTER_POWERSHOT);
+                    break;
+                case INNER_POWERSHOT:
+                    if(Globals.alliance == Globals.Alliance.RED)
+                        Globals.setTarget(Targets.TargetType.CENTER_POWERSHOT);
+                    break;
+            }
+        }
+
+        if(controller2.getLeftBumper() == Controller.ButtonState.ON_PRESS) { // change to the next left target
+            switch (Globals.currentTargetType) {
+                case HIGHGOAL:
+                    if(Globals.alliance == Globals.Alliance.RED)
+                        Globals.setTarget(Targets.TargetType.OUTER_POWERSHOT);
+                    break;
+                case OUTER_POWERSHOT:
+                    if(Globals.alliance == Globals.Alliance.RED)
+                        Globals.setTarget(Targets.TargetType.CENTER_POWERSHOT);
+                    else
+                        Globals.setTarget(Targets.TargetType.HIGHGOAL);
+                    break;
+                case CENTER_POWERSHOT:
+                    if(Globals.alliance == Globals.Alliance.RED)
+                        Globals.setTarget(Targets.TargetType.INNER_POWERSHOT);
+                    else
+                        Globals.setTarget(Targets.TargetType.OUTER_POWERSHOT);
+                    break;
+                case INNER_POWERSHOT:
+                    if(Globals.alliance == Globals.Alliance.BLUE)
+                        Globals.setTarget(Targets.TargetType.CENTER_POWERSHOT);
+                    break;
+            }
+        }
+
+        if(controller2.getLeftTrigger() == Controller.ButtonState.ON_PRESS) // reverse intake
+            reverseIntake();
+
+        if(controller2.getLeftTrigger() == Controller.ButtonState.ON_RELEASE) // reset intake
+            intake();
+
+        if(controller2.getaButton() == Controller.ButtonState.ON_PRESS) // activate intake and transfer
+            intake();
+
+        if(controller2.getbButton() == Controller.ButtonState.ON_PRESS) // shut down intake and transfer
+            transferIdle();
+
+        if(controller2.getxButton() == Controller.ButtonState.ON_PRESS) // reverse transfer
+            reverseTransfer();
     }
 }

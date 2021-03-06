@@ -69,7 +69,7 @@ public class Robot {
         switch(desiredRobotState) {
             case INTAKING:
                 intake();
-                shooter.setMode(Shooter.Mode.COASTING);
+                shooter.setMode(Shooter.Mode.IDLE);
                 autoAim.setCurrentMode(AutoAim.Mode.NORMAL_CONTROL);
                 break;
             case DRIVING:
@@ -109,7 +109,7 @@ public class Robot {
 
         // We update drive continuously in the background, regardless of state
         drive.update();
-        drive.getLocalizer().update();
+        //drive.getLocalizer().update();
 
         // Read pose
         poseEstimate = drive.getPoseEstimate();
@@ -124,6 +124,10 @@ public class Robot {
 
     public double getShooterRPM() {
         return shooter.getShooterVelocity();
+    }
+
+    public double getTargetRPM() {
+        return shooter.getTargetVelocity();
     }
 
     /*
@@ -190,13 +194,13 @@ public class Robot {
 
     // shooter methods
     public void shoot() {
-        if(robotState == RobotState.SHOOTING && autoAim.getHeadingError() < 2) {
-            shooter.shoot(autoAim.getDistance());
+        if(robotState == RobotState.SHOOTING && AutoAim.getHeadingError() < 5) {
+            shooter.shoot();
         }
     }
 
     // shooter method for autonomous
-    public void forceShoot(double distance) {
-        shooter.shoot(distance);
+    public void forceShoot() {
+        shooter.shoot();
     }
 }

@@ -9,7 +9,7 @@ public class Globals {
         BLUE
     }
 
-    public static Alliance alliance;
+    public static Alliance alliance = Alliance.BLUE;
 
     public static Targets.TargetType currentTargetType;
 

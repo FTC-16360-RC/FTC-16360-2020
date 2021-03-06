@@ -10,12 +10,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class Wobble {
     private Servo wobbleArm1, wobbleArm2, wobbleGripper;
 
-    // define servo upper and lower boundaries wobbleArm2 is 1-wobbleArm1
-    private final double wobbleArm1StartPos = 0;
-    private final double wobbleArm1lowerPos = 1;
-    private final double wobbleGripperOpen = 0.3;
-    private final double wobbleGripperClosed = 0.9;
-
     public enum ArmState {
         START_POS,
         INTAKE,
@@ -34,8 +28,6 @@ public class Wobble {
 
     private GripperState gripperState = GripperState.OPEN;
 
-    public static double armPosition = 0;
-
     public Wobble(HardwareMap hardwareMap) {
         wobbleArm1 = hardwareMap.get(Servo.class, "wobbleArmLeft");
         wobbleArm2 = hardwareMap.get(Servo.class, "wobbleArmRight");
@@ -44,14 +36,13 @@ public class Wobble {
 
     // in between bounds, automatically sets second servo according to first one
     private void setWobbleArmPosition (double targetPosition) {
-        wobbleArm1.setPosition(armPosition);//targetPosition*(wobbleArm1lowerPos-wobbleArm1StartPos) + wobbleArm1StartPos);
+        wobbleArm1.setPosition(targetPosition);
         wobbleArm2.setPosition(1-wobbleArm1.getPosition()); //since they are mirrored, boundaries should match
     }
 
     // in between bounds
     private void setWobbleGripperPosition (double targetPosition) {
-        wobbleGripper.setPosition(targetPosition*(wobbleGripperOpen-wobbleGripperClosed) + wobbleGripperClosed);
-
+        wobbleGripper.setPosition(targetPosition);
     }
 
     public ArmState getArmState() {
@@ -62,19 +53,19 @@ public class Wobble {
         this.armState = armState;
         switch (armState) {
             case INTAKE:
-                setWobbleArmPosition(0);
+                setWobbleArmPosition(1);
                 break;
             case STORED:
-                setWobbleArmPosition(0.25);
+                setWobbleArmPosition(0.05);
                 break;
             case RELEASE:
                 setWobbleArmPosition(0.5);
                 break;
             case OUTTAKE:
-                setWobbleArmPosition(0.75);
+                setWobbleArmPosition(0.9);
                 break;
             case START_POS:
-                setWobbleArmPosition(1);
+                setWobbleArmPosition(0);
                 break;
         }
     }
@@ -87,13 +78,13 @@ public class Wobble {
         this.gripperState = gripperState;
         switch (gripperState) {
             case OPEN:
-                setWobbleGripperPosition(0);
+                setWobbleGripperPosition(0.9);
                 break;
             case CLOSED_LOOSE:
-                setWobbleGripperPosition(0.5);
+                setWobbleGripperPosition(0.35);
                 break;
             case CLOSED_TIGHT:
-                setWobbleGripperPosition(1);
+                setWobbleGripperPosition(0.25);
                 break;
         }
     }

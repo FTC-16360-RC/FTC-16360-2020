@@ -76,7 +76,7 @@ public class AutoAim {
             Vector2d robotFrameInput = fieldFrameInput.rotated(-poseEstimate.getHeading());
 
             Vector2d difference;
-            if(currentMode == Mode.ALIGN_TO_POINT) {
+            if(Globals.currentAimingMode == Mode.ALIGN_TO_POINT) {
                 // Difference between the target vector and the bot's position
                 difference = targetPosition.minus(poseEstimate.vec());
 
@@ -93,7 +93,7 @@ public class AutoAim {
             // calculate distance for flap
             distance = difference.norm();
             //calculate remaining heading to change
-            headingError = Math.toDegrees(Math.abs(theta));
+            headingError = Math.abs(Math.toDegrees(theta));
 
             // Set the target heading for the heading controller to our desired angle
             headingController.setTargetPosition(theta);

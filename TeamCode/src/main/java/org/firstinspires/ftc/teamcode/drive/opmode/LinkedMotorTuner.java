@@ -5,6 +5,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -15,6 +16,7 @@ import org.firstinspires.ftc.teamcode.lib.hardware.TuningController;
 import org.firstinspires.ftc.teamcode.lib.VelocityPIDFController;
 
 @Config
+@Disabled
 @TeleOp
 public class LinkedMotorTuner extends LinearOpMode {
     public static PIDCoefficients MOTOR_VELO_PID = new PIDCoefficients(0, 0, 0);

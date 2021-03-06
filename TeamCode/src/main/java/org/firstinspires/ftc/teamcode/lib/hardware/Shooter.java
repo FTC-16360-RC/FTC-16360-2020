@@ -17,14 +17,12 @@ import org.firstinspires.ftc.teamcode.lib.VelocityPIDFController;
 @Config
 public class Shooter {
     // PID coefficients
-    public static PIDCoefficients MOTOR_VELO_PID = new PIDCoefficients(0, 0, 0);
+    public static PIDCoefficients MOTOR_VELO_PID = new PIDCoefficients(0.0038, 0, 0.000015);
 
     // feedforward gains
-    public static double kV = 1 / TuningController.rpmToTicksPerSecond(TuningController.MOTOR_MAX_RPM);
-    public static double kA = 0;
+    public static double kV = 0.00034;
+    public static double kA = 0.000135;
     public static double kStatic = 0;
-
-    private static double flapPosition = 0;
 
     // Timer for calculating desired acceleration
     // Necessary for kA to have an affect
@@ -34,7 +32,7 @@ public class Shooter {
     private double currentVelocity = 0.0;
 
     // Our velocity controller
-    private final VelocityPIDFController veloController = new VelocityPIDFController(MOTOR_VELO_PID, kV, kA, kStatic);
+    private final VelocityPIDFController veloController = new VelocityPIDFController(MOTOR_VELO_PID, kV, kA, 0);//kStatic);
 
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
 
@@ -42,7 +40,7 @@ public class Shooter {
     public enum Mode {
         SHOOTING,
         IDLE,
-        COASTING
+        //COASTING
     }
 
     private enum FeederState {
@@ -55,21 +53,20 @@ public class Shooter {
 
     private Servo feeder, flap;
 
-    private Mode mode = Mode.IDLE;
+    private Mode mode;
 
-    private FeederState feederState = FeederState.RETRACTED;
+    private FeederState feederState;
 
-    private double currentRuntime;
-    private double actuationTime = 0.25;
+    private double actuationTime = 0.22;
     private final ElapsedTime feederTimer = new ElapsedTime();
 
-    private final double feederStartPosition = 0.33;
-    private final double feederExtendedPosition = 0.5;
+    private final double feederStartPosition = 0.25;;
+    private final double feederExtendedPosition = 0.42;
 
-    private final double flapRestPosition = 0.59;
-    private final double flapReadyPosition = 0.65;
+    private final double flapRestPosition = 0.7;
 
     private double targetVelocity;
+    private static double distance;
 
     //Init the Look up table
     InterpLUT lutHighgoal = new InterpLUT();
@@ -84,8 +81,8 @@ public class Shooter {
         //shooter1.setDirection(DcMotorEx.Direction.REVERSE);
         //shooter2.setDirection(DcMotorEx.Direction.REVERSE);
 
-        shooter1.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        shooter2.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        shooter1.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        shooter2.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
         shooter1.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
         shooter2.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
@@ -133,38 +130,37 @@ public class Shooter {
         return Globals.ticksPerSecondToRpm(targetVelocity, 1);
     }
 
-    public void setTargetVelocity(double targetVelocity) {
-        this.targetVelocity = Globals.rpmToTicksPerSecond(targetVelocity, 1);
+    public static void setDistance(double distance) {
+        Shooter.distance = distance;
     }
 
-    public void shoot(double distance) {
+    public void shoot() {
         // check if all requirements are met
-        if(feederState == FeederState.RETRACTED && mode == Mode.SHOOTING && targetVelocity * 0.95 <= currentVelocity && currentVelocity <= targetVelocity * 1.05) {
+        if(feederState == FeederState.RETRACTED && mode == Mode.SHOOTING ) {//&& targetVelocity * 0.95 <= currentVelocity && currentVelocity <= targetVelocity * 1.05) {
             feeder.setPosition(feederExtendedPosition);
-            if(Globals.currentTargetType == Targets.TargetType.HIGHGOAL) {
-                flap.setPosition(flapPosition);//lutHighgoal.get(distance));
-            } else {
-                flap.setPosition(flapPosition);//lutPowershots.get(distance));
-            }
             feederTimer.reset();
             feederState = FeederState.PUSHING;
         }
     }
 
     public void setMode(Mode mode) {
-        if (this.mode != Mode.SHOOTING && mode == Mode.SHOOTING) {
-            veloTimer.reset();
-            flap.setPosition(flapReadyPosition);
-         }
-        if(this.mode == Mode.SHOOTING && mode != Mode.SHOOTING)
-            flap.setPosition(flapRestPosition);
-
         this.mode = mode;
+        if (mode == Mode.SHOOTING) {
+            veloTimer.reset();
+         } else {
+            flap.setPosition(flapRestPosition);
+        }
     }
 
     public void update() {
         // Get the velocity from the motor with the encoder
         currentVelocity = shooter1.getVelocity();
+
+        if(Globals.currentTargetType == Targets.TargetType.HIGHGOAL) {
+            this.targetVelocity = Globals.rpmToTicksPerSecond(Globals.highGoalRPM, 1);
+        } else {
+            this.targetVelocity = Globals.rpmToTicksPerSecond(Globals.powerShotRPM, 1);
+        }
 
         //packet for dashboard graph
         TelemetryPacket packet = new TelemetryPacket();
@@ -179,11 +175,14 @@ public class Shooter {
                 shooter1.setPower(0);
                 shooter2.setPower(0);
                 break;
-            case COASTING: // coasting power to keep inertia
-                shooter1.setPower(0.3);
-                shooter2.setPower(0.3);
-                break;
             case SHOOTING: // shooting speed including pidf
+                // flap
+                if(Globals.currentTargetType == Targets.TargetType.HIGHGOAL) {
+                    flap.setPosition(kStatic);//lutHighgoal.get(distance));
+                } else {
+                    flap.setPosition(kStatic);//lutPowershots.get(distance));
+                }
+
                 // Call necessary controller methods
                 veloController.setTargetVelocity(targetVelocity);
                 veloController.setTargetAcceleration((targetVelocity - lastTargetVelocity) / veloTimer.seconds());
@@ -205,9 +204,9 @@ public class Shooter {
 
         // control feeder arm
         if(feederState == FeederState.PUSHING && feederTimer.seconds() > actuationTime) {
-            feeder.setPosition(feederStartPosition);
-            feederTimer.reset();
-            feederState = FeederState.RETRACTING;
+                feeder.setPosition(feederStartPosition);
+                feederTimer.reset();
+                feederState = FeederState.RETRACTING;
         }
         if(feederState == FeederState.RETRACTING && feederTimer.seconds() > actuationTime) {
             feederState = FeederState.RETRACTED;

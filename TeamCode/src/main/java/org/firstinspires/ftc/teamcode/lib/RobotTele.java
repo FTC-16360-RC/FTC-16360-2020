@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.lib.hardware.Intake;
 import org.firstinspires.ftc.teamcode.lib.hardware.Robot;
+import org.firstinspires.ftc.teamcode.lib.hardware.Shooter;
 import org.firstinspires.ftc.teamcode.lib.hardware.Transfer;
 import org.firstinspires.ftc.teamcode.lib.hardware.Wobble;
 
@@ -15,6 +16,10 @@ public class RobotTele extends Robot {
 
     public RobotTele(HardwareMap hardwareMap, Gamepad gamepad1, Gamepad gamepad2) {
         super(hardwareMap);
+
+        // set wobble goal to right state
+        wobblegripperOpen();
+        //wobbleStoringPos();
 
         // initialise controllers
         controller1 = new Controller(gamepad1);
@@ -28,17 +33,11 @@ public class RobotTele extends Robot {
     public void update() {
         // We update drive continuously in the background, regardless of state
         drive.update();
-        drive.getLocalizer().update();
+        //drive.getLocalizer().update();
 
         // update controllers
         controller1.update();
         controller2.update();
-
-        //WEG
-        //WEG
-        //WEG
-        wobble.setArmState(Wobble.ArmState.INTAKE);
-        wobbleGrab();
 
         // update controls according to button states
         updateControls();
@@ -46,11 +45,12 @@ public class RobotTele extends Robot {
         // update joystick values in autoAim
         autoAim.updateJoysticks(controller1.getLeftJoystickXValue(), controller1.getLeftJoystickYValue(), controller1.getRightJoystickXValue());
 
-        // update shooter pidf in the background
-        shooter.update();
-
         // update autoAim
         autoAim.update();
+
+        // update shooter pidf and flap in the background
+        Shooter.setDistance(AutoAim.getDistance());
+        shooter.update();
 
         // very important to make sure nothing breaks
         if(intake.getMode() == Intake.Mode.FORWARD && transfer.getMode() != Transfer.Mode.FORWARD) {
@@ -71,13 +71,6 @@ public class RobotTele extends Robot {
         PoseStorage.currentPose = poseEstimate;
     }
 
-    private void updateShooterVelocity() {
-        if(Globals.currentTargetType == Targets.TargetType.HIGHGOAL)
-            shooter.setTargetVelocity(Globals.highGoalRPM);
-        else
-            shooter.setTargetVelocity(Globals.powerShotRPM);
-    }
-
     private void updateControls() {
         // controller 1
         if(controller1.getaButton() == Controller.ButtonState.ON_PRESS) // set to aiming mode
@@ -87,10 +80,10 @@ public class RobotTele extends Robot {
             setRobotState(RobotState.INTAKING);
 
         if(controller1.getxButton() == Controller.ButtonState.ON_PRESS) // reset y and heading components of pose
-            drive.setPoseEstimate(new Pose2d(drive.getPoseEstimate().getX(), 0, 0));
+            drive.setPoseEstimate(new Pose2d(drive.getPoseEstimate().getX(), 62.8, 0));
 
         if(controller1.getyButton() == Controller.ButtonState.ON_PRESS) // reset pose
-            drive.setPoseEstimate(new Pose2d(0, 0, 0));
+            drive.setPoseEstimate(new Pose2d(-60.8, 62.8, 0));
 
         if(controller1.getRightTrigger() == Controller.ButtonState.PRESSED) { // shoot
             if(getRobotState() != RobotState.SHOOTING) {
@@ -114,7 +107,9 @@ public class RobotTele extends Robot {
             }
         }
 
-        if(controller1.getLeftBumper() == Controller.ButtonState.PRESSED) { // open / drop wobble arm
+
+
+        if(controller1.getLeftBumper() == Controller.ButtonState.ON_PRESS) { // open / drop wobble arm
             if(wobble.getArmState() == Wobble.ArmState.RELEASE) {
                 if(wobble.getGripperState() != Wobble.GripperState.OPEN) {
                     wobblegripperOpen();
@@ -168,7 +163,6 @@ public class RobotTele extends Robot {
                         Globals.setTarget(Targets.TargetType.CENTER_POWERSHOT);
                     break;
             }
-            updateShooterVelocity();
         }
 
         if(controller2.getLeftBumper() == Controller.ButtonState.ON_PRESS) { // change to the next left target
@@ -194,7 +188,6 @@ public class RobotTele extends Robot {
                         Globals.setTarget(Targets.TargetType.CENTER_POWERSHOT);
                     break;
             }
-            updateShooterVelocity();
         }
 
         if(controller2.getLeftTrigger() == Controller.ButtonState.ON_PRESS) // reverse intake
@@ -212,7 +205,7 @@ public class RobotTele extends Robot {
         if(controller2.getxButton() == Controller.ButtonState.ON_PRESS) // reverse transfer
             reverseTransfer();
 
-        if(controller2.getxButton() == Controller.ButtonState.ON_PRESS) { // change aiming mode
+        if(controller2.getyButton() == Controller.ButtonState.ON_PRESS) { // change aiming mode
             if(Globals.currentAimingMode == AutoAim.Mode.ALIGN_TO_HEADING)
                 Globals.currentAimingMode = AutoAim.Mode.ALIGN_TO_POINT;
             else

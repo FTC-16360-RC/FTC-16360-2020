@@ -63,7 +63,7 @@ public class Auto_Blue extends LinearOpMode {
 
         // first trajectory moves to first power shot
         Trajectory trajectory1 = drive.trajectoryBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(0, 20, Math.toRadians(180+Globals.headingError)))
+                .lineToLinearHeading(new Pose2d(0, 20, Math.toRadians(180)))
                 .build();
 
         // Time for first shot to be fired
@@ -72,7 +72,7 @@ public class Auto_Blue extends LinearOpMode {
 
         // Calculate the angle to turn from first to second power shot
         // Obtain the target heading
-        double theta1 = Targets.middleBluePowerShot.minus(trajectory1.end().vec()).angle();
+        double theta1 = 0;//Targets.middleBluePowerShot.minus(trajectory1.end().vec()).angle();
         // Calculate the rotation
         double turnAngle1 = Math.toRadians(theta1);
 
@@ -82,7 +82,7 @@ public class Auto_Blue extends LinearOpMode {
 
         // Calculate the angle to turn from second to third power shot
         // Obtain the target heading
-        double theta2 = Targets.rightBluePowerShot.minus(trajectory1.end().vec()).angle();
+        double theta2 = 0;//Targets.rightBluePowerShot.minus(trajectory1.end().vec()).angle();
         // Calculate the rotation
         double turnAngle2 = Math.toRadians(theta2-theta1);
 
@@ -178,7 +178,7 @@ public class Auto_Blue extends LinearOpMode {
         // Otherwise it will be blocking and pause the program here until the trajectory finishes
         currentState = State.TRAJECTORY_1;
         drive.followTrajectoryAsync(trajectory1);
-        shooter.setTargetVolicty(Globals.powerShotRPM);
+        shooter.setTargetVelocity(Globals.powerShotRPM);
         shooter.setMode(Shooter.Mode.SHOOTING);
 
         while (opModeIsActive() && !isStopRequested()) {
@@ -193,14 +193,14 @@ public class Auto_Blue extends LinearOpMode {
             switch (currentState) {
                 case TRAJECTORY_1:
                     if (!drive.isBusy()) {
-                        shooter.shoot();
+                        //shooter.shoot();
                         currentState = State.WAIT_1;
                         waitTimer1.reset();
                     }
                     break;
                 case WAIT_1:
                     // We update our shooter to reset the feeder
-                    shooter.update(getRuntime());
+                    shooter.update();
                     if (waitTimer1.seconds() >= waitTime1) {
                         currentState = State.TURN_1;
                         drive.turnAsync(turnAngle1);
@@ -208,14 +208,14 @@ public class Auto_Blue extends LinearOpMode {
                     break;
                 case TURN_1:
                     if (!drive.isBusy()) {
-                        shooter.shoot();
+                        //shooter.shoot();
                         currentState = State.WAIT_2;
                         waitTimer2.reset();
                     }
                     break;
                 case WAIT_2:
                     // We update our shooter to reset the feeder
-                    shooter.update(getRuntime());
+                    shooter.update();
                     if (waitTimer2.seconds() >= waitTime2) {
                         currentState = State.TURN_2;
                         drive.turnAsync(turnAngle1);
@@ -223,14 +223,14 @@ public class Auto_Blue extends LinearOpMode {
                     break;
                 case TURN_2:
                     if (!drive.isBusy()) {
-                        shooter.shoot();
+                        //shooter.shoot();
                         currentState = State.WAIT_3;
                         waitTimer3.reset();
                     }
                     break;
                 case WAIT_3:
                     // We update our shooter to reset the feeder
-                    shooter.update(getRuntime());
+                    shooter.update();
                     if (waitTimer3.seconds() >= waitTime3) {
                         shooter.setMode(Shooter.Mode.IDLE);
                         currentState = State.TRAJECTORY_2;

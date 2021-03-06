@@ -34,6 +34,8 @@ public class Robot {
 
     private static RobotState robotState;
 
+    private Pose2d poseEstimate;
+
     public Robot(HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
 
@@ -64,15 +66,16 @@ public class Robot {
             case INTAKING:
                 intake();
                 shooter.setMode(Shooter.Mode.COASTING);
-                // stop aiming stuff
+                autoAim.setCurrentMode(AutoAim.Mode.NORMAL_CONTROL);
                 break;
             case DRIVING:
                 transferIdle();
                 shooter.setMode(Shooter.Mode.IDLE);
+                autoAim.setCurrentMode(AutoAim.Mode.NORMAL_CONTROL);
                 break;
             case AIMING:
                 Globals.updateTarget();
-                // auto aim stuff
+                autoAim.setCurrentMode(Globals.currentAimingMode);
                 intakeIdle();
                 shooter.setMode(Shooter.Mode.SHOOTING);
                 break;
@@ -104,10 +107,18 @@ public class Robot {
         drive.update();
 
         // Read pose
-        Pose2d poseEstimate = drive.getPoseEstimate();
+        poseEstimate = drive.getPoseEstimate();
 
         // Continually write pose to PoseStorage
         PoseStorage.currentPose = poseEstimate;
+    }
+
+    public Pose2d getPoseEstimate() {
+        return poseEstimate;
+    }
+
+    public double getShooterRPM() {
+        return shooter.getShooterVelocity();
     }
 
     /*
@@ -174,8 +185,8 @@ public class Robot {
 
     // shooter methods
     public void shoot() {
-        if(robotState == RobotState.SHOOTING && onTarget) {
-            shooter.shoot(distance);
+        if(robotState == RobotState.SHOOTING && autoAim.getHeadingError() < 2) {
+            shooter.shoot(autoAim.getDistance());
         }
     }
 }

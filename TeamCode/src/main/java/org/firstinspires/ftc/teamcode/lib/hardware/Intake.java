@@ -1,14 +1,8 @@
 package org.firstinspires.ftc.teamcode.lib.hardware;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-
-
-import org.firstinspires.ftc.teamcode.lib.datatypes.UTuple;
-
-import java.util.ArrayList;
 
 public class Intake {
 

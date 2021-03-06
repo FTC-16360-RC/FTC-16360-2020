@@ -2,25 +2,17 @@ package org.firstinspires.ftc.teamcode.lib.hardware;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.arcrobotics.ftclib.util.InterpLUT;
-import com.arcrobotics.ftclib.util.LUT;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.lib.Globals;
 import org.firstinspires.ftc.teamcode.lib.Targets;
 import org.firstinspires.ftc.teamcode.lib.VelocityPIDFController;
-import org.firstinspires.ftc.teamcode.lib.datatypes.UTuple;
-
-import java.util.ArrayList;
 
 @Config
 public class Shooter {
@@ -139,7 +131,7 @@ public class Shooter {
         return Globals.ticksPerSecondToRpm(targetVelocity, 1);
     }
 
-    public void setTargetVolicty(double targetVelocity) {
+    public void setTargetVelocity(double targetVelocity) {
         this.targetVelocity = Globals.rpmToTicksPerSecond(targetVelocity, 1);
     }
 

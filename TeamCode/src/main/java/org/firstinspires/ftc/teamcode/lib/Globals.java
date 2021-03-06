@@ -15,6 +15,8 @@ public class Globals {
 
     public static Vector2d currentTarget = new Vector2d();
 
+    public static AutoAim.Mode currentAimingMode = AutoAim.Mode.ALIGN_TO_HEADING;
+
     public static void setTarget(Targets.TargetType targetType) {
         currentTargetType = targetType;
     }
@@ -40,6 +42,10 @@ public class Globals {
             mirrorCoefficient = -1;
         currentTarget = new Vector2d(Targets.targetX, mirrorCoefficient*Targets.targetsY[targetYArrayIndex]);
     }
+
+    public static double highGoalRPM = 5000;
+
+    public static double powerShotRPM = 2000;
 
     public static double rpmToTicksPerSecond(double rpm, double gearRatio) {
         return rpm * 28 / gearRatio / 60;

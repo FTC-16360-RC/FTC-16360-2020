@@ -32,11 +32,18 @@ public class AutoAim {
     // Pose representing desired x, y, and angular velocity
     private Pose2d driveDirection = new Pose2d();
 
+    private float leftJoystickX = 0;
+    private float leftJoystickY = 0;
+    private float rightJoystickX = 0;
+
     public AutoAim() {
         // Set input bounds for the heading controller
         // Automatically handles overflow
         headingController.setInputBounds(-Math.PI, Math.PI);
     }
+
+    private double distance = 0;
+    private double headingError = 0;
 
     public void update() {
         Pose2d poseEstimate = PoseStorage.currentPose;
@@ -53,9 +60,9 @@ public class AutoAim {
             // Standard teleop control
             // Convert gamepad input into desired pose velocity
             driveDirection = new Pose2d(
-                    -gamepad1.left_stick_y,
-                    -gamepad1.left_stick_x,
-                    -gamepad1.right_stick_x
+                    -leftJoystickY,
+                    -leftJoystickX,
+                    -rightJoystickX
             );
 
         } else {  // auto aim
@@ -63,17 +70,30 @@ public class AutoAim {
             // Create a vector from the gamepad x/y inputs which is the field relative movement
             // Then, rotate that vector by the inverse of that heading for field centric control
             Vector2d fieldFrameInput = new Vector2d(
-                    -gamepad1.left_stick_y,
-                    -gamepad1.left_stick_x
+                    -leftJoystickY,
+                    -leftJoystickX
             );
             Vector2d robotFrameInput = fieldFrameInput.rotated(-poseEstimate.getHeading());
-            // Difference between the target vector and the bot's position
-            Vector2d difference = targetPosition.minus(poseEstimate.vec());
+
+            Vector2d difference;
+            if(currentMode == Mode.ALIGN_TO_POINT) {
+                // Difference between the target vector and the bot's position
+                difference = targetPosition.minus(poseEstimate.vec());
+
+            } else {
+                // Create artificial target at 0 heading
+                difference = new Vector2d(Targets.targetX-poseEstimate.getX(), 0);
+
+            }
             // Obtain the target angle for feedback and derivative for feedforward
             double theta = difference.angle();
-
             // Not technically omega because its power. This is the derivative of atan2
             double thetaFF = -fieldFrameInput.rotated(-Math.PI / 2).dot(difference) / (difference.norm() * difference.norm());
+
+            // calculate distance for flap
+            distance = difference.norm();
+            //calculate remaining heading to change
+            headingError = Math.toDegrees(Math.abs(theta));
 
             // Set the target heading for the heading controller to our desired angle
             headingController.setTargetPosition(theta);
@@ -110,8 +130,10 @@ public class AutoAim {
         // Send telemetry packet off to dashboard
         FtcDashboard.getInstance().sendTelemetryPacket(packet);
     }
-    public void updateJoysticks(double leftJoystickX, double leftJoystickY, double rightJoystickX) {
-
+    public void updateJoysticks(float leftJoystickX, float leftJoystickY, float rightJoystickX) {
+        this.leftJoystickX = leftJoystickX;
+        this.leftJoystickY = leftJoystickY;
+        this.rightJoystickX = rightJoystickX;
     }
 
     public void setCurrentMode(Mode mode) {
@@ -124,5 +146,13 @@ public class AutoAim {
 
     public Pose2d getDriveDirection() {
         return driveDirection;
+    }
+
+    public double getDistance() {
+        return distance;
+    }
+
+    public double getHeadingError() {
+        return headingError;
     }
 }

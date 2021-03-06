@@ -35,6 +35,9 @@ public class RobotTele extends Robot {
         // update controls according to button states
         updateControls();
 
+        // update joystick values in autoAim
+        autoAim.updateJoysticks(controller1.getLeftJoystickXValue(), controller1.getLeftJoystickYValue(), controller1.getRightJoystickXValue());
+
         // update shooter pidf in the background
         shooter.update();
 
@@ -55,6 +58,13 @@ public class RobotTele extends Robot {
 
         // Continually write pose to PoseStorage
         PoseStorage.currentPose = poseEstimate;
+    }
+
+    private void updateShooterVelocity() {
+        if(Globals.currentTargetType == Targets.TargetType.HIGHGOAL)
+            shooter.setTargetVelocity(Globals.highGoalRPM);
+        else
+            shooter.setTargetVelocity(Globals.powerShotRPM);
     }
 
     private void updateControls() {
@@ -97,6 +107,7 @@ public class RobotTele extends Robot {
                     wobblegripperOpen();
                 } else {
                     wobbleIntakingPos();
+                    setRobotState(RobotState.DRIVING);
                 }
             } else {
                 if(wobble.getArmState() == Wobble.ArmState.STORED && wobble.getGripperState() != Wobble.GripperState.OPEN) {
@@ -144,6 +155,7 @@ public class RobotTele extends Robot {
                         Globals.setTarget(Targets.TargetType.CENTER_POWERSHOT);
                     break;
             }
+            updateShooterVelocity();
         }
 
         if(controller2.getLeftBumper() == Controller.ButtonState.ON_PRESS) { // change to the next left target
@@ -169,6 +181,7 @@ public class RobotTele extends Robot {
                         Globals.setTarget(Targets.TargetType.CENTER_POWERSHOT);
                     break;
             }
+            updateShooterVelocity();
         }
 
         if(controller2.getLeftTrigger() == Controller.ButtonState.ON_PRESS) // reverse intake
@@ -185,5 +198,12 @@ public class RobotTele extends Robot {
 
         if(controller2.getxButton() == Controller.ButtonState.ON_PRESS) // reverse transfer
             reverseTransfer();
+
+        if(controller2.getxButton() == Controller.ButtonState.ON_PRESS) { // change aiming mode
+            if(Globals.currentAimingMode == AutoAim.Mode.ALIGN_TO_HEADING)
+                Globals.currentAimingMode = AutoAim.Mode.ALIGN_TO_POINT;
+            else
+                Globals.currentAimingMode = AutoAim.Mode.ALIGN_TO_HEADING;
+        }
     }
 }

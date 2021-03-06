@@ -5,14 +5,11 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.newLib.Comms;
-import org.firstinspires.ftc.teamcode.newLib.Controller;
-import org.firstinspires.ftc.teamcode.newLib.Inputs;
-import org.firstinspires.ftc.teamcode.newLib.Robot;
 import org.firstinspires.ftc.teamcode.newLib.hardware.Intake;
 
-@TeleOp(name="servoTester", group="Iterative Opmode")
+@TeleOp(name="Harry Potter and the Colombia Disaster", group="Iterative Opmode")
 //@Disabled
-public class Tele_Test extends OpMode {
+public class Tele_Test_02 extends OpMode {
 
     Intake intake;
     Servo servo1;
@@ -30,6 +27,7 @@ public class Tele_Test extends OpMode {
         Comms.team = Comms.Team.BLU;
 
         Comms.reset();
+        intake = new Intake();
         servo1 = Comms.hardwareMap.get(Servo.class, "intake1");
         servo2 = Comms.hardwareMap.get(Servo.class, "intake2");
     }
@@ -46,30 +44,16 @@ public class Tele_Test extends OpMode {
 
     @Override
     public void loop() {
-        if(gamepad1.a && lastState) {
-            servopos += 0.05;
+        if (gamepad1.a && lastState) {
+            intake.resetIntake();
             lastState = false;
         }
-        if(gamepad1.b && lastState) {
-            servopos -= 0.05;
+        if (gamepad1.b && lastState) {
+            intake.lowerIntake();
             lastState = false;
         }
-        if(!gamepad1.a && !gamepad1.b) {
+        if (!gamepad1.a && !gamepad1.b) {
             lastState = true;
-        }
-        telemetry.addData("position: ", servopos);
-
-        if (servonum == 0) {
-            servo1.setPosition(servopos);
-        } else {
-            servo2.setPosition(servopos);
-        }
-
-        if(gamepad1.x) {
-            servonum = 0;
-        }
-        if (gamepad1.y) {
-            servonum = 1;
         }
     }
 }

@@ -65,12 +65,12 @@ public class Intake {
     }
 
     public void resetIntake() {
-        servo1.setPosition(0.05);
-        servo2.setPosition(0.05);
+        servo1.setPosition(0.34);
+        servo2.setPosition(0);
     }
 
     public void lowerIntake() {
-        servo1.setPosition(0);
+        servo1.setPosition(0.2);
         servo2.setPosition(0.15);
     }
 

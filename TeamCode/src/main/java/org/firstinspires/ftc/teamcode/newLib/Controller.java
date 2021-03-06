@@ -17,41 +17,62 @@ public class Controller {
         ON_RELEASE  // Button state when button is being released up.
     }
 
-    private double      joystickDeadZone = 0.05;
-    private ButtonState  leftJoystickX = ButtonState.RELEASED;
+    private double       joystickDeadZone = 0.05;
+    private ButtonState  leftJoystickXButton = ButtonState.RELEASED;
+    public boolean       leftJoystickX = false;
     private float        leftJoystickXValue = (float) 0.0;
-    private ButtonState  leftJoystickY = ButtonState.RELEASED;
+    private ButtonState  leftJoystickYButton = ButtonState.RELEASED;
+    private boolean      leftJoystickY = false;
     private float        leftJoystickYValue = (float) 0.0;
     private ButtonState  leftJoystickButton = ButtonState.RELEASED;
+    private boolean      leftJoystick = false;
 
-    private ButtonState  rightJoystickX = ButtonState.RELEASED;
+    private ButtonState  rightJoystickXButton = ButtonState.RELEASED;
+    private boolean      rightJoystickX = false;
     private float        rightJoystickXValue = (float) 0.0;
-    private ButtonState  rightJoystickY = ButtonState.RELEASED;
+    private ButtonState  rightJoystickYButton = ButtonState.RELEASED;
+    private boolean      rightJoystickY = false;
     private float        rightJoystickYValue = (float) 0.0;
     private ButtonState  rightJoystickButton = ButtonState.RELEASED;
+    private boolean      rightJoystick = false;
 
-    private ButtonState  dPadUp = ButtonState.RELEASED;
-    private ButtonState  dPadDown = ButtonState.RELEASED;
-    private ButtonState  dPadLeft = ButtonState.RELEASED;
-    private ButtonState  dPadRight = ButtonState.RELEASED;
+    private ButtonState  dPadUpButton = ButtonState.RELEASED;
+    public boolean       dPadUp = false;
+    private ButtonState  dPadDownButton= ButtonState.RELEASED;
+    public boolean       dPadDown = false;
+    private ButtonState  dPadLeftButton = ButtonState.RELEASED;
+    public boolean       dPadLeft = false;
+    private ButtonState  dPadRightButton= ButtonState.RELEASED;
+    public boolean       dPadRight = false;
 
     private ButtonState  aButton = ButtonState.RELEASED;
+    public boolean       a = false;
     private ButtonState  bButton = ButtonState.RELEASED;
+    public boolean       b = false;
     private ButtonState  xButton = ButtonState.RELEASED;
+    public boolean       x = false;
     private ButtonState  yButton = ButtonState.RELEASED;
+    public boolean       y = false;
 
-    private ButtonState  leftBumper = ButtonState.RELEASED;
-    private ButtonState  rightBumper = ButtonState.RELEASED;
+    private ButtonState  leftBumperButton = ButtonState.RELEASED;
+    public boolean       leftBumper = false;
+    private ButtonState  rightBumperButton = ButtonState.RELEASED;
+    public boolean       rightBumper = false;
 
-    private double      triggerDeadZone = 0.05;
-    private ButtonState  leftTrigger = ButtonState.RELEASED;
+    private double       triggerDeadZone = 0.05;
+    private ButtonState  leftTriggerButton = ButtonState.RELEASED;
+    public boolean       leftTrigger = false;
     private float        leftTriggerValue = (float) 0.0;
-    private ButtonState  rightTrigger = ButtonState.RELEASED;
+    private ButtonState  rightTriggerButton = ButtonState.RELEASED;
+    public boolean       rightTrigger = false;
     private float        rightTriggerValue = (float) 0.0;
 
     private ButtonState  backButton = ButtonState.RELEASED;
+    public boolean       back = false;
     private ButtonState  guideButton = ButtonState.RELEASED;
+    public boolean       guide = false;
     private ButtonState  startButton = ButtonState.RELEASED;
+    public boolean       start = false;
 
     /*
     //  METHODS
@@ -74,34 +95,34 @@ public class Controller {
         // Left Joystick X
         if (Math.abs(gamepad.left_stick_x) > joystickDeadZone) {
             leftJoystickXValue = gamepad.left_stick_x;
-            if (leftJoystickX == ButtonState.RELEASED) {
-                leftJoystickX = ButtonState.ON_PRESS;
-            } else if (leftJoystickX == ButtonState.ON_PRESS) {
-                leftJoystickX = ButtonState.PRESSED;
+            if (leftJoystickXButton == ButtonState.RELEASED) {
+                leftJoystickXButton = ButtonState.ON_PRESS;
+            } else if (leftJoystickXButton == ButtonState.ON_PRESS) {
+                leftJoystickXButton = ButtonState.PRESSED;
             }
         } else {
             leftJoystickXValue = (float) 0.0;
-            if (leftJoystickX == ButtonState.PRESSED) {
-                leftJoystickX = ButtonState.ON_RELEASE;
-            } else if (leftJoystickX == ButtonState.ON_RELEASE) {
-                leftJoystickX = ButtonState.RELEASED;
+            if (leftJoystickXButton == ButtonState.PRESSED) {
+                leftJoystickXButton = ButtonState.ON_RELEASE;
+            } else if (leftJoystickXButton == ButtonState.ON_RELEASE) {
+                leftJoystickXButton = ButtonState.RELEASED;
             }
         }
 
         // Left Joystick Y
         if (Math.abs(gamepad.left_stick_y) > joystickDeadZone) {
             leftJoystickYValue = gamepad.left_stick_y;
-            if (leftJoystickY == ButtonState.RELEASED) {
-                leftJoystickY = ButtonState.ON_PRESS;
-            } else if (leftJoystickY == ButtonState.ON_PRESS) {
-                leftJoystickY = ButtonState.PRESSED;
+            if (leftJoystickYButton == ButtonState.RELEASED) {
+                leftJoystickYButton = ButtonState.ON_PRESS;
+            } else if (leftJoystickYButton == ButtonState.ON_PRESS) {
+                leftJoystickYButton = ButtonState.PRESSED;
             }
         } else {
             leftJoystickYValue = (float) 0.0;
-            if (leftJoystickY == ButtonState.PRESSED) {
-                leftJoystickY = ButtonState.ON_RELEASE;
-            } else if (leftJoystickY == ButtonState.ON_RELEASE) {
-                leftJoystickY = ButtonState.RELEASED;
+            if (leftJoystickYButton == ButtonState.PRESSED) {
+                leftJoystickYButton = ButtonState.ON_RELEASE;
+            } else if (leftJoystickYButton == ButtonState.ON_RELEASE) {
+                leftJoystickYButton = ButtonState.RELEASED;
             }
         }
 
@@ -123,34 +144,34 @@ public class Controller {
         // Right Joystick X
         if (Math.abs(gamepad.right_stick_x) > joystickDeadZone) {
             rightJoystickXValue = gamepad.right_stick_x;
-            if (rightJoystickX == ButtonState.RELEASED) {
-                rightJoystickX = ButtonState.ON_PRESS;
-            } else if (rightJoystickX == ButtonState.ON_PRESS) {
-                rightJoystickX = ButtonState.PRESSED;
+            if (rightJoystickXButton == ButtonState.RELEASED) {
+                rightJoystickXButton = ButtonState.ON_PRESS;
+            } else if (rightJoystickXButton == ButtonState.ON_PRESS) {
+                rightJoystickXButton = ButtonState.PRESSED;
             }
         } else {
             rightJoystickXValue = (float) 0.0;
-            if (rightJoystickX == ButtonState.PRESSED) {
-                rightJoystickX = ButtonState.ON_RELEASE;
-            } else if (rightJoystickX == ButtonState.ON_RELEASE) {
-                rightJoystickX = ButtonState.RELEASED;
+            if (rightJoystickXButton == ButtonState.PRESSED) {
+                rightJoystickXButton = ButtonState.ON_RELEASE;
+            } else if (rightJoystickXButton == ButtonState.ON_RELEASE) {
+                rightJoystickXButton = ButtonState.RELEASED;
             }
         }
 
         // Right Joystick Y
         if (Math.abs(gamepad.right_stick_y) > joystickDeadZone) {
             rightJoystickYValue = gamepad.right_stick_y;
-            if (rightJoystickY == ButtonState.RELEASED) {
-                rightJoystickY = ButtonState.ON_PRESS;
-            } else if (rightJoystickY == ButtonState.ON_PRESS) {
-                rightJoystickY = ButtonState.PRESSED;
+            if (rightJoystickYButton == ButtonState.RELEASED) {
+                rightJoystickYButton = ButtonState.ON_PRESS;
+            } else if (rightJoystickYButton == ButtonState.ON_PRESS) {
+                rightJoystickYButton = ButtonState.PRESSED;
             }
         } else {
             rightJoystickYValue = (float) 0.0;
-            if (rightJoystickY == ButtonState.PRESSED) {
-                rightJoystickY = ButtonState.ON_RELEASE;
-            } else if (rightJoystickY == ButtonState.ON_RELEASE) {
-                rightJoystickY = ButtonState.RELEASED;
+            if (rightJoystickYButton == ButtonState.PRESSED) {
+                rightJoystickYButton = ButtonState.ON_RELEASE;
+            } else if (rightJoystickYButton == ButtonState.ON_RELEASE) {
+                rightJoystickYButton = ButtonState.RELEASED;
             }
         }
 
@@ -171,61 +192,61 @@ public class Controller {
 
         // DPad Up
         if (gamepad.dpad_up) {
-            if (dPadUp == ButtonState.RELEASED) {
-                dPadUp = ButtonState.ON_PRESS;
-            } else if (dPadUp == ButtonState.ON_PRESS) {
-                dPadUp = ButtonState.PRESSED;
+            if (dPadUpButton == ButtonState.RELEASED) {
+               dPadUpButton= ButtonState.ON_PRESS;
+            } else if (dPadUpButton == ButtonState.ON_PRESS) {
+               dPadUpButton= ButtonState.PRESSED;
             }
         } else {
-            if (dPadUp == ButtonState.PRESSED) {
-                dPadUp = ButtonState.ON_RELEASE;
-            } else if (dPadUp == ButtonState.ON_RELEASE) {
-                dPadUp = ButtonState.RELEASED;
+            if (dPadUpButton == ButtonState.PRESSED) {
+               dPadUpButton= ButtonState.ON_RELEASE;
+            } else if (dPadUpButton == ButtonState.ON_RELEASE) {
+               dPadUpButton= ButtonState.RELEASED;
             }
         }
 
         // DPad Down
         if (gamepad.dpad_down) {
-            if (dPadDown == ButtonState.RELEASED) {
-                dPadDown = ButtonState.ON_PRESS;
-            } else if (dPadDown == ButtonState.ON_PRESS) {
-                dPadDown = ButtonState.PRESSED;
+            if (dPadDownButton== ButtonState.RELEASED) {
+                dPadDownButton= ButtonState.ON_PRESS;
+            } else if (dPadDownButton== ButtonState.ON_PRESS) {
+                dPadDownButton= ButtonState.PRESSED;
             }
         } else {
-            if (dPadDown == ButtonState.PRESSED) {
-                dPadDown = ButtonState.ON_RELEASE;
-            } else if (dPadDown == ButtonState.ON_RELEASE) {
-                dPadDown = ButtonState.RELEASED;
+            if (dPadDownButton== ButtonState.PRESSED) {
+                dPadDownButton= ButtonState.ON_RELEASE;
+            } else if (dPadDownButton== ButtonState.ON_RELEASE) {
+                dPadDownButton= ButtonState.RELEASED;
             }
         }
 
         // DPad Left
         if (gamepad.dpad_left) {
-            if (dPadLeft == ButtonState.RELEASED) {
-                dPadLeft = ButtonState.ON_PRESS;
-            } else if (dPadLeft == ButtonState.ON_PRESS) {
-                dPadLeft = ButtonState.PRESSED;
+            if (dPadLeftButton == ButtonState.RELEASED) {
+                dPadLeftButton = ButtonState.ON_PRESS;
+            } else if (dPadLeftButton == ButtonState.ON_PRESS) {
+                dPadLeftButton = ButtonState.PRESSED;
             }
         } else {
-            if (dPadLeft == ButtonState.PRESSED) {
-                dPadLeft = ButtonState.ON_RELEASE;
-            } else if (dPadLeft == ButtonState.ON_RELEASE) {
-                dPadLeft = ButtonState.RELEASED;
+            if (dPadLeftButton == ButtonState.PRESSED) {
+                dPadLeftButton = ButtonState.ON_RELEASE;
+            } else if (dPadLeftButton == ButtonState.ON_RELEASE) {
+                dPadLeftButton = ButtonState.RELEASED;
             }
         }
 
         // DPad Right
         if (gamepad.dpad_right) {
-            if (dPadRight == ButtonState.RELEASED) {
-                dPadRight = ButtonState.ON_PRESS;
-            } else if (dPadRight == ButtonState.ON_PRESS) {
-                dPadRight = ButtonState.PRESSED;
+            if (dPadRightButton== ButtonState.RELEASED) {
+                dPadRightButton= ButtonState.ON_PRESS;
+            } else if (dPadRightButton== ButtonState.ON_PRESS) {
+                dPadRightButton= ButtonState.PRESSED;
             }
         } else {
-            if (dPadRight == ButtonState.PRESSED) {
-                dPadRight = ButtonState.ON_RELEASE;
-            } else if (dPadRight == ButtonState.ON_RELEASE) {
-                dPadRight = ButtonState.RELEASED;
+            if (dPadRightButton== ButtonState.PRESSED) {
+                dPadRightButton= ButtonState.ON_RELEASE;
+            } else if (dPadRightButton== ButtonState.ON_RELEASE) {
+                dPadRightButton= ButtonState.RELEASED;
             }
         }
 
@@ -291,65 +312,65 @@ public class Controller {
 
         // Left Bumper
         if (gamepad.left_bumper) {
-            if (leftBumper == ButtonState.RELEASED) {
-                leftBumper = ButtonState.ON_PRESS;
-            } else if (leftBumper == ButtonState.ON_PRESS) {
-                leftBumper = ButtonState.PRESSED;
+            if (leftBumperButton == ButtonState.RELEASED) {
+                leftBumperButton = ButtonState.ON_PRESS;
+            } else if (leftBumperButton == ButtonState.ON_PRESS) {
+                leftBumperButton = ButtonState.PRESSED;
             }
         } else {
-            if (leftBumper == ButtonState.PRESSED) {
-                leftBumper = ButtonState.ON_RELEASE;
-            } else if (leftBumper == ButtonState.ON_RELEASE) {
-                leftBumper = ButtonState.RELEASED;
+            if (leftBumperButton == ButtonState.PRESSED) {
+                leftBumperButton = ButtonState.ON_RELEASE;
+            } else if (leftBumperButton == ButtonState.ON_RELEASE) {
+                leftBumperButton = ButtonState.RELEASED;
             }
         }
 
         // Right Bumper
         if (gamepad.right_bumper) {
-            if (rightBumper == ButtonState.RELEASED) {
-                rightBumper = ButtonState.ON_PRESS;
-            } else if (rightBumper == ButtonState.ON_PRESS) {
-                rightBumper = ButtonState.PRESSED;
+            if (rightBumperButton == ButtonState.RELEASED) {
+                rightBumperButton = ButtonState.ON_PRESS;
+            } else if (rightBumperButton == ButtonState.ON_PRESS) {
+                rightBumperButton = ButtonState.PRESSED;
             }
         } else {
-            if (rightBumper == ButtonState.PRESSED) {
-                rightBumper = ButtonState.ON_RELEASE;
-            } else if (rightBumper == ButtonState.ON_RELEASE) {
-                rightBumper = ButtonState.RELEASED;
+            if (rightBumperButton == ButtonState.PRESSED) {
+                rightBumperButton = ButtonState.ON_RELEASE;
+            } else if (rightBumperButton == ButtonState.ON_RELEASE) {
+                rightBumperButton = ButtonState.RELEASED;
             }
         }
 
         // Left Trigger
         if (gamepad.left_trigger > triggerDeadZone) {
             leftTriggerValue = gamepad.left_trigger;
-            if (leftTrigger == ButtonState.RELEASED) {
-                leftTrigger = ButtonState.ON_PRESS;
-            } else if (leftTrigger == ButtonState.ON_PRESS) {
-                leftTrigger = ButtonState.PRESSED;
+            if (leftTriggerButton == ButtonState.RELEASED) {
+                leftTriggerButton = ButtonState.ON_PRESS;
+            } else if (leftTriggerButton == ButtonState.ON_PRESS) {
+                leftTriggerButton = ButtonState.PRESSED;
             }
         } else {
             leftTriggerValue = (float) 0.0;
-            if (leftTrigger == ButtonState.PRESSED) {
-                leftTrigger = ButtonState.ON_RELEASE;
-            } else if (leftTrigger == ButtonState.ON_RELEASE) {
-                leftTrigger = ButtonState.RELEASED;
+            if (leftTriggerButton == ButtonState.PRESSED) {
+                leftTriggerButton = ButtonState.ON_RELEASE;
+            } else if (leftTriggerButton == ButtonState.ON_RELEASE) {
+                leftTriggerButton = ButtonState.RELEASED;
             }
         }
 
         // Left Trigger
         if (gamepad.right_trigger > triggerDeadZone) {
             rightTriggerValue = gamepad.left_trigger;
-            if (rightTrigger == ButtonState.RELEASED) {
-                rightTrigger = ButtonState.ON_PRESS;
-            } else if (rightTrigger == ButtonState.ON_PRESS) {
-                rightTrigger = ButtonState.PRESSED;
+            if (rightTriggerButton == ButtonState.RELEASED) {
+                rightTriggerButton = ButtonState.ON_PRESS;
+            } else if (rightTriggerButton == ButtonState.ON_PRESS) {
+                rightTriggerButton = ButtonState.PRESSED;
             }
         } else {
             rightTriggerValue = (float) 0.0;
-            if (rightTrigger == ButtonState.PRESSED) {
-                rightTrigger = ButtonState.ON_RELEASE;
-            } else if (rightTrigger == ButtonState.ON_RELEASE) {
-                rightTrigger = ButtonState.RELEASED;
+            if (rightTriggerButton == ButtonState.PRESSED) {
+                rightTriggerButton = ButtonState.ON_RELEASE;
+            } else if (rightTriggerButton == ButtonState.ON_RELEASE) {
+                rightTriggerButton = ButtonState.RELEASED;
             }
         }
 
@@ -397,6 +418,140 @@ public class Controller {
                 startButton = ButtonState.RELEASED;
             }
         }
+
+        //a bool
+        if (aButton == ButtonState.PRESSED) {
+            a = true;
+        } else {
+            a = false;
+        }
+        //b bool
+        if (bButton == ButtonState.PRESSED) {
+            b = true;
+        } else {
+            b = false;
+        }
+        //x bool
+        if (xButton == ButtonState.PRESSED) {
+            x = true;
+        } else {
+            x = false;
+        }
+        //y bool
+        if (yButton == ButtonState.PRESSED) {
+            y = true;
+        } else {
+            y = false;
+        }
+        //bumperLeft bool
+        if (leftBumperButton == ButtonState.PRESSED) {
+            leftBumper = true;
+        } else {
+            leftBumper = false;
+        }
+        //leftBumper bool
+        if (leftBumperButton == ButtonState.PRESSED) {
+            leftBumper = true;
+        } else {
+            leftBumper = false;
+        }
+        //rightBumper bool
+        if (rightBumperButton == ButtonState.PRESSED) {
+            rightBumper = true;
+        } else {
+            rightBumper = false;
+        }
+        //dpadUp bool
+        if (dPadUpButton == ButtonState.PRESSED) {
+           dPadUp = true;
+        } else {
+           dPadUp = false;
+        }
+        //dPadLeft bool
+        if (dPadLeftButton == ButtonState.PRESSED) {
+            dPadLeft = true;
+        } else {
+            dPadLeft = false;
+        }
+        //dPadRight bool
+        if (dPadRightButton == ButtonState.PRESSED) {
+            dPadRight = true;
+        } else {
+            dPadRight = false;
+        }
+        //dPadDown bool
+        if (dPadDownButton == ButtonState.PRESSED) {
+            dPadDown = true;
+        } else {
+            dPadDown = false;
+        }
+        //LJoystickX bool
+        if (leftJoystickXButton == ButtonState.PRESSED) {
+            leftJoystickX = true;
+        } else {
+            leftJoystickX = false;
+        }
+        //LJoystickY bool
+        if (leftJoystickYButton == ButtonState.PRESSED) {
+            leftJoystickY = true;
+        } else {
+            leftJoystickY = false;
+        }
+        //LJoystick bool
+        if (leftJoystickButton == ButtonState.PRESSED) {
+            leftJoystick = true;
+        } else {
+            leftJoystick = false;
+        }
+        //RJoystickX bool
+        if (rightJoystickXButton == ButtonState.PRESSED) {
+            rightJoystickX = true;
+        } else {
+            rightJoystickX = false;
+        }
+        //RJoystickY bool
+        if (rightJoystickYButton == ButtonState.PRESSED) {
+            rightJoystickY = true;
+        } else {
+            rightJoystickY = false;
+        }
+        //RJoystick bool
+        if (rightJoystickButton == ButtonState.PRESSED) {
+            rightJoystick = true;
+        } else {
+            rightJoystick = false;
+        }
+        //Ltrigger bool
+        if (leftTriggerButton == ButtonState.PRESSED) {
+            leftTrigger = true;
+        } else {
+            leftTrigger = false;
+        }
+        //Rtrigger bool
+        if (rightTriggerButton == ButtonState.PRESSED) {
+            rightTrigger = true;
+        } else {
+            rightTrigger = false;
+        }
+        //back bool
+        if (backButton == ButtonState.PRESSED) {
+            back = true;
+        } else {
+            back = false;
+        }
+        //guide bool
+        if (guideButton == ButtonState.PRESSED) {
+            guide = true;
+        } else {
+            guide = false;
+        }
+        //start bool
+        if (startButton == ButtonState.PRESSED) {
+            start = true;
+        } else {
+            start = false;
+        }
+
     }
 
     /*
@@ -404,7 +559,7 @@ public class Controller {
      */
 
     public ButtonState getLeftJoystickX() {
-        return leftJoystickX;
+        return leftJoystickXButton;
     }
 
     public float getLeftJoystickXValue() {
@@ -412,7 +567,7 @@ public class Controller {
     }
 
     public ButtonState getLeftJoystickY() {
-        return leftJoystickY;
+        return leftJoystickYButton;
     }
 
     public float getLeftJoystickYValue() {
@@ -424,7 +579,7 @@ public class Controller {
     }
 
     public ButtonState getRightJoystickX() {
-        return rightJoystickX;
+        return rightJoystickXButton;
     }
 
     public float getRightJoystickXValue() {
@@ -432,7 +587,7 @@ public class Controller {
     }
 
     public ButtonState getRightJoystickY() {
-        return rightJoystickY;
+        return rightJoystickYButton;
     }
 
     public float getRightJoystickYValue() {
@@ -444,19 +599,19 @@ public class Controller {
     }
 
     public ButtonState getdPadUp() {
-        return dPadUp;
+        return dPadUpButton;
     }
 
     public ButtonState getdPadDown() {
-        return dPadDown;
+        return dPadDownButton;
     }
 
     public ButtonState getdPadLeft() {
-        return dPadLeft;
+        return dPadLeftButton;
     }
 
     public ButtonState getdPadRight() {
-        return dPadRight;
+        return dPadRightButton;
     }
 
     public ButtonState getaButton() {
@@ -476,15 +631,15 @@ public class Controller {
     }
 
     public ButtonState getLeftBumper() {
-        return leftBumper;
+        return leftBumperButton;
     }
 
     public ButtonState getRightBumper() {
-        return rightBumper;
+        return rightBumperButton;
     }
 
     public ButtonState getLeftTrigger() {
-        return leftTrigger;
+        return leftTriggerButton;
     }
 
     public float getLeftTriggerValue() {
@@ -492,7 +647,7 @@ public class Controller {
     }
 
     public ButtonState getRightTrigger() {
-        return rightTrigger;
+        return rightTriggerButton;
     }
 
     public float getRightTriggerValue() {

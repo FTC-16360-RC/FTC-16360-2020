@@ -13,10 +13,10 @@ public class Transfer {
         REVERSE
     }
 
-    private Mode mode;
+    private Mode mode = Mode.IDLE;
 
     public Transfer(HardwareMap hardwareMap) {
-        transferMotor = hardwareMap.get(DcMotorEx.class, "lift");
+        transferMotor = hardwareMap.get(DcMotorEx.class, "transfer");
 
         transferMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
         transferMotor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);

@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.lib.PoseStorage;
 import java.util.List;
 
 public class Robot {
-    private HardwareMap hardwareMap;
+    protected HardwareMap hardwareMap;
 
     public SampleMecanumDrive drive;
     protected Shooter shooter;
@@ -32,9 +32,9 @@ public class Robot {
         SHOOTING
     }
 
-    private static RobotState robotState;
+    protected static RobotState robotState;
 
-    private Pose2d poseEstimate;
+    protected Pose2d poseEstimate = new Pose2d();
 
     public Robot(HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
@@ -44,12 +44,16 @@ public class Robot {
         shooter = new Shooter(hardwareMap);
         intake = new Intake(hardwareMap);
         transfer = new Transfer(hardwareMap);
+        wobble = new Wobble(hardwareMap);
 
         // initialize aiming class
         autoAim = new AutoAim();
 
         // set robot state to idle
         robotState = RobotState.DRIVING;
+
+        // set robot pose
+        drive.setPoseEstimate(PoseStorage.currentPose);
 
         // Velocity control per wheel is not necessary outside of motion profiled auto
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -105,6 +109,7 @@ public class Robot {
 
         // We update drive continuously in the background, regardless of state
         drive.update();
+        drive.getLocalizer().update();
 
         // Read pose
         poseEstimate = drive.getPoseEstimate();

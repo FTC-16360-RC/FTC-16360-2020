@@ -21,7 +21,7 @@ public class Intake {
         REVERSE
     }
 
-    private Mode mode;
+    private Mode mode = Mode.IDLE;
 
     public Intake(HardwareMap hardwareMap) {
         intakeMotor = hardwareMap.get(DcMotorEx.class, "intake");

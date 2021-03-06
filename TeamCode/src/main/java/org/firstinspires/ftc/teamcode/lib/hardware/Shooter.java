@@ -55,9 +55,9 @@ public class Shooter {
 
     private Servo feeder, flap;
 
-    private Mode mode;
+    private Mode mode = Mode.IDLE;
 
-    private FeederState feederState;
+    private FeederState feederState = FeederState.RETRACTED;
 
     private double currentRuntime;
     private double actuationTime = 0.25;

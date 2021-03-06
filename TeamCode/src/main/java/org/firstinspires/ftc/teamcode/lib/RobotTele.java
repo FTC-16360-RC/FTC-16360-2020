@@ -24,13 +24,21 @@ public class RobotTele extends Robot {
         Globals.setTarget(Targets.TargetType.HIGHGOAL);
     }
 
+    @Override
     public void update() {
         // We update drive continuously in the background, regardless of state
         drive.update();
+        drive.getLocalizer().update();
 
         // update controllers
         controller1.update();
         controller2.update();
+
+        //WEG
+        //WEG
+        //WEG
+        wobble.setArmState(Wobble.ArmState.INTAKE);
+        wobbleGrab();
 
         // update controls according to button states
         updateControls();
@@ -40,6 +48,9 @@ public class RobotTele extends Robot {
 
         // update shooter pidf in the background
         shooter.update();
+
+        // update autoAim
+        autoAim.update();
 
         // very important to make sure nothing breaks
         if(intake.getMode() == Intake.Mode.FORWARD && transfer.getMode() != Transfer.Mode.FORWARD) {
@@ -54,7 +65,7 @@ public class RobotTele extends Robot {
         drive.setWeightedDrivePower(autoAim.getDriveDirection());
 
         // Read pose
-        Pose2d poseEstimate = drive.getPoseEstimate();
+        poseEstimate = drive.getPoseEstimate();
 
         // Continually write pose to PoseStorage
         PoseStorage.currentPose = poseEstimate;

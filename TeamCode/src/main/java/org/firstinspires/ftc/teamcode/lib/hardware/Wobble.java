@@ -11,10 +11,10 @@ public class Wobble {
     private Servo wobbleArm1, wobbleArm2, wobbleGripper;
 
     // define servo upper and lower boundaries wobbleArm2 is 1-wobbleArm1
-    private final double wobbleArm1StartPos = 0.05;
+    private final double wobbleArm1StartPos = 0;
     private final double wobbleArm1lowerPos = 1;
-    private final double wobbleGripperOpen = 0.9;
-    private final double wobbleGripperClosed = 0.3;
+    private final double wobbleGripperOpen = 0.3;
+    private final double wobbleGripperClosed = 0.9;
 
     public enum ArmState {
         START_POS,
@@ -30,9 +30,9 @@ public class Wobble {
         CLOSED_LOOSE
     }
 
-    private ArmState armState;
+    private ArmState armState = ArmState.START_POS;
 
-    private GripperState gripperState;
+    private GripperState gripperState = GripperState.OPEN;
 
     public static double armPosition = 0;
 

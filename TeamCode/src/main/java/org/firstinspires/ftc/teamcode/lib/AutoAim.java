@@ -42,8 +42,8 @@ public class AutoAim {
         headingController.setInputBounds(-Math.PI, Math.PI);
     }
 
-    private double distance = 0;
-    private double headingError = 0;
+    private static double distance = 0;
+    private static double headingError = 0;
 
     public void update() {
         Pose2d poseEstimate = PoseStorage.currentPose;
@@ -148,11 +148,11 @@ public class AutoAim {
         return driveDirection;
     }
 
-    public double getDistance() {
+    public static double getDistance() {
         return distance;
     }
 
-    public double getHeadingError() {
+    public static double getHeadingError() {
         return headingError;
     }
 }

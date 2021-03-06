@@ -82,7 +82,9 @@ public class RobotTele extends Robot {
             drive.setPoseEstimate(new Pose2d(0, 0, 0));
 
         if(controller1.getRightTrigger() == Controller.ButtonState.PRESSED) { // shoot
-            setRobotState(RobotState.SHOOTING);
+            if(getRobotState() != RobotState.SHOOTING) {
+                setRobotState(RobotState.SHOOTING);
+            }
             shoot();
         }
 

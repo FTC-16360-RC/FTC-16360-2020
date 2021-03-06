@@ -24,6 +24,8 @@ public class Shooter {
     public static double kA = 0;
     public static double kStatic = 0;
 
+    private static double flapPosition = 0;
+
     // Timer for calculating desired acceleration
     // Necessary for kA to have an affect
     private final ElapsedTime veloTimer = new ElapsedTime();
@@ -106,7 +108,7 @@ public class Shooter {
         lutHighgoal.add(1.1, 0.2);
 
         //generating final equation for lutHighgoal
-        lutHighgoal.createLUT();
+        //lutHighgoal.createLUT();
 
         // same for power shots
         lutPowershots.add(5, 1);
@@ -116,7 +118,7 @@ public class Shooter {
         lutPowershots.add(1.1, 0.2);
 
         //generating final equation for lutPowershots
-        lutPowershots.createLUT();
+        //lutPowershots.createLUT();
     }
 
     public Mode getMode() {
@@ -140,9 +142,9 @@ public class Shooter {
         if(feederState == FeederState.RETRACTED && mode == Mode.SHOOTING && targetVelocity * 0.95 <= currentVelocity && currentVelocity <= targetVelocity * 1.05) {
             feeder.setPosition(feederExtendedPosition);
             if(Globals.currentTargetType == Targets.TargetType.HIGHGOAL) {
-                flap.setPosition(lutHighgoal.get(distance));
+                flap.setPosition(flapPosition);//lutHighgoal.get(distance));
             } else {
-                flap.setPosition(lutPowershots.get(distance));
+                flap.setPosition(flapPosition);//lutPowershots.get(distance));
             }
             feederTimer.reset();
             feederState = FeederState.PUSHING;

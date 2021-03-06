@@ -1,18 +1,20 @@
 package org.firstinspires.ftc.teamcode.lib.hardware;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+@Config
 public class Wobble {
     private Servo wobbleArm1, wobbleArm2, wobbleGripper;
 
     // define servo upper and lower boundaries wobbleArm2 is 1-wobbleArm1
-    private final double wobbleArm1StartPos = 0;
-    private final double wobbleArm1lowerPos = 0;
-    private final double wobbleGripperOpen = 0;
-    private final double wobbleGripperClosed = 0;
+    private final double wobbleArm1StartPos = 0.05;
+    private final double wobbleArm1lowerPos = 1;
+    private final double wobbleGripperOpen = 0.9;
+    private final double wobbleGripperClosed = 0.3;
 
     public enum ArmState {
         START_POS,
@@ -32,6 +34,8 @@ public class Wobble {
 
     private GripperState gripperState;
 
+    public static double armPosition = 0;
+
     public Wobble(HardwareMap hardwareMap) {
         wobbleArm1 = hardwareMap.get(Servo.class, "wobbleArmLeft");
         wobbleArm2 = hardwareMap.get(Servo.class, "wobbleArmRight");
@@ -40,7 +44,7 @@ public class Wobble {
 
     // in between bounds, automatically sets second servo according to first one
     private void setWobbleArmPosition (double targetPosition) {
-        wobbleArm1.setPosition(targetPosition*(wobbleArm1lowerPos-wobbleArm1StartPos) + wobbleArm1StartPos);
+        wobbleArm1.setPosition(armPosition);//targetPosition*(wobbleArm1lowerPos-wobbleArm1StartPos) + wobbleArm1StartPos);
         wobbleArm2.setPosition(1-wobbleArm1.getPosition()); //since they are mirrored, boundaries should match
     }
 

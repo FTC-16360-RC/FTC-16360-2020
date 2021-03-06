@@ -189,4 +189,9 @@ public class Robot {
             shooter.shoot(autoAim.getDistance());
         }
     }
+
+    // shooter method for autonomous
+    public void forceShoot(double distance) {
+        shooter.shoot(distance);
+    }
 }

@@ -38,9 +38,9 @@ public class WobbleGoal {
         arm1 = hardwaremap.get(Servo.class, "arm1");
         arm2 = hardwaremap.get(Servo.class, "arm2");
         hand = hardwaremap.get(Servo.class, "hand");
-        arm1.setPosition(arm1LiftingPosition);
-        arm2.setPosition(arm2LiftingPosition);
-        hand.setPosition(handHoldingPosition);
+        arm1.setPosition(arm1StartPosition); //arm1LiftingPosition
+        arm2.setPosition(arm2StartPosition); //arm2LiftingPosition
+        hand.setPosition(handStartPosition); //handHoldingPosition
         mode = Mode.NOTHING;
     }
 
@@ -50,7 +50,7 @@ public class WobbleGoal {
     double waitTime2 = 1;
     ElapsedTime waitTimer2 = new ElapsedTime();
 
-    double waitTime3 = 1.5;
+    double waitTime3 = 2;
     ElapsedTime waitTimer3 = new ElapsedTime();
 
     public void setMode (Mode mode){
@@ -81,11 +81,11 @@ public class WobbleGoal {
                 break;
             case LIFTING:
                 hand.setPosition(handHoldingPosition);
-                this.mode = Mode.WAIT_3;
                 waitTimer3.reset();
+                this.mode = Mode.WAIT_3;
                 break;
             case WAIT_3:
-                if (waitTimer3.seconds() >= waitTime3){
+                if (waitTimer3.seconds() >= waitTime3) {
                     arm1.setPosition(arm1LiftingPosition);
                     arm2.setPosition(arm2LiftingPosition);
                 }

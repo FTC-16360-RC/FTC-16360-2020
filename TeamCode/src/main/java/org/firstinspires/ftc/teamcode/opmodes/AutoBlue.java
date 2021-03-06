@@ -100,7 +100,7 @@ public class AutoBlue extends LinearOpMode {
         // trajectory moves to the spot to shoot at the high goal
         Trajectory trajectory6 = drive.trajectoryBuilder(startPose)
                 .splineToLinearHeading(new Pose2d(-15, 19), Math.toRadians(0))
-                .splineToLinearHeading(new Pose2d(-5, 20), Math.toRadians(330))
+                .splineToLinearHeading(new Pose2d(-5, 42), Math.toRadians(0))
                 .build();
 
 
@@ -171,7 +171,7 @@ public class AutoBlue extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(-23, 55, Math.toRadians(0)))
                 .build();
         Trajectory trajectory3_0_1 = drive.trajectoryBuilder(trajectory3_0_0.end())
-                .lineTo(new Vector2d(-38, 40))
+                .lineTo(new Vector2d(-34, 23))
                 .build();
 
         // Trajectory to pick up the second wobble goal for 1 ring
@@ -179,7 +179,7 @@ public class AutoBlue extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(-23, 55, Math.toRadians(0)))
                 .build();
         Trajectory trajectory3_1_1 = drive.trajectoryBuilder(trajectory3_1_0.end())
-                .lineTo(new Vector2d(-38, 40))
+                .lineTo(new Vector2d(-34, 23))
                 .build();
 
         // Trajectory to pick up the second wobble goal for 4 rings
@@ -187,7 +187,7 @@ public class AutoBlue extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(-23, 55, Math.toRadians(0)))
                 .build();
         Trajectory trajectory3_4_1 = drive.trajectoryBuilder(trajectory3_4_0.end())
-                .lineTo(new Vector2d(-38, 44))
+                .lineTo(new Vector2d(-34, 23))
                 .build();
 
         // we go to take in the ring if there is only one
@@ -242,7 +242,7 @@ public class AutoBlue extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(-20, 34, Math.toRadians(0)))
                 .build();
         Trajectory trajectory8_1 = drive.trajectoryBuilder(trajectory8_0.end())
-                .splineToLinearHeading(new Pose2d(-5, 20), Math.toRadians(330))
+                .splineToLinearHeading(new Pose2d(-5, 42), Math.toRadians(0))
                 .build();
 
         // time to shoot
@@ -294,20 +294,24 @@ public class AutoBlue extends LinearOpMode {
 
         if (isStopRequested()) return;
 
+        //wobbleGoal.setMode(WobbleGoal.Mode.LIFTING);
+        //sleep (30000);
+
 
 
         // Set the current state to TRAJECTORY_1
         // Then have it follow that trajectory
         // Make sure we're using the async version of the commands
         // Otherwise it will be blocking and pause the program here until the trajectory finishes
-        /*currentState = State.WAIT_7;
+        currentState = State.WAIT_7;
         sleep(500);
         rings = vision.getRingAmount();
+        //put down teh intake
         //drive.followTrajectoryAsync(trajectory1);
         drive.followTrajectoryAsync(trajectory6);
-        //shooter.setTargetVolicty(Globals.powerShotRPM);
         shooter.setFlapPosition(0.175);
         shooter.setTargetVolicty(Globals.standardRPM);
+        //shooter.setTargetVolicty(Globals.powerShotRPM);
         shooter.setMode(Shooter.Mode.SHOOTING);
 
         while (opModeIsActive() && !isStopRequested()) {
@@ -600,7 +604,5 @@ public class AutoBlue extends LinearOpMode {
             telemetry.addData("rings", rings);
             telemetry.update();
         }
-
-         */
     }
 }

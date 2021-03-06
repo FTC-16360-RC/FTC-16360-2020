@@ -21,7 +21,41 @@ import org.firstinspires.ftc.teamcode.util.DashboardUtil;
  * switch into field centric control and independently control its heading to align itself with the
  * specified `targetPosition`.
  * <p>
- * Press `a` to switch into alignment mode and `b` to switch back into standard teleop driving mode.
+ * Press `a` to switch into alignment mode and `b` to switch back into spackage org.firstinspires.ftc.teamcode.opmodes;
+ *
+ * import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+ * import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+ *
+ * import org.firstinspires.ftc.teamcode.lib.Globals;
+ * import org.firstinspires.ftc.teamcode.lib.Robot;
+ * import org.firstinspires.ftc.teamcode.lib.Vision;
+ *
+ * @TeleOp(name="Camera", group="Iterative Opmode")
+ * //@Disabled
+ * public class EasyOpenCVExample extends OpMode {
+ *
+ *     Vision vision;
+ *
+ *     @Override
+ *     public void init() {
+ *         vision = new Vision(hardwareMap);
+ *     }
+ *
+ *     @Override
+ *     public void init_loop() {
+ *     }
+ *
+ *     @Override
+ *     public void start() {
+ *         telemetry.addData("w", vision.getRingAmount());
+ *         telemetry.log();
+ *     }
+ *
+ *     @Override
+ *     public void loop() {
+ *
+ *     }
+ * }tandard teleop driving mode.
  * <p>
  * Note: We don't call drive.update() here because it has its own field drawing functions. We don't
  * want that to interfere with our graph so we just directly update localizer instead

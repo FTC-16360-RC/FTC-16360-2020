@@ -15,7 +15,8 @@ public class Wobble {
         INTAKE,
         OUTTAKE,
         STORED,
-        RELEASE
+        RELEASE,
+        DROPPING
     }
 
     public enum GripperState {
@@ -58,8 +59,11 @@ public class Wobble {
             case STORED:
                 setWobbleArmPosition(0.05);
                 break;
+            case DROPPING:
+                setWobbleArmPosition(0.35);
+                break;
             case RELEASE:
-                setWobbleArmPosition(0.5);
+                setWobbleArmPosition(0.6);
                 break;
             case OUTTAKE:
                 setWobbleArmPosition(0.9);
@@ -81,10 +85,10 @@ public class Wobble {
                 setWobbleGripperPosition(1);
                 break;
             case CLOSED_LOOSE:
-                setWobbleGripperPosition(0.1);
+                setWobbleGripperPosition(0.5);
                 break;
             case CLOSED_TIGHT:
-                setWobbleGripperPosition(0.3);
+                setWobbleGripperPosition(0.4);
                 break;
         }
     }

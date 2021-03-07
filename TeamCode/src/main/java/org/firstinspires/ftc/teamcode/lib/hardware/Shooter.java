@@ -22,7 +22,7 @@ public class Shooter {
     // feedforward gains
     public static double kV = 0.00034;
     public static double kA = 0.000135;
-    public static double kStatic = 0.55;
+    public static double kStatic = 0;
 
     // Timer for calculating desired acceleration
     // Necessary for kA to have an affect
@@ -32,7 +32,7 @@ public class Shooter {
     private double currentVelocity = 0.0;
 
     // Our velocity controller
-    private final VelocityPIDFController veloController = new VelocityPIDFController(MOTOR_VELO_PID, kV, kA, 0);//kStatic);
+    private final VelocityPIDFController veloController = new VelocityPIDFController(MOTOR_VELO_PID, kV, kA, kStatic);
 
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
 
@@ -98,14 +98,23 @@ public class Shooter {
         mode = Mode.IDLE;
 
         // values for high goal lut
-        lutHighgoal.add(5, 1);
-        lutHighgoal.add(4.1, 0.9);
-        lutHighgoal.add(3.6, 0.75);
-        lutHighgoal.add(2.7, .5);
-        lutHighgoal.add(1.1, 0.2);
+        lutHighgoal.add(0, 0.5);
+        lutHighgoal.add(70, 0.52);
+        lutHighgoal.add(75, 0.535);
+        lutHighgoal.add(80, 0.545);
+        lutHighgoal.add(85, 0.555);
+        lutHighgoal.add(90, 0.57);
+        lutHighgoal.add(95, 0.575);
+        lutHighgoal.add(100, 0.57);
+        lutHighgoal.add(105, 0.58);
+        lutHighgoal.add(110, 0.58);
+        lutHighgoal.add(115, 0.585);
+        lutHighgoal.add(120, 0.58);
+        lutHighgoal.add(125, 0.585);
+        lutHighgoal.add(200, 0.58);
 
         //generating final equation for lutHighgoal
-        //lutHighgoal.createLUT();
+        lutHighgoal.createLUT();
 
         // same for power shots
         lutPowershots.add(5, 1);
@@ -147,9 +156,7 @@ public class Shooter {
         this.mode = mode;
         if (mode == Mode.SHOOTING) {
             veloTimer.reset();
-         } else {
-            flap.setPosition(flapRestPosition);
-        }
+         }
     }
 
     public void update() {
@@ -178,9 +185,9 @@ public class Shooter {
             case SHOOTING: // shooting speed including pidf
                 // flap
                 if(Globals.currentTargetType == Targets.TargetType.HIGHGOAL) {
-                    flap.setPosition(kStatic);//lutHighgoal.get(distance));
+                    flap.setPosition(lutHighgoal.get(distance));
                 } else {
-                    flap.setPosition(kStatic);//lutPowershots.get(distance));
+                    flap.setPosition(lutHighgoal.get(distance));//lutPowershots.get(distance));
                 }
 
                 // Call necessary controller methods

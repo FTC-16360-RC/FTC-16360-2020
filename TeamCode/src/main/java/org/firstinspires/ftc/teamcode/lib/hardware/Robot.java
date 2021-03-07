@@ -146,6 +146,11 @@ public class Robot {
     }
 
     public void wobbleDroppingPos() {
+        wobble.setArmState(Wobble.ArmState.DROPPING);
+        wobble.setGripperState(Wobble.GripperState.CLOSED_TIGHT);
+    }
+
+    public void wobbleReleasePos() {
         wobble.setArmState(Wobble.ArmState.RELEASE);
         wobble.setGripperState(Wobble.GripperState.CLOSED_TIGHT);
     }
@@ -176,6 +181,15 @@ public class Robot {
     public void reverseIntake() {
         intake.setMode(Intake.Mode.REVERSE);
     }
+
+    public void dropIntake() {
+        intake.releaseIntake();
+    }
+
+    public void holdIntake() {
+        intake.holdIntake();
+    }
+
 
     public void reverseTransfer() {
         transfer.setMode(Transfer.Mode.REVERSE);

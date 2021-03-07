@@ -10,10 +10,10 @@ public class Intake {
 
     private Servo intakeHolder1, intakeHolder2;
 
-    private final double intakeHolder1StartPos = 0.34;
-    private final double intakeHolder1EndPos = 0.25;
-    private final double intakeHolder2StartPos = 0;
-    private final double intakeHolder2EndPos = 0.1;
+    private final double intakeHolder1StartPos = 0;
+    private final double intakeHolder1EndPos = 0.1;
+    private final double intakeHolder2StartPos = 0.34;
+    private final double intakeHolder2EndPos = 0.25;
 
     public enum Mode {
         IDLE,
@@ -65,7 +65,7 @@ public class Intake {
                 intakeMotor.setPower(1);
                 break;
             case REVERSE:
-                intakeMotor.setPower(-0.4);
+                intakeMotor.setPower(-1);
                 break;
 
         }

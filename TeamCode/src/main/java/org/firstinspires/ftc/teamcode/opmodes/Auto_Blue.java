@@ -64,6 +64,7 @@ public class Auto_Blue extends LinearOpMode {
         TRAJECTORY_5_4,   // go to deliver the wobble goal
         WAIT_5_4,         // let go of the wobble goal
         TRAJECTORY_6_4,   // go to park the robot on the line
+        SHOOT_4_1,        // we shoot the ring if there is only one on the staple
     }
 
     // We define the current state we're on
@@ -92,16 +93,23 @@ public class Auto_Blue extends LinearOpMode {
         // Save initial pose to PoseStorage
         PoseStorage.currentPose = startPose;
 
+        // set intake servos to hold
+        robot.holdIntake();
+
         // trajectory moves to the spot to shoot at the high goal
         Trajectory trajectory1 = robot.drive.trajectoryBuilder(startPose)
                 .splineToLinearHeading(new Pose2d(-15, 19), Math.toRadians(0))
-                .splineToLinearHeading(new Pose2d(-5, 42), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(-5, 32), Math.toRadians(0))
                 .build();
 
 
         // Time to shoot
-        double waitTime1 = 0.4;
+        double waitTime1 = 0.5;
         ElapsedTime waitTimer1 = new ElapsedTime();
+
+        // Time to get the shooter ready
+        double waitTime18 = 1;
+        ElapsedTime waitTimer18 = new ElapsedTime();
 
         // Time until  third shoot
         double waitTime10 = 0.8; //0.4
@@ -117,12 +125,12 @@ public class Auto_Blue extends LinearOpMode {
 
         // Trajectory to deposit first wobble goal with 0 rings
         Trajectory trajectory2_0 = robot.drive.trajectoryBuilder(trajectory1.end())
-                .lineToLinearHeading(new Pose2d(0, 38, Math.toRadians(270)))
+                .lineToLinearHeading(new Pose2d(5, 47, Math.toRadians(270)))
                 .build();
 
         // Trajectory to deposit first wobble goal with 1 ring
         Trajectory trajectory2_1 = robot.drive.trajectoryBuilder(trajectory1.end())
-                .lineToLinearHeading(new Pose2d(25, 23.5, Math.toRadians(270)))
+                .lineToLinearHeading(new Pose2d(37, 17, Math.toRadians(270)))
                 .build();
 
         // Trajectory to deposit first wobble goal with 4 rings
@@ -138,8 +146,8 @@ public class Auto_Blue extends LinearOpMode {
         Trajectory trajectory3_0_0 = robot.drive.trajectoryBuilder(trajectory2_0.end())
                 .lineToLinearHeading(new Pose2d(-23, 55, Math.toRadians(0)))
                 .build();
-        Trajectory trajectory3_0_1 = robot.drive.trajectoryBuilder(trajectory3_0_0.end())
-                .lineTo(new Vector2d(-34, 23))
+        Trajectory trajectory3_0_1 = robot.drive.trajectoryBuilder(trajectory2_0.end())
+                .lineToLinearHeading(new Pose2d(-36, 45, Math.toRadians(0)))
                 .build();
 
         // Trajectory to pick up the second wobble goal for 1 ring
@@ -147,7 +155,7 @@ public class Auto_Blue extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(-23, 55, Math.toRadians(0)))
                 .build();
         Trajectory trajectory3_1_1 = robot.drive.trajectoryBuilder(trajectory3_1_0.end())
-                .lineTo(new Vector2d(-34, 23))
+                .lineTo(new Vector2d(-42, 43))
                 .build();
 
         // Trajectory to pick up the second wobble goal for 4 rings
@@ -155,12 +163,12 @@ public class Auto_Blue extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(-23, 55, Math.toRadians(0)))
                 .build();
         Trajectory trajectory3_4_1 = robot.drive.trajectoryBuilder(trajectory3_4_0.end())
-                .lineTo(new Vector2d(-34, 23))
+                .splineTo(new Vector2d(-42, 43), 1)
                 .build();
 
         // we go to take in the ring if there is only one
         Trajectory trajectory7_1_1 = robot.drive.trajectoryBuilder(trajectory3_1_1.end())
-                .splineToLinearHeading(new Pose2d(-5, 42), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(-5, 32), Math.toRadians(0))
                 .build();
 
         // we go to take in 3 of four rings
@@ -206,12 +214,12 @@ public class Auto_Blue extends LinearOpMode {
 
         // Trajectory to deposit second wobble goal with 0 rings
         Trajectory trajectory4_0 = robot.drive.trajectoryBuilder(trajectory3_0_1.end())
-                .lineToLinearHeading(new Pose2d(0, 38, Math.toRadians(270)))
+                .lineToLinearHeading(new Pose2d(15, 38, Math.toRadians(270)))
                 .build();
 
         // Trajectory to deposit second wobble goal with 1 ring
         Trajectory trajectory4_1 = robot.drive.trajectoryBuilder(trajectory7_1_1.end())
-                .lineToLinearHeading(new Pose2d(23.5, 23.5, Math.toRadians(270)))
+                .lineToLinearHeading(new Pose2d(23.5, 17, Math.toRadians(270)))
                 .build();
 
         // Trajectory to deposit second wobble goal with 4 rings
@@ -252,9 +260,10 @@ public class Auto_Blue extends LinearOpMode {
         // Otherwise it will be blocking and pause the program here until the trajectory finishes
         currentState = State.TRAJECTORY_1;
         sleep(500);
-        rings = 0;
-        //rings = vision.getRingAmount();
-        //put down teh intake
+        rings = vision.getRingAmount();
+        //put down the intake
+        robot.dropIntake();
+        sleep(500);
         robot.drive.followTrajectoryAsync(trajectory1);
         robot.setRobotState(Robot.RobotState.SHOOTING);
         //robot.wobbleStoringPos();
@@ -325,7 +334,7 @@ public class Auto_Blue extends LinearOpMode {
                 case TRAJECTORY_2_0:
                     if (!robot.drive.isBusy()) {
                         //robot.wobblegripperOpen();
-                        currentState = State.WAIT_2_0;
+                        currentState = State.WAIT_2_0_1;
                         waitTimer3.reset();
                     }
                     break;
@@ -355,26 +364,26 @@ public class Auto_Blue extends LinearOpMode {
                     }
                     break;
                 case WAIT_2_0_1:
-                    if (!robot.drive.isBusy()) {
+                    if (waitTimer3.seconds() >= waitTime3){ //!robot.drive.isBusy()) {
                         robot.drive.followTrajectoryAsync(trajectory3_0_1);
-                        currentState = State.WAIT_3_0;
+                        currentState = State.TRAJECTORY_3_0;
                 }
                     break;
                 case TRAJECTORY_3_0:
                     if (!robot.drive.isBusy()) {
-                        currentState = State.TRAJECTORY_3_0;
-                        robot.drive.followTrajectoryAsync(trajectory4_0);
-                    }
-                    break;
-                case WAIT_3_0:
-                    if (!robot.drive.isBusy()) {
-                        //let go of wobble goal
-                        currentState = State.TRAJECTORY_4_0;
+                        currentState = State.WAIT_3_0;
                         waitTimer6.reset();
                     }
                     break;
-                case TRAJECTORY_4_0:
+                case WAIT_3_0:
                     if (waitTimer6.seconds() >= waitTime6) {
+                        //let go of wobble goal
+                        robot.drive.followTrajectoryAsync(trajectory4_0);
+                        currentState = State.TRAJECTORY_4_0;
+                    }
+                    break;
+                case TRAJECTORY_4_0:
+                    if (!robot.drive.isBusy()) {
                         robot.drive.followTrajectoryAsync(trajectory5_0);
                         currentState = State.WAIT_4;
                     }
@@ -393,6 +402,7 @@ public class Auto_Blue extends LinearOpMode {
                     break;
                 case TRAJECTORY_3_1:
                     if (!robot.drive.isBusy()){
+                        robot.setRobotState(Robot.RobotState.INTAKING);
                         robot.drive.followTrajectoryAsync(trajectory7_1_1);
                         currentState = State.WAIT_3_1;
                         waitTimer4.reset();
@@ -401,6 +411,13 @@ public class Auto_Blue extends LinearOpMode {
                 case WAIT_3_1:
                     if (waitTimer4.seconds() >= waitTime4) {
                         robot.setRobotState(Robot.RobotState.SHOOTING);
+                        waitTimer18.reset();
+                        currentState = State.SHOOT_4_1;
+                    }
+                    break;
+                case SHOOT_4_1:
+                    if (waitTimer18.seconds() >= waitTime18){
+                        robot.forceShoot();
                         waitTimer1.reset();
                         currentState = State.WAIT_4_1;
                     }

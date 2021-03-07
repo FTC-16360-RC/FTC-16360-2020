@@ -85,6 +85,12 @@ public class RobotTele extends Robot {
         if(controller1.getyButton() == Controller.ButtonState.ON_PRESS) // reset pose
             drive.setPoseEstimate(new Pose2d(-60.8, 62.8, 0));
 
+        if(controller1.getLeftTrigger() == Controller.ButtonState.ON_PRESS) // reverse intake
+            reverseIntake();
+
+        if(controller1.getLeftTrigger() == Controller.ButtonState.ON_RELEASE) // reset intake
+            intake();
+
         if(controller1.getRightTrigger() == Controller.ButtonState.PRESSED) { // shoot
             if(getRobotState() != RobotState.SHOOTING) {
                 setRobotState(RobotState.SHOOTING);
@@ -110,16 +116,15 @@ public class RobotTele extends Robot {
 
 
         if(controller1.getLeftBumper() == Controller.ButtonState.ON_PRESS) { // open / drop wobble arm
-            if(wobble.getArmState() == Wobble.ArmState.RELEASE) {
+            if(wobble.getArmState() == Wobble.ArmState.RELEASE || wobble.getArmState() == Wobble.ArmState.DROPPING) {
                 if(wobble.getGripperState() != Wobble.GripperState.OPEN) {
                     wobblegripperOpen();
                 } else {
                     wobbleIntakingPos();
-                    setRobotState(RobotState.DRIVING);
                 }
             } else {
                 if(wobble.getArmState() == Wobble.ArmState.STORED && wobble.getGripperState() != Wobble.GripperState.OPEN) {
-                    wobbleDroppingPos();
+                    wobbleReleasePos();
                 } else {
                     wobbleIntakingPos();
                 }
@@ -129,16 +134,16 @@ public class RobotTele extends Robot {
 
         // controller 2
         if(controller2.getdPadUp() == Controller.ButtonState.ON_PRESS) // increase distance by subtracting 2 inches to x pose
-            drive.setPoseEstimate(drive.getPoseEstimate().plus(new Pose2d(-2, 0, 0)));
+            drive.setPoseEstimate(drive.getPoseEstimate().plus(new Pose2d(-4, 0, 0)));
 
         if(controller2.getdPadDown() == Controller.ButtonState.ON_PRESS) // increase distance by adding 2 inches to x pose
-            drive.setPoseEstimate(drive.getPoseEstimate().plus(new Pose2d(2, 0, 0)));
+            drive.setPoseEstimate(drive.getPoseEstimate().plus(new Pose2d(4, 0, 0)));
 
         if(controller2.getdPadLeft() == Controller.ButtonState.ON_PRESS) // correct heading by adding 1 degree
-            drive.setPoseEstimate(drive.getPoseEstimate().plus(new Pose2d(0, 0, Math.toRadians(1))));
+            drive.setPoseEstimate(drive.getPoseEstimate().plus(new Pose2d(0, 0, Math.toRadians(-2))));
 
         if(controller2.getdPadRight() == Controller.ButtonState.ON_PRESS) // correct heading by subtracting 1 degree
-            drive.setPoseEstimate(drive.getPoseEstimate().plus(new Pose2d(0, 0, Math.toRadians(-1))));
+            drive.setPoseEstimate(drive.getPoseEstimate().plus(new Pose2d(0, 0, Math.toRadians(2))));
 
         if(controller2.getRightBumper() == Controller.ButtonState.ON_PRESS) { // change to the next right target
             switch (Globals.currentTargetType) {
@@ -163,6 +168,7 @@ public class RobotTele extends Robot {
                         Globals.setTarget(Targets.TargetType.CENTER_POWERSHOT);
                     break;
             }
+            Globals.updateTarget();
         }
 
         if(controller2.getLeftBumper() == Controller.ButtonState.ON_PRESS) { // change to the next left target
@@ -188,6 +194,7 @@ public class RobotTele extends Robot {
                         Globals.setTarget(Targets.TargetType.CENTER_POWERSHOT);
                     break;
             }
+            Globals.updateTarget();
         }
 
         if(controller2.getLeftTrigger() == Controller.ButtonState.ON_PRESS) // reverse intake
@@ -204,6 +211,9 @@ public class RobotTele extends Robot {
 
         if(controller2.getxButton() == Controller.ButtonState.ON_PRESS) // reverse transfer
             reverseTransfer();
+
+        if(controller2.getxButton() == Controller.ButtonState.ON_RELEASE) // reverse transfer
+            intake();
 
         if(controller2.getyButton() == Controller.ButtonState.ON_PRESS) { // change aiming mode
             if(Globals.currentAimingMode == AutoAim.Mode.ALIGN_TO_HEADING)

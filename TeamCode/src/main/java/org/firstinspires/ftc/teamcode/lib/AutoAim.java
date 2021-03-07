@@ -86,7 +86,7 @@ public class AutoAim {
 
             }
             // Obtain the target angle for feedback and derivative for feedforward
-            double theta = difference.angle();
+            double theta = difference.angle() - Math.toRadians(Globals.aimingHeadingError);
             // Not technically omega because its power. This is the derivative of atan2
             double thetaFF = -fieldFrameInput.rotated(-Math.PI / 2).dot(difference) / (difference.norm() * difference.norm());
 

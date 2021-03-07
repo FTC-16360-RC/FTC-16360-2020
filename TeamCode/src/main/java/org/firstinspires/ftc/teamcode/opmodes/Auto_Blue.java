@@ -27,36 +27,43 @@ public class Auto_Blue extends LinearOpMode {
     // This enum defines our "state"
     // This is defines the possible steps our program will take
     enum State {
-        TRAJECTORY_1,   // robot.drive to the shooting spot for power shots
-        WAIT_1,         // waiting for shooter
-        TURN_1,         // turn to second power shot
-        WAIT_2,         // waiting for shooter
-        TURN_2,         // turn to third power shot
-        WAIT_3,         // waiting for shooter
-        TRAJECTORY_2,   // deposit first wobble goal
-        WAIT_4,         // waiting to deposit wobble goal
-        TRAJECTORY_3,   // pick up second wobble goal
-        WAIT_5,         // waiting to pick up wobble
-        TRAJECTORY_4,   // deposit second wobble goal
-        WAIT_6,         // waiting to deposit second wobble goal
-        TRAJECTORY_5,   // go to line
-        IDLE,           // Our bot will enter the IDLE state when done
-        SHOOT_1,        // shoot the first ring
-        WAIT_7,         // wait to shoot
-        SHOOT_2,        // shoot the second ring
-        SHOOT_3,        // shoot the third ring
-        TRAJECTORY_6,   // go to the point to shoot at the high goal
-        TRAJECTORY_7,   // take in the last ring
-        WAIT_8_1,       // wait to shoot
-        WAIT_8_4,       // wait to shoot
-        SHOOT_4,        // shoot the forth ring
-        SHOOT_5,        // shoot the fifth ring
-        SHOOT_6,        // shoot the sixth ring
-        TRAJECTORY_9,   // go to shoot 4,5,6
-        SHOOT_7,        // shoot the forth ring of the staple
-        WAIT_9,         // wait until the ring is through the transfer
-        WAIT_10,        // wait until the ring is through the transfer
-        WAIT_11         // wait until the ring is through the transfer
+        TRAJECTORY_1,     // robot.drive to the shooting spot for power shots
+        WAIT_1,           // waiting for shooter
+        WAIT_2_0,         // waiting for delivering wobble goal, go back for second wobble goal
+        WAIT_2_0_1,       // go back to second wobble goal
+        WAIT_2_1,         // waiting for delivering wobble goal, go back for second wobble goal
+        WAIT_2_1_1,       // go back to second wobble goal
+        WAIT_2_4,         // waiting for delivering wobble goal, go back for second wobble goal
+        WAIT_2_4_1,       // go back to second wobble goal
+        TRAJECTORY_2_0,   // go to deposit first wobble goal for zero ring
+        TRAJECTORY_2_1,   // go to deposit first wobble goal for one ring
+        TRAJECTORY_2_4,   // go to deposit first wobble goal for four ring
+        TRAJECTORY_3_0,   // go to deliver second wobble goal for zero ring
+        WAIT_3_0,         // wait until we are at the right place, let go of wobble goal
+        TRAJECTORY_4_0,   // go to the white line to park robot
+        WAIT_4,           // make sure we don't move anymore before finishing the program
+        TRAJECTORY_3_1,   // go to take in one ring if there is only one and go to shoot it
+        WAIT_3_1,         // get ready to shoot ring from staple
+        WAIT_4_1,         // wait until we shot
+        TRAJECTORY_5_1,   // go to deliver the second wobble goal
+        WAIT_5_1,         // let go of wobble goal
+        TRAJECTORY_6_1,   // we go to park the robot on the line
+        TRAJECTORY_3_4,   // we take in the first two rings of the staple
+        IDLE,             // Our bot will enter the IDLE state when done
+        SHOOT_1,          // shoot the first ring
+        SHOOT_2,          // shoot the second ring
+        SHOOT_3,          // shoot the third ring
+        WAIT_3_4,         // get ready to shoot
+        SHOOT_4_4,        // shoot first ring from the staple
+        SHOOT_4_5,        // shoot second ring from the staple
+        TRAJECTORY_4_4,   // take in the other rings
+        TRAJECTORY_4_4_1, // take in the other rings
+        WAIT_4_4,         // get ready to shoot
+        SHOOT_4_6,        // shoot the third ring
+        SHOOT_4_7,        // shoot the fourth ring
+        TRAJECTORY_5_4,   // go to deliver the wobble goal
+        WAIT_5_4,         // let go of the wobble goal
+        TRAJECTORY_6_4,   // go to park the robot on the line
     }
 
     // We define the current state we're on
@@ -86,58 +93,46 @@ public class Auto_Blue extends LinearOpMode {
         PoseStorage.currentPose = startPose;
 
         // trajectory moves to the spot to shoot at the high goal
-        Trajectory trajectory6 = robot.drive.trajectoryBuilder(startPose)
+        Trajectory trajectory1 = robot.drive.trajectoryBuilder(startPose)
                 .splineToLinearHeading(new Pose2d(-15, 19), Math.toRadians(0))
                 .splineToLinearHeading(new Pose2d(-5, 42), Math.toRadians(0))
                 .build();
 
 
-        // Time for first shot to be fired
+        // Time to shoot
         double waitTime1 = 0.4;
         ElapsedTime waitTimer1 = new ElapsedTime();
-
-        // Time to shoot at high goal
-        double waitTime7 = 0.4;
-        ElapsedTime waitTimer7 = new ElapsedTime();
-
-        // Time to wait until second shoot
-        double waitTime8 = 0.8; //0.4
-        ElapsedTime waitTimer8 = new ElapsedTime();
-
-        // Time for second shoot
-        double waitTime9 = 0.8; //0.4
-        ElapsedTime waitTimer9 = new ElapsedTime();
 
         // Time until  third shoot
         double waitTime10 = 0.8; //0.4
         ElapsedTime waitTimer10 = new ElapsedTime();
 
-        // Time for second shot to be fired
+        // Time for third shot to be fired
         double waitTime2 = 0.4;
         ElapsedTime waitTimer2 = new ElapsedTime();
 
-        // Time for third shot to be fired
-        double waitTime3 = 0.4;
-        ElapsedTime waitTimer3 = new ElapsedTime();
+        // Time to let go of wobble goal
+        double waitTime6 = 0.5;
+        ElapsedTime waitTimer6 = new ElapsedTime();
 
         // Trajectory to deposit first wobble goal with 0 rings
-        Trajectory trajectory2_0 = robot.drive.trajectoryBuilder(trajectory6.end())
+        Trajectory trajectory2_0 = robot.drive.trajectoryBuilder(trajectory1.end())
                 .lineToLinearHeading(new Pose2d(0, 38, Math.toRadians(270)))
                 .build();
 
         // Trajectory to deposit first wobble goal with 1 ring
-        Trajectory trajectory2_1 = robot.drive.trajectoryBuilder(trajectory6.end())
+        Trajectory trajectory2_1 = robot.drive.trajectoryBuilder(trajectory1.end())
                 .lineToLinearHeading(new Pose2d(25, 23.5, Math.toRadians(270)))
                 .build();
 
         // Trajectory to deposit first wobble goal with 4 rings
-        Trajectory trajectory2_4 = robot.drive.trajectoryBuilder(trajectory6.end())
+        Trajectory trajectory2_4 = robot.drive.trajectoryBuilder(trajectory1.end())
                 .lineToLinearHeading(new Pose2d(50, 38, Math.toRadians(270)))
                 .build();
 
         // Time for wobble goal to be dropped
-        double waitTime4 = 1;
-        ElapsedTime waitTimer4 = new ElapsedTime();
+        double waitTime3 = 1;
+        ElapsedTime waitTimer3 = new ElapsedTime();
 
         // Trajectory to pick up the second wobble goal for 0 rings
         Trajectory trajectory3_0_0 = robot.drive.trajectoryBuilder(trajectory2_0.end())
@@ -164,23 +159,14 @@ public class Auto_Blue extends LinearOpMode {
                 .build();
 
         // we go to take in the ring if there is only one
-        /*Trajectory trajectory7_1_0 = robot.drive.trajectoryBuilder(trajectory3_1_1.end())
-                .lineToLinearHeading(new Pose2d(-36, 34, Math.toRadians(0)))
-                .build();
-         */
         Trajectory trajectory7_1_1 = robot.drive.trajectoryBuilder(trajectory3_1_1.end())
-                .splineToLinearHeading(new Pose2d(-5, 20), Math.toRadians(330))
+                .splineToLinearHeading(new Pose2d(-5, 42), Math.toRadians(0))
                 .build();
 
         // we go to take in 3 of four rings
-        /*Trajectory trajectory7_4_0 = robot.drive.trajectoryBuilder(trajectory3_4_1.end())
-                .lineToLinearHeading(new Pose2d(-37.5, 25.5, Math.toRadians(0)))
-                .build();
-         */
         Trajectory trajectory7_4_1 = robot.drive.trajectoryBuilder(trajectory3_4_1.end())
                 .lineTo(new Vector2d(-32, 33))
                 .build();
-
 
         // time to shoot
         double waitTime11 = 0.8; // 0.4
@@ -190,21 +176,13 @@ public class Auto_Blue extends LinearOpMode {
         double waitTime12 = 0.8; // 0.4
         ElapsedTime waitTimer12 = new ElapsedTime();
 
-        // time to shoot
-        double waitTime13 = 0.4;
-        ElapsedTime waitTimer13 = new ElapsedTime();
+        // time to transfer the ring
+        double waitTime4 = 2;
+        ElapsedTime waitTimer4 = new ElapsedTime();
 
         // time to transfer the ring
-        double waitTime16 = 2;
-        ElapsedTime waitTimer16 = new ElapsedTime();
-
-        // time to transfer the ring
-        double waitTime17 = 2;
-        ElapsedTime waitTimer17 = new ElapsedTime();
-
-        // time to transfer the ring
-        double waitTime18 = 2;
-        ElapsedTime waitTimer18 = new ElapsedTime();
+        double waitTime7 = 2;
+        ElapsedTime waitTimer7 = new ElapsedTime();
 
         // Time for wobble goal to be picked up
         double waitTime5 = 1;
@@ -241,10 +219,6 @@ public class Auto_Blue extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(47, 38, Math.toRadians(270)))
                 .build();
 
-        // Time for wobble goal to be dropped
-        double waitTime6 = 1;
-        ElapsedTime waitTimer6 = new ElapsedTime();
-
         // Trajectory to the line with 0 rings
         Trajectory trajectory5_0 = robot.drive.trajectoryBuilder(trajectory4_0.end())
                 .lineToLinearHeading(new Pose2d(10, 38, Math.toRadians(270)))
@@ -272,22 +246,18 @@ public class Auto_Blue extends LinearOpMode {
             module.clearBulkCache();
         }
 
-        //wobbleGoal.setMode(WobbleGoal.Mode.LIFTING);
-        //sleep (30000);
-
-
-
         // Set the current state to TRAJECTORY_1
         // Then have it follow that trajectory
         // Make sure we're using the async version of the commands
         // Otherwise it will be blocking and pause the program here until the trajectory finishes
-        currentState = State.WAIT_7;
+        currentState = State.TRAJECTORY_1;
         sleep(500);
-        rings = vision.getRingAmount();
+        rings = 0;
+        //rings = vision.getRingAmount();
         //put down teh intake
-        robot.drive.followTrajectoryAsync(trajectory6);
+        robot.drive.followTrajectoryAsync(trajectory1);
         robot.setRobotState(Robot.RobotState.SHOOTING);
-        robot.wobbleStoringPos();
+        //robot.wobbleStoringPos();
 
         while (opModeIsActive() && !isStopRequested()) {
             // clear cache for bulk reading
@@ -299,240 +269,276 @@ public class Auto_Blue extends LinearOpMode {
 
             // We define the flow of the state machine through this switch statement
             switch (currentState) {
-                case WAIT_7:
+                case TRAJECTORY_1:
                     if (!robot.drive.isBusy()) {
                         currentState = State.SHOOT_1;
-                        waitTimer7.reset();
+                        waitTimer1.reset();
                     }
                     break;
                 // shoot the first ring into the high goal
                 case SHOOT_1:
-                    if (waitTimer7.seconds() >= waitTime7) {
-                        robot.forceShoot(distance);
+                    if (waitTimer1.seconds() >= waitTime1) {
+                        robot.forceShoot();
                         currentState = State.SHOOT_2;
-                        waitTimer8.reset();
+                        waitTimer1.reset();
                     }
                     break;
                 // shoot the second ring into the high goal
                 case SHOOT_2:
-                    if (waitTimer8.seconds() >= waitTime8) {
-                        robot.forceShoot(distance);
+                    if (waitTimer1.seconds() >= waitTime1) {
+                        robot.forceShoot();
                         currentState = State.SHOOT_3;
-                        waitTimer9.reset();
+                        waitTimer1.reset();
                     }
                     break;
                 // shoot the third ring into the high goal
                 case SHOOT_3:
-                    if (waitTimer9.seconds() >= waitTime9) {
-                        robot.forceShoot(distance);
-                        currentState = State.WAIT_3;
-                        waitTimer3.reset();
+                    if (waitTimer1.seconds() >= waitTime1) {
+                        robot.forceShoot();
+                        currentState = State.WAIT_1;
+                        waitTimer2.reset();
                     }
 
                     break;
-                case WAIT_3:
+                case WAIT_1:
                     // We update our shooter to reset the feeder
-                    if (waitTimer3.seconds() >= waitTime3) {
+                    if (waitTimer2.seconds() >= waitTime2) {
                         robot.setRobotState(Robot.RobotState.DRIVING);
-                        robot.wobbleOuttakingPos();
-                        currentState = State.TRAJECTORY_2;
+                        //robot.wobbleOuttakingPos();
                         // we deliver the wobble goal
                         switch(rings) {
                             case 0:
+                                currentState = State.TRAJECTORY_2_0;
                                 robot.drive.followTrajectoryAsync(trajectory2_0);
                                 break;
                             case 1:
+                                currentState = State.TRAJECTORY_2_1;
                                 robot.drive.followTrajectoryAsync(trajectory2_1);
                                 break;
                             case 4:
+                                currentState = State.TRAJECTORY_2_4;
                                 robot.drive.followTrajectoryAsync(trajectory2_4);
                                 break;
                         }
                     }
                     break;
-                case TRAJECTORY_2:
+                case TRAJECTORY_2_0:
                     if (!robot.drive.isBusy()) {
-                        robot.wobblegripperOpen();
-                        currentState = State.WAIT_4;
-                        waitTimer4.reset();
+                        //robot.wobblegripperOpen();
+                        currentState = State.WAIT_2_0;
+                        waitTimer3.reset();
+                    }
+                    break;
+
+                case TRAJECTORY_2_1:
+                    if (!robot.drive.isBusy()) {
+                        //robot.wobblegripperOpen();
+                        currentState = State.WAIT_2_1;
+                        waitTimer3.reset();
+                    }
+                    break;
+
+                case TRAJECTORY_2_4:
+                    if (!robot.drive.isBusy()) {
+                        //robot.wobblegripperOpen();
+                        currentState = State.WAIT_2_4;
+                        waitTimer3.reset();
                     }
                     break;
                 //we go back to get the second wobble goal
-                case WAIT_4:
-                    if (waitTimer4.seconds() >= waitTime4) {
-                        robot.wobbleIntakingPos();
-                        switch(rings) {
-                            case 0:
-                                robot.drive.followTrajectory(trajectory3_0_0);
-                                robot.drive.followTrajectory(trajectory3_0_1);
-                                waitTimer13.reset();
-                                currentState = State.WAIT_5;
-                                break;
-                            case 1:
-                                robot.drive.followTrajectory(trajectory3_1_0);
-                                robot.drive.followTrajectoryAsync(trajectory3_1_1);
-                                currentState = State.WAIT_8_1;
-                                break;
-                            case 4:
-                                robot.drive.followTrajectory(trajectory3_4_0);
-                                robot.drive.followTrajectory(trajectory3_4_1);
-                                sleep(100);
-                                currentState = State.WAIT_8_4;
-                                break;
-                        }
-                    }
-                    break;
-                // we take in the ring, if there is only one
-                case WAIT_8_1:
-                    if (!robot.drive.isBusy()){
-                        //robot.drive.followTrajectory(trajectory7_1_0);
-                        robot.drive.followTrajectoryAsync(trajectory7_1_1);
-                        currentState = State.WAIT_9;
-                        waitTimer16.reset();
-                    }
-                    break;
-                case WAIT_9:
-                    if (waitTimer16.seconds() >= waitTime16) {
-                        robot.setRobotState(Robot.RobotState.SHOOTING);
-                        currentState = State.TRAJECTORY_6;
-                    }
-                    break;
-                // we take in two rings if there are four
-                case WAIT_8_4:
-                    if (!robot.drive.isBusy()) {
-                        robot.intake();
-                        robot.drive.followTrajectoryAsync(trajectory7_4_1);
-                        currentState = State.WAIT_10;
-                        waitTimer17.reset();
+                case WAIT_2_0:
+                    if (waitTimer3.seconds() >= waitTime3) {
+                        //robot.wobbleIntakingPos();
+                        robot.drive.followTrajectoryAsync(trajectory3_0_0);
+                        currentState = State.WAIT_2_0_1;
 
                     }
                     break;
-                case WAIT_10:
-                    if (waitTimer17.seconds() >= waitTime17) {
+                case WAIT_2_0_1:
+                    if (!robot.drive.isBusy()) {
+                        robot.drive.followTrajectoryAsync(trajectory3_0_1);
+                        currentState = State.WAIT_3_0;
+                }
+                    break;
+                case TRAJECTORY_3_0:
+                    if (!robot.drive.isBusy()) {
+                        currentState = State.TRAJECTORY_3_0;
+                        robot.drive.followTrajectoryAsync(trajectory4_0);
+                    }
+                    break;
+                case WAIT_3_0:
+                    if (!robot.drive.isBusy()) {
+                        //let go of wobble goal
+                        currentState = State.TRAJECTORY_4_0;
+                        waitTimer6.reset();
+                    }
+                    break;
+                case TRAJECTORY_4_0:
+                    if (waitTimer6.seconds() >= waitTime6) {
+                        robot.drive.followTrajectoryAsync(trajectory5_0);
+                        currentState = State.WAIT_4;
+                    }
+                    break;
+                case WAIT_2_1:
+                    if (waitTimer3.seconds() >= waitTime3) {
+                        robot.drive.followTrajectoryAsync(trajectory3_1_0);
+                        currentState = State.WAIT_2_1_1;
+                    }
+                    break;
+                case WAIT_2_1_1:
+                    if (!robot.drive.isBusy()){
+                        robot.drive.followTrajectoryAsync(trajectory3_1_1);
+                        currentState = State.TRAJECTORY_3_1;
+                    }
+                    break;
+                case TRAJECTORY_3_1:
+                    if (!robot.drive.isBusy()){
+                        robot.drive.followTrajectoryAsync(trajectory7_1_1);
+                        currentState = State.WAIT_3_1;
+                        waitTimer4.reset();
+                    }
+                    break;
+                case WAIT_3_1:
+                    if (waitTimer4.seconds() >= waitTime4) {
+                        robot.setRobotState(Robot.RobotState.SHOOTING);
+                        waitTimer1.reset();
+                        currentState = State.WAIT_4_1;
+                    }
+                    break;
+                case WAIT_4_1:
+                    if (waitTimer1.seconds() >= waitTime1) {
+                        robot.setRobotState(Robot.RobotState.DRIVING);
+                        currentState = State.TRAJECTORY_5_1;
+                        waitTimer5.reset();
+                    }
+                    break;
+                case TRAJECTORY_5_1:
+                    if (waitTimer5.seconds() >= waitTime5) {
+                    currentState = State.WAIT_5_1;
+                    robot.drive.followTrajectoryAsync(trajectory4_1);
+                    }
+                    break;
+                case WAIT_5_1:
+                    if (!robot.drive.isBusy()) {
+                        //let go of wobble goal
+                        currentState = State.TRAJECTORY_6_1;
+                        waitTimer6.reset();
+                    }
+                    break;
+                case TRAJECTORY_6_1:
+                    if (waitTimer6.seconds() >= waitTime6) {
+                        currentState = State.WAIT_4;
+                        robot.setRobotState(Robot.RobotState.DRIVING);
+                        robot.drive.followTrajectoryAsync(trajectory5_1);
+                    }
+                    break;
+                case WAIT_2_4:
+                    if (waitTimer3.seconds() >= waitTime3){
+                        robot.drive.followTrajectoryAsync(trajectory3_4_0);
+                        currentState = State.WAIT_2_4_1;
+                        }
+                    break;
+                case WAIT_2_4_1:
+                    if (!robot.drive.isBusy()){
+                        robot.drive.followTrajectoryAsync(trajectory3_4_1);
+                        sleep(100);
+                        currentState = State.TRAJECTORY_3_4;
+                    }
+                    break;
+                // we take in two rings if there are four
+                case TRAJECTORY_3_4:
+                    if (!robot.drive.isBusy()) {
+                        robot.intake();
+                        robot.drive.followTrajectoryAsync(trajectory7_4_1);
+                        currentState = State.WAIT_3_4;
+                        waitTimer7.reset();
+                    }
+                    break;
+                case WAIT_3_4:
+                    if (waitTimer7.seconds() >= waitTime7) {
                         robot.transferIdle();
-                        currentState = State.TRAJECTORY_7;
+                        currentState = State.SHOOT_4_4;
                         sleep(100);
                     }
-                case TRAJECTORY_7:
+                case SHOOT_4_4:
                     if (!robot.drive.isBusy()) {
-                        currentState = State.SHOOT_7;
+                        currentState = State.SHOOT_4_5;
                         robot.setRobotState(Robot.RobotState.SHOOTING);
                         waitTimer14.reset();
                     }
                     break;
                 // we shoot one ring into the high goal
-                case SHOOT_7:
+                case SHOOT_4_5:
                     if (waitTimer14.seconds() >= waitTime14) {
-                        robot.forceShoot(distance);
-                        currentState = State.TRAJECTORY_9;
+                        robot.forceShoot();
+                        currentState = State.TRAJECTORY_4_4;
                         waitTimer15.reset();
                     }
                     break;
                 // we take in the last ring
-                case TRAJECTORY_9:
+                case TRAJECTORY_4_4:
                     if (waitTimer15.seconds() >= waitTime15) {
                         robot.intake();
-                        robot.drive.followTrajectory(trajectory8_0);
-                        robot.drive.followTrajectoryAsync(trajectory8_1);
-                        currentState = State.WAIT_11;
-                        waitTimer18.reset();
+                        robot.drive.followTrajectoryAsync(trajectory8_0);
+                        currentState = State.TRAJECTORY_4_4_1;
                     }
                     break;
-                case WAIT_11:
-                    if (waitTimer18.seconds() >= waitTime18) {
-                        robot.transferIdle();
-                        currentState = State.TRAJECTORY_6;
+                case TRAJECTORY_4_4_1:
+                    if (!robot.drive.isBusy()){
+                        robot.drive.followTrajectoryAsync(trajectory8_1);
+                        currentState = State.WAIT_4_4;
                     }
-                case TRAJECTORY_6:
+                    break;
+                case WAIT_4_4:
                     if (!robot.drive.isBusy()) {
-                        currentState = State.SHOOT_4;
+                        robot.transferIdle();
+                        currentState = State.SHOOT_4_6;
                         waitTimer10.reset();
                     }
-                    break;
                 // we shoot the next ring
-                case SHOOT_4:
+                case SHOOT_4_6:
                     if (waitTimer10.seconds() >= waitTime10) {
-                        robot.forceShoot(distance);
-                        switch (rings) {
-                            case 1:
-                                currentState = State.TRAJECTORY_3;
-                                waitTimer13.reset();
-                                break;
-                            case 4:
-                                currentState = State.SHOOT_5;
-                                waitTimer11.reset();
-                                break;
-                        }
+                        robot.forceShoot();
+                        currentState = State.SHOOT_4_7;
+                        waitTimer11.reset();
                     }
                     break;
                 // we shoot the next ring
-                case SHOOT_5:
+                case SHOOT_4_7:
                     if (waitTimer11.seconds() >= waitTime11) {
-                        robot.forceShoot(distance);
-                        currentState = State.SHOOT_6;
+                        robot.forceShoot();
+                        currentState = State.TRAJECTORY_5_4;
                         waitTimer12.reset();
                     }
                     break;
-                // we shoot the last ring
-                case SHOOT_6:
-                    if (waitTimer12.seconds() >= waitTime12) {
-                        robot.forceShoot(distance);
-                        currentState = State.WAIT_5;
-                        waitTimer13.reset();
-                    }
-                case TRAJECTORY_3:
-                    if (waitTimer13.seconds() >= waitTime13) {
-                        robot.setRobotState(Robot.RobotState.DRIVING);
-                        currentState = State.WAIT_5;
-                        waitTimer5.reset();
-                    }
-                    break;
                 // we deliver the second wobble goal
-                case WAIT_5:
-                    if (waitTimer5.seconds() >= waitTime5) {
-                        currentState = State.TRAJECTORY_4;
-                        switch(rings) {
-                            case 0:
-                                robot.drive.followTrajectoryAsync(trajectory4_0);
-                                break;
-                            case 1:
-                                robot.drive.followTrajectoryAsync(trajectory4_1);
-                                break;
-                            case 4:
-                                robot.drive.followTrajectoryAsync(trajectory4_4);
-                                break;
-                        }
+                case TRAJECTORY_5_4:
+                    if (waitTimer12.seconds() >= waitTime12) {
+                        currentState = State.WAIT_5_4;
+                        robot.drive.followTrajectoryAsync(trajectory4_4);
                     }
                     break;
-                case TRAJECTORY_4:
+                case WAIT_5_4:
                     if (!robot.drive.isBusy()) {
-                        currentState = State.WAIT_6;
+                        //let go of the wobble goal
+                        currentState = State.TRAJECTORY_6_4;
                         waitTimer6.reset();
                     }
                     break;
                 // we go to the white line
-                case WAIT_6:
+                case TRAJECTORY_6_4:
                     if (waitTimer6.seconds() >= waitTime6) {
-                        currentState = State.TRAJECTORY_5;
+                        currentState = State.WAIT_4;
                         robot.setRobotState(Robot.RobotState.DRIVING);
-                        switch(rings) {
-                            case 0:
-                                robot.drive.followTrajectoryAsync(trajectory5_0);
-                                break;
-                            case 1:
-                                robot.drive.followTrajectoryAsync(trajectory5_1);
-                                break;
-                            case 4:
-                                robot.drive.followTrajectoryAsync(trajectory5_4);
-                                break;
-                        }
+                        robot.drive.followTrajectoryAsync(trajectory5_4);
                     }
                     break;
-                case TRAJECTORY_5:
+                case WAIT_4:
                     if (!robot.drive.isBusy()) {
                         currentState = State.IDLE;
                     }
                     break;
+
                 case IDLE:
                     // Do nothing in IDLE
                     // currentState does not change once in IDLE

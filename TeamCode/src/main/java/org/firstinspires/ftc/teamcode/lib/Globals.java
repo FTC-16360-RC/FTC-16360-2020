@@ -45,7 +45,7 @@ public class Globals {
 
     public static double highGoalRPM = 5000;
 
-    public static double powerShotRPM = 2000;
+    public static double powerShotRPM = 3500;
 
     public static double rpmToTicksPerSecond(double rpm, double gearRatio) {
         return rpm * 28 / gearRatio / 60;

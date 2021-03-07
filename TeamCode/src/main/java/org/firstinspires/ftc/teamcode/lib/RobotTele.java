@@ -92,7 +92,7 @@ public class RobotTele extends Robot {
             shoot();
         }
 
-        if(controller1.getRightBumper() == Controller.ButtonState.PRESSED) { // close / lift wobble arm
+        if(controller1.getRightBumper() == Controller.ButtonState.ON_PRESS) { // close / lift wobble arm
             if(wobble.getArmState() == Wobble.ArmState.INTAKE) {
                 if(wobble.getGripperState() == Wobble.GripperState.OPEN) {
                     wobbleGrab();

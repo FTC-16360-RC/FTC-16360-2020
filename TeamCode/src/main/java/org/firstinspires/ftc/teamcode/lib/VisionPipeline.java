@@ -12,7 +12,7 @@ import org.openftc.easyopencv.OpenCvPipeline;
 public class VisionPipeline extends OpenCvPipeline
 {
     /*
-     * An enum to define the skystone position
+     * An enum to define the ring count
      */
     public enum RingPosition
     {
@@ -30,13 +30,13 @@ public class VisionPipeline extends OpenCvPipeline
     /*
      * The core values which define the location and size of the sample regions
      */
-    static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(135,95);
+    static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(40,75);
 
-    static final int REGION_WIDTH = 38;
-    static final int REGION_HEIGHT = 25;
+    static final int REGION_WIDTH = 25;
+    static final int REGION_HEIGHT = 45;
 
-    final int FOUR_RING_THRESHOLD = 150;
-    final int ONE_RING_THRESHOLD = 135;
+    final int FOUR_RING_THRESHOLD = 160;
+    final int ONE_RING_THRESHOLD = 140;
 
     Point region1_pointA = new Point(
             REGION1_TOPLEFT_ANCHOR_POINT.x,

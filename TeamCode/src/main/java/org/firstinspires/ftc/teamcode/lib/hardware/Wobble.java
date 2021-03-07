@@ -78,13 +78,13 @@ public class Wobble {
         this.gripperState = gripperState;
         switch (gripperState) {
             case OPEN:
-                setWobbleGripperPosition(0.9);
+                setWobbleGripperPosition(1);
                 break;
             case CLOSED_LOOSE:
-                setWobbleGripperPosition(0.35);
+                setWobbleGripperPosition(0.1);
                 break;
             case CLOSED_TIGHT:
-                setWobbleGripperPosition(0.25);
+                setWobbleGripperPosition(0.3);
                 break;
         }
     }

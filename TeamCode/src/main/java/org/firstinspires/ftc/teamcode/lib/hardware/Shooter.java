@@ -22,7 +22,7 @@ public class Shooter {
     // feedforward gains
     public static double kV = 0.00034;
     public static double kA = 0.000135;
-    public static double kStatic = 0;
+    public static double kStatic = 0.55;
 
     // Timer for calculating desired acceleration
     // Necessary for kA to have an affect

@@ -27,7 +27,9 @@ public class EasyOpenCVExample extends OpMode {
     }
 
     @Override
-    public void loop() {
+    public void loop()  {
+        telemetry.addData("w", vision.getRingAmount());
+        telemetry.update();
 
     }
 }

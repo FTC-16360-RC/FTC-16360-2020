@@ -39,12 +39,13 @@ public class Vision {
             @Override
             public void onOpened()
             {
-                phoneCam.startStreaming(320,240, OpenCvCameraRotation.SIDEWAYS_LEFT);
+                phoneCam.startStreaming(320,240, OpenCvCameraRotation.UPSIDE_DOWN);
             }
         });
     }
 
     public int getRingAmount() {
+        //pipeline.processFrame(M);
         switch(pipeline.position) {
             case NONE:
                 return 0;

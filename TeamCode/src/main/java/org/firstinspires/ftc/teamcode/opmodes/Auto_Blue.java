@@ -308,7 +308,7 @@ public class Auto_Blue extends LinearOpMode {
                 // shoot the first ring into the high goal
                 case SHOOT_1:
                     if (waitTimer7.seconds() >= waitTime7) {
-                        robot.forceShoot(distance);
+                        robot.forceShoot();
                         currentState = State.SHOOT_2;
                         waitTimer8.reset();
                     }
@@ -316,7 +316,7 @@ public class Auto_Blue extends LinearOpMode {
                 // shoot the second ring into the high goal
                 case SHOOT_2:
                     if (waitTimer8.seconds() >= waitTime8) {
-                        robot.forceShoot(distance);
+                        robot.forceShoot();
                         currentState = State.SHOOT_3;
                         waitTimer9.reset();
                     }
@@ -324,7 +324,7 @@ public class Auto_Blue extends LinearOpMode {
                 // shoot the third ring into the high goal
                 case SHOOT_3:
                     if (waitTimer9.seconds() >= waitTime9) {
-                        robot.forceShoot(distance);
+                        robot.forceShoot();
                         currentState = State.WAIT_3;
                         waitTimer3.reset();
                     }
@@ -423,7 +423,7 @@ public class Auto_Blue extends LinearOpMode {
                 // we shoot one ring into the high goal
                 case SHOOT_7:
                     if (waitTimer14.seconds() >= waitTime14) {
-                        robot.forceShoot(distance);
+                        robot.forceShoot();
                         currentState = State.TRAJECTORY_9;
                         waitTimer15.reset();
                     }
@@ -452,7 +452,7 @@ public class Auto_Blue extends LinearOpMode {
                 // we shoot the next ring
                 case SHOOT_4:
                     if (waitTimer10.seconds() >= waitTime10) {
-                        robot.forceShoot(distance);
+                        robot.forceShoot();
                         switch (rings) {
                             case 1:
                                 currentState = State.TRAJECTORY_3;
@@ -468,7 +468,7 @@ public class Auto_Blue extends LinearOpMode {
                 // we shoot the next ring
                 case SHOOT_5:
                     if (waitTimer11.seconds() >= waitTime11) {
-                        robot.forceShoot(distance);
+                        robot.forceShoot();
                         currentState = State.SHOOT_6;
                         waitTimer12.reset();
                     }
@@ -476,7 +476,7 @@ public class Auto_Blue extends LinearOpMode {
                 // we shoot the last ring
                 case SHOOT_6:
                     if (waitTimer12.seconds() >= waitTime12) {
-                        robot.forceShoot(distance);
+                        robot.forceShoot();
                         currentState = State.WAIT_5;
                         waitTimer13.reset();
                     }

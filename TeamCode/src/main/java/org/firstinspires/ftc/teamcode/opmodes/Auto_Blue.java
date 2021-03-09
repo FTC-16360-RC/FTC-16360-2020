@@ -264,6 +264,7 @@ public class Auto_Blue extends LinearOpMode {
         //put down the intake
         robot.dropIntake();
         sleep(500);
+        Shooter.setDistance(70);
         robot.drive.followTrajectoryAsync(trajectory1);
         robot.setRobotState(Robot.RobotState.SHOOTING);
         //robot.wobbleStoringPos();

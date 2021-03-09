@@ -314,7 +314,7 @@ public class Auto_Blue extends LinearOpMode {
                     // We update our shooter to reset the feeder
                     if (waitTimer2.seconds() >= waitTime2) {
                         robot.setRobotState(Robot.RobotState.DRIVING);
-                        //robot.wobbleOuttakingPos();
+                        robot.wobbleOuttakingPos();
                         // we deliver the wobble goal
                         switch(rings) {
                             case 0:
@@ -334,7 +334,8 @@ public class Auto_Blue extends LinearOpMode {
                     break;
                 case TRAJECTORY_2_0:
                     if (!robot.drive.isBusy()) {
-                        //robot.wobblegripperOpen();
+                        robot.wobbleReleasePos();
+                        robot.wobblegripperOpen();
                         currentState = State.WAIT_2_0_1;
                         waitTimer3.reset();
                     }
@@ -342,7 +343,8 @@ public class Auto_Blue extends LinearOpMode {
 
                 case TRAJECTORY_2_1:
                     if (!robot.drive.isBusy()) {
-                        //robot.wobblegripperOpen();
+                        robot.wobbleReleasePos();
+                        robot.wobblegripperOpen();
                         currentState = State.WAIT_2_1;
                         waitTimer3.reset();
                     }
@@ -350,7 +352,8 @@ public class Auto_Blue extends LinearOpMode {
 
                 case TRAJECTORY_2_4:
                     if (!robot.drive.isBusy()) {
-                        //robot.wobblegripperOpen();
+                        robot.wobbleReleasePos();
+                        robot.wobblegripperOpen();
                         currentState = State.WAIT_2_4;
                         waitTimer3.reset();
                     }
@@ -358,7 +361,7 @@ public class Auto_Blue extends LinearOpMode {
                 //we go back to get the second wobble goal
                 case WAIT_2_0:
                     if (waitTimer3.seconds() >= waitTime3) {
-                        //robot.wobbleIntakingPos();
+                        robot.wobbleIntakingPos();
                         robot.drive.followTrajectoryAsync(trajectory3_0_0);
                         currentState = State.WAIT_2_0_1;
 
@@ -372,6 +375,8 @@ public class Auto_Blue extends LinearOpMode {
                     break;
                 case TRAJECTORY_3_0:
                     if (!robot.drive.isBusy()) {
+                        robot.wobbleGrab();
+                        robot.wobbleStoringPos();
                         currentState = State.WAIT_3_0;
                         waitTimer6.reset();
                     }
@@ -385,6 +390,8 @@ public class Auto_Blue extends LinearOpMode {
                     break;
                 case TRAJECTORY_4_0:
                     if (!robot.drive.isBusy()) {
+                        robot.wobbleReleasePos();
+                        robot.wobblegripperOpen();
                         robot.drive.followTrajectoryAsync(trajectory5_0);
                         currentState = State.WAIT_4;
                     }
@@ -398,11 +405,14 @@ public class Auto_Blue extends LinearOpMode {
                 case WAIT_2_1_1:
                     if (!robot.drive.isBusy()){
                         robot.drive.followTrajectoryAsync(trajectory3_1_1);
+                        robot.wobbleIntakingPos();
                         currentState = State.TRAJECTORY_3_1;
                     }
                     break;
                 case TRAJECTORY_3_1:
                     if (!robot.drive.isBusy()){
+                        robot.wobbleGrab();
+                        robot.wobbleStoringPos();
                         robot.setRobotState(Robot.RobotState.INTAKING);
                         robot.drive.followTrajectoryAsync(trajectory7_1_1);
                         currentState = State.WAIT_3_1;
@@ -438,7 +448,8 @@ public class Auto_Blue extends LinearOpMode {
                     break;
                 case WAIT_5_1:
                     if (!robot.drive.isBusy()) {
-                        //let go of wobble goal
+                        robot.wobbleReleasePos();
+                        robot.wobblegripperOpen();
                         currentState = State.TRAJECTORY_6_1;
                         waitTimer6.reset();
                     }
@@ -459,6 +470,7 @@ public class Auto_Blue extends LinearOpMode {
                 case WAIT_2_4_1:
                     if (!robot.drive.isBusy()){
                         robot.drive.followTrajectoryAsync(trajectory3_4_1);
+                        robot.wobbleIntakingPos();
                         sleep(100);
                         currentState = State.TRAJECTORY_3_4;
                     }
@@ -466,6 +478,8 @@ public class Auto_Blue extends LinearOpMode {
                 // we take in two rings if there are four
                 case TRAJECTORY_3_4:
                     if (!robot.drive.isBusy()) {
+                        robot.wobbleGrab();
+                        robot.wobbleStoringPos();
                         robot.intake();
                         robot.drive.followTrajectoryAsync(trajectory7_4_1);
                         currentState = State.WAIT_3_4;
@@ -538,7 +552,8 @@ public class Auto_Blue extends LinearOpMode {
                     break;
                 case WAIT_5_4:
                     if (!robot.drive.isBusy()) {
-                        //let go of the wobble goal
+                        robot.wobbleReleasePos();
+                        robot.wobblegripperOpen();
                         currentState = State.TRAJECTORY_6_4;
                         waitTimer6.reset();
                     }

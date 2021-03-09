@@ -156,7 +156,7 @@ public class Shooter {
         this.mode = mode;
         if (mode == Mode.SHOOTING) {
             veloTimer.reset();
-         }
+        }
     }
 
     public void update() {
@@ -211,9 +211,9 @@ public class Shooter {
 
         // control feeder arm
         if(feederState == FeederState.PUSHING && feederTimer.seconds() > actuationTime) {
-                feeder.setPosition(feederStartPosition);
-                feederTimer.reset();
-                feederState = FeederState.RETRACTING;
+            feeder.setPosition(feederStartPosition);
+            feederTimer.reset();
+            feederState = FeederState.RETRACTING;
         }
         if(feederState == FeederState.RETRACTING && feederTimer.seconds() > actuationTime) {
             feederState = FeederState.RETRACTED;
@@ -224,4 +224,3 @@ public class Shooter {
     }
 
 }
-

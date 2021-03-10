@@ -153,7 +153,7 @@ public class Auto_Blue_New extends LinearOpMode {
         ElapsedTime waitTimer2 = new ElapsedTime();
 
         // Time to let go of wobble goal
-        double waitTime6 = 1;
+        double waitTime6 = 0.5;
         ElapsedTime waitTimer6 = new ElapsedTime();
 
         // Trajectory to deposit first wobble goal with 0 rings
@@ -260,7 +260,7 @@ public class Auto_Blue_New extends LinearOpMode {
                 .build();
 
         // wait to take in wobble goal
-        double waitTime9 = 1;
+        double waitTime9 = 0.8;
         ElapsedTime waitTimer9 = new ElapsedTime();
 
         // time to shoot
@@ -328,7 +328,6 @@ public class Auto_Blue_New extends LinearOpMode {
         }
         //rings = 4;
         //put down the intake
-        //sleep(1000);
         robot.dropIntake();
         waitTimer1.reset();
         while(waitTimer1.seconds() <= 0.2)
@@ -485,14 +484,13 @@ public class Auto_Blue_New extends LinearOpMode {
                         robot.setRobotState(Robot.RobotState.SHOOTING);
                         robot.intake();
                         waitTimer10.reset();
-                        updateDistance(trajectory2_4_1.end());
                     }
                     break;
                 case WAIT_11_1:
-                    //Shooter.mode = Shooter.Mode.SHOOTING;
                     if (waitTimer10.seconds() >= 0.8){
                         robot.transferIdle();
                         currentState = State.WAIT_10_1;
+                        updateDistance(trajectory2_4_1.end());
                         waitTimer10.reset();
                     }
                 case WAIT_10_1:
@@ -710,7 +708,6 @@ public class Auto_Blue_New extends LinearOpMode {
             telemetry.addData("heading", poseEstimate.getHeading());
             telemetry.addData("rings", rings);
             telemetry.addData("state", currentState);
-            telemetry.addData("shooter mode", Shooter.getMode());
             telemetry.update();
         }
     }

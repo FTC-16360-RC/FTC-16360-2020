@@ -66,7 +66,7 @@ public class Wobble {
                 setWobbleArmPosition(0.45);
                 break;
             case OUTTAKE:
-                setWobbleArmPosition(0.8);
+                setWobbleArmPosition(0.75);
                 break;
             case START_POS:
                 setWobbleArmPosition(0);

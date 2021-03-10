@@ -53,14 +53,14 @@ public class Shooter {
 
     private Servo feeder, flap;
 
-    public static Mode mode;
+    private Mode mode;
 
     private FeederState feederState;
 
     private double actuationTime = 0.22;
     private final ElapsedTime feederTimer = new ElapsedTime();
 
-    private final double feederStartPosition = 0.25;;
+    private final double feederStartPosition = 0.25;
     private final double feederExtendedPosition = 0.42;
 
     private final double flapRestPosition = 0.7;
@@ -127,7 +127,7 @@ public class Shooter {
         //lutPowershots.createLUT();
     }
 
-    public static Mode getMode() {
+    public Mode getMode() {
         return mode;
     }
 

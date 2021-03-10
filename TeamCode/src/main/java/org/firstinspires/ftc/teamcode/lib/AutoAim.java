@@ -79,12 +79,12 @@ public class AutoAim {
             if(Globals.currentAimingMode == Mode.ALIGN_TO_POINT) {
                 // Difference between the target vector and the bot's position
                 difference = targetPosition.minus(poseEstimate.vec());
-
             } else {
-                // Create artificial target at 0 heading
+                // Create artificial target at 4 heading
                 difference = new Vector2d(Targets.targetX-poseEstimate.getX(), 0);
 
             }
+            difference = difference.minus(new Vector2d(0, (Targets.targetX-poseEstimate.getX())*Math.tan(Math.toRadians(Globals.aimingHeadingError))));
             // Obtain the target angle for feedback and derivative for feedforward
             double theta = difference.angle() - Math.toRadians(Globals.aimingHeadingError);
             // Not technically omega because its power. This is the derivative of atan2

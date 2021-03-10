@@ -53,7 +53,7 @@ public class Shooter {
 
     private Servo feeder, flap;
 
-    private Mode mode;
+    public static Mode mode;
 
     private FeederState feederState;
 
@@ -98,7 +98,7 @@ public class Shooter {
         mode = Mode.IDLE;
 
         // values for high goal lut
-        lutHighgoal.add(0, 0.5);
+        lutHighgoal.add(-1000000, 0.5);
         lutHighgoal.add(70, 0.52);
         lutHighgoal.add(75, 0.535);
         lutHighgoal.add(80, 0.545);
@@ -107,11 +107,11 @@ public class Shooter {
         lutHighgoal.add(95, 0.575);
         lutHighgoal.add(100, 0.57);
         lutHighgoal.add(105, 0.58);
-        lutHighgoal.add(110, 0.58);
+        lutHighgoal.add(110, 0.585);
         lutHighgoal.add(115, 0.585);
-        lutHighgoal.add(120, 0.58);
-        lutHighgoal.add(125, 0.585);
-        lutHighgoal.add(200, 0.58);
+        lutHighgoal.add(120, 0.59);
+        lutHighgoal.add(125, 0.59);
+        lutHighgoal.add(200000000, 0.58);
 
         //generating final equation for lutHighgoal
         lutHighgoal.createLUT();
@@ -127,7 +127,7 @@ public class Shooter {
         //lutPowershots.createLUT();
     }
 
-    public Mode getMode() {
+    public static Mode getMode() {
         return mode;
     }
 

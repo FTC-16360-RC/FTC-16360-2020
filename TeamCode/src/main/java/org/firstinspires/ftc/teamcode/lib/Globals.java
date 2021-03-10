@@ -11,7 +11,7 @@ public class Globals {
 
     public static Alliance alliance = Alliance.BLUE;
 
-    public static Targets.TargetType currentTargetType;
+    public static Targets.TargetType currentTargetType = Targets.TargetType.HIGHGOAL;
 
     public static Vector2d currentTarget = new Vector2d();
 

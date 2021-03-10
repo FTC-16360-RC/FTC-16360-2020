@@ -27,7 +27,7 @@ public class Wobble {
 
     private ArmState armState = ArmState.START_POS;
 
-    private GripperState gripperState = GripperState.OPEN;
+    private GripperState gripperState = GripperState.CLOSED_TIGHT;
 
     public Wobble(HardwareMap hardwareMap) {
         wobbleArm1 = hardwareMap.get(Servo.class, "wobbleArmLeft");
@@ -60,13 +60,13 @@ public class Wobble {
                 setWobbleArmPosition(0.05);
                 break;
             case DROPPING:
-                setWobbleArmPosition(0.35);
+                setWobbleArmPosition(0.45);
                 break;
             case RELEASE:
-                setWobbleArmPosition(0.6);
+                setWobbleArmPosition(0.45);
                 break;
             case OUTTAKE:
-                setWobbleArmPosition(0.9);
+                setWobbleArmPosition(0.8);
                 break;
             case START_POS:
                 setWobbleArmPosition(0);
@@ -85,10 +85,10 @@ public class Wobble {
                 setWobbleGripperPosition(1);
                 break;
             case CLOSED_LOOSE:
-                setWobbleGripperPosition(0.5);
+                setWobbleGripperPosition(0.45);
                 break;
             case CLOSED_TIGHT:
-                setWobbleGripperPosition(0.4);
+                setWobbleGripperPosition(0.35);
                 break;
         }
     }

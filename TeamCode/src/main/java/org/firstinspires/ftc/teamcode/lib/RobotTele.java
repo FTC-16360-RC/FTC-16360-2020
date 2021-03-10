@@ -27,6 +27,8 @@ public class RobotTele extends Robot {
 
         // set target to high goal
         Globals.setTarget(Targets.TargetType.HIGHGOAL);
+
+        drive.setPoseEstimate(PoseStorage.currentPose);
     }
 
     @Override
@@ -83,7 +85,7 @@ public class RobotTele extends Robot {
             drive.setPoseEstimate(new Pose2d(drive.getPoseEstimate().getX(), 62.8, 0));
 
         if(controller1.getyButton() == Controller.ButtonState.ON_PRESS) // reset pose
-            drive.setPoseEstimate(new Pose2d(-60.8, 62.8, 0));
+            drive.setPoseEstimate(new Pose2d(-62, 62.8, 0));
 
         if(controller1.getLeftTrigger() == Controller.ButtonState.ON_PRESS) // reverse intake
             reverseIntake();
@@ -134,10 +136,10 @@ public class RobotTele extends Robot {
 
         // controller 2
         if(controller2.getdPadUp() == Controller.ButtonState.ON_PRESS) // increase distance by subtracting 2 inches to x pose
-            drive.setPoseEstimate(drive.getPoseEstimate().plus(new Pose2d(-4, 0, 0)));
+            drive.setPoseEstimate(drive.getPoseEstimate().plus(new Pose2d(4, 0, 0)));
 
         if(controller2.getdPadDown() == Controller.ButtonState.ON_PRESS) // increase distance by adding 2 inches to x pose
-            drive.setPoseEstimate(drive.getPoseEstimate().plus(new Pose2d(4, 0, 0)));
+            drive.setPoseEstimate(drive.getPoseEstimate().plus(new Pose2d(-4, 0, 0)));
 
         if(controller2.getdPadLeft() == Controller.ButtonState.ON_PRESS) // correct heading by adding 1 degree
             drive.setPoseEstimate(drive.getPoseEstimate().plus(new Pose2d(0, 0, Math.toRadians(-2))));
@@ -201,7 +203,7 @@ public class RobotTele extends Robot {
             reverseIntake();
 
         if(controller2.getLeftTrigger() == Controller.ButtonState.ON_RELEASE) // reset intake
-            intake();
+            transferIdle();
 
         if(controller2.getaButton() == Controller.ButtonState.ON_PRESS) // activate intake and transfer
             intake();

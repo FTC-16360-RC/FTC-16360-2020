@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.lib.AutoAim;
 import org.firstinspires.ftc.teamcode.lib.Globals;
 import org.firstinspires.ftc.teamcode.lib.PoseStorage;
+import org.firstinspires.ftc.teamcode.lib.Targets;
 
 import java.util.List;
 
@@ -51,6 +52,8 @@ public class Robot {
 
         // set robot state to idle
         robotState = RobotState.DRIVING;
+
+        Globals.currentTargetType = Targets.TargetType.HIGHGOAL;
 
         // set robot pose
         drive.setPoseEstimate(PoseStorage.currentPose);

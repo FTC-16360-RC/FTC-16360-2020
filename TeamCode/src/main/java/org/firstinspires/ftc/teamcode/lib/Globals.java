@@ -9,6 +9,8 @@ public class Globals {
         BLUE
     }
 
+    public static int rings;
+
     public static Alliance alliance = Alliance.BLUE;
 
     public static Targets.TargetType currentTargetType = Targets.TargetType.HIGHGOAL;

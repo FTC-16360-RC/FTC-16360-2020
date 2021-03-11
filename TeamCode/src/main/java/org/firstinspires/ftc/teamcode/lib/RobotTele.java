@@ -28,6 +28,19 @@ public class RobotTele extends Robot {
         // set target to high goal
         Globals.setTarget(Targets.TargetType.HIGHGOAL);
 
+        // get starting pose from auto
+        switch(Globals.rings) {
+            case 0:
+                PoseStorage.currentPose = new Pose2d(10, 38, Math.toRadians(270));
+                break;
+            case 1:
+                PoseStorage.currentPose = new Pose2d(10, 10, Math.toRadians(270));
+                break;
+            case 4:
+                PoseStorage.currentPose = new Pose2d(10, 38, Math.toRadians(270));
+                break;
+        }
+
         drive.setPoseEstimate(PoseStorage.currentPose);
     }
 
@@ -91,7 +104,7 @@ public class RobotTele extends Robot {
             reverseIntake();
 
         if(controller1.getLeftTrigger() == Controller.ButtonState.ON_RELEASE) // reset intake
-            intake();
+            transferIdle();
 
         if(controller1.getRightTrigger() == Controller.ButtonState.PRESSED) { // shoot
             if(getRobotState() != RobotState.SHOOTING) {
@@ -122,6 +135,7 @@ public class RobotTele extends Robot {
                 if(wobble.getGripperState() != Wobble.GripperState.OPEN) {
                     wobblegripperOpen();
                 } else {
+                    transferIdle();
                     wobbleIntakingPos();
                 }
             } else {

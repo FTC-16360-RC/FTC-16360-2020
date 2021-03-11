@@ -57,7 +57,7 @@ public class Shooter {
 
     private FeederState feederState;
 
-    private double actuationTime = 0.22;
+    private double actuationTime = 0.24;
     private final ElapsedTime feederTimer = new ElapsedTime();
 
     private final double feederStartPosition = 0.25;
@@ -99,13 +99,14 @@ public class Shooter {
 
         // values for high goal lut
         lutHighgoal.add(-1000000, 0.5);
+        lutHighgoal.add(65, 0.515);
         lutHighgoal.add(70, 0.52);
         lutHighgoal.add(75, 0.535);
-        lutHighgoal.add(80, 0.545);
+        lutHighgoal.add(80, 0.542);
         lutHighgoal.add(85, 0.555);
         lutHighgoal.add(90, 0.57);
-        lutHighgoal.add(95, 0.575);
-        lutHighgoal.add(100, 0.57);
+        lutHighgoal.add(95, 0.573);
+        lutHighgoal.add(100, 0.567);
         lutHighgoal.add(105, 0.58);
         lutHighgoal.add(110, 0.585);
         lutHighgoal.add(115, 0.585);
@@ -185,9 +186,9 @@ public class Shooter {
             case SHOOTING: // shooting speed including pidf
                 // flap
                 if(Globals.currentTargetType == Targets.TargetType.HIGHGOAL) {
-                    flap.setPosition(lutHighgoal.get(distance));
+                    flap.setPosition(lutHighgoal.get(distance)-0.005);
                 } else {
-                    flap.setPosition(lutHighgoal.get(distance));//lutPowershots.get(distance));
+                    flap.setPosition(lutHighgoal.get(distance)+0.005);//lutPowershots.get(distance));
                 }
 
                 // Call necessary controller methods

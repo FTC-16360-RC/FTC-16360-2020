@@ -57,7 +57,7 @@ public class Shooter {
 
     private FeederState feederState;
 
-    private double actuationTime = 0.24;
+    private final double actuationTime = 0.24;
     private final ElapsedTime feederTimer = new ElapsedTime();
 
     private final double feederStartPosition = 0.25;
@@ -98,34 +98,44 @@ public class Shooter {
         mode = Mode.IDLE;
 
         // values for high goal lut
-        lutHighgoal.add(-1000000, 0.5);
-        lutHighgoal.add(65, 0.515);
-        lutHighgoal.add(70, 0.52);
-        lutHighgoal.add(75, 0.535);
-        lutHighgoal.add(80, 0.542);
-        lutHighgoal.add(85, 0.555);
-        lutHighgoal.add(90, 0.57);
-        lutHighgoal.add(95, 0.573);
-        lutHighgoal.add(100, 0.567);
-        lutHighgoal.add(105, 0.58);
-        lutHighgoal.add(110, 0.585);
-        lutHighgoal.add(115, 0.585);
-        lutHighgoal.add(120, 0.59);
-        lutHighgoal.add(125, 0.59);
-        lutHighgoal.add(200000000, 0.58);
+        lutHighgoal.add(-1000000, 0.49);
+        lutHighgoal.add(65, 0.51);
+        lutHighgoal.add(70, 0.515);
+        lutHighgoal.add(75, 0.53);
+        lutHighgoal.add(80, 0.538);
+        lutHighgoal.add(85, 0.55);
+        lutHighgoal.add(90, 0.565);
+        lutHighgoal.add(95, 0.568);
+        lutHighgoal.add(100, 0.57);
+        lutHighgoal.add(105, 0.575);
+        lutHighgoal.add(110, 0.58);
+        lutHighgoal.add(115, 0.58);
+        lutHighgoal.add(120, 0.585);
+        lutHighgoal.add(125, 0.585);
+        lutHighgoal.add(200000000, 0.59);
 
         //generating final equation for lutHighgoal
         lutHighgoal.createLUT();
 
         // same for power shots
-        lutPowershots.add(5, 1);
-        lutPowershots.add(4.1, 0.9);
-        lutPowershots.add(3.6, 0.75);
-        lutPowershots.add(2.7, .5);
-        lutPowershots.add(1.1, 0.2);
+        lutPowershots.add(-1000000, 0.5);
+        lutPowershots.add(65, 0.52);
+        lutPowershots.add(70, 0.525);
+        lutPowershots.add(75, 0.54);
+        lutPowershots.add(80, 0.547);
+        lutPowershots.add(85, 0.56);
+        lutPowershots.add(90, 0.575);
+        lutPowershots.add(95, 0.578);
+        lutPowershots.add(100, 0.58);
+        lutPowershots.add(105, 0.585);
+        lutPowershots.add(110, 0.59);
+        lutPowershots.add(115, 0.59);
+        lutPowershots.add(120, 0.595);
+        lutPowershots.add(125, 0.595);
+        lutPowershots.add(200000000, 0.6);
 
         //generating final equation for lutPowershots
-        //lutPowershots.createLUT();
+        lutPowershots.createLUT();
     }
 
     public Mode getMode() {
@@ -146,7 +156,7 @@ public class Shooter {
 
     public void shoot() {
         // check if all requirements are met
-        if(feederState == FeederState.RETRACTED && mode == Mode.SHOOTING ) {//&& targetVelocity * 0.95 <= currentVelocity && currentVelocity <= targetVelocity * 1.05) {
+        if(feederState == FeederState.RETRACTED && mode == Mode.SHOOTING && targetVelocity * 0.9 <= currentVelocity && currentVelocity <= targetVelocity * 1.1) {
             feeder.setPosition(feederExtendedPosition);
             feederTimer.reset();
             feederState = FeederState.PUSHING;
@@ -186,9 +196,9 @@ public class Shooter {
             case SHOOTING: // shooting speed including pidf
                 // flap
                 if(Globals.currentTargetType == Targets.TargetType.HIGHGOAL) {
-                    flap.setPosition(lutHighgoal.get(distance)-0.005);
+                    flap.setPosition(lutHighgoal.get(distance));
                 } else {
-                    flap.setPosition(lutHighgoal.get(distance)+0.005);//lutPowershots.get(distance));
+                    flap.setPosition(lutPowershots.get(distance));
                 }
 
                 // Call necessary controller methods

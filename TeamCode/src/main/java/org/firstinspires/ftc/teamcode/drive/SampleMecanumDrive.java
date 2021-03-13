@@ -217,6 +217,10 @@ public class SampleMecanumDrive extends com.acmerobotics.roadrunner.drive.Mecanu
         waitForIdle();
     }
 
+    public void cancelFollowing() {
+        mode = Mode.IDLE;
+    }
+
     public Pose2d getLastError() {
         switch (mode) {
             case FOLLOW_TRAJECTORY:

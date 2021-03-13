@@ -29,6 +29,7 @@ public class Robot {
     public enum RobotState {
         INTAKING,
         DRIVING,
+        AUTO_POSITION,
         AIMING,
         SHOOTING
     }
@@ -71,8 +72,8 @@ public class Robot {
         robotState = desiredRobotState;
         switch(desiredRobotState) {
             case INTAKING:
-                intake();
                 shooter.setMode(Shooter.Mode.IDLE);
+                intake();
                 autoAim.setCurrentMode(AutoAim.Mode.NORMAL_CONTROL);
                 break;
             case DRIVING:
@@ -80,8 +81,12 @@ public class Robot {
                 shooter.setMode(Shooter.Mode.IDLE);
                 autoAim.setCurrentMode(AutoAim.Mode.NORMAL_CONTROL);
                 break;
+            case AUTO_POSITION:
+                transferIdle();
+                shooter.setMode(Shooter.Mode.SHOOTING);
+                autoAim.setCurrentMode(AutoAim.Mode.ALIGN_TO_HEADING);
+                break;
             case AIMING:
-                Globals.updateTarget();
                 autoAim.setCurrentMode(Globals.currentAimingMode);
                 intakeIdle();
                 shooter.setMode(Shooter.Mode.SHOOTING);

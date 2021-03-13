@@ -1,15 +1,25 @@
 package org.firstinspires.ftc.teamcode.lib;
 
+import android.provider.Settings;
+
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.acmerobotics.roadrunner.trajectory.constraints.AngularVelocityConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.MecanumVelocityConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.MinVelocityConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.ProfileAccelerationConstraint;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.lib.hardware.Intake;
 import org.firstinspires.ftc.teamcode.lib.hardware.Robot;
 import org.firstinspires.ftc.teamcode.lib.hardware.Shooter;
 import org.firstinspires.ftc.teamcode.lib.hardware.Transfer;
 import org.firstinspires.ftc.teamcode.lib.hardware.Wobble;
+
+import java.util.Arrays;
 
 public class RobotTele extends Robot {
     Controller controller1, controller2;
@@ -77,7 +87,13 @@ public class RobotTele extends Robot {
         }
 
         // set drive motor power
-        drive.setWeightedDrivePower(autoAim.getDriveDirection());
+        if(robotState != RobotState.AUTO_POSITION) {
+            drive.setWeightedDrivePower(autoAim.getDriveDirection());
+        } else {
+            if (!drive.isBusy()) {
+                driveToTarget();
+            }
+        }
 
         // Read pose
         poseEstimate = drive.getPoseEstimate();
@@ -86,8 +102,34 @@ public class RobotTele extends Robot {
         PoseStorage.currentPose = poseEstimate;
     }
 
+    private void driveToTarget() {
+        // If the method is called, we generate a lineToLinearHeading()
+        // trajectory on the fly and follow it
+        // It places us directly in front of the target
+        Trajectory traj = drive.trajectoryBuilder(poseEstimate)
+                .lineToLinearHeading(
+                        new Pose2d(poseEstimate.getX(), Globals.currentTarget.getY(), Globals.aimingHeadingError),
+                        new MinVelocityConstraint(
+                            Arrays.asList(
+                        new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
+                        new MecanumVelocityConstraint(60, DriveConstants.TRACK_WIDTH)
+                        )
+                    ),
+                new ProfileAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .build();
+
+        drive.followTrajectoryAsync(traj);
+    }
+
     private void updateControls() {
         // controller 1
+
+        // cancel driveToPoint
+        if((Math.abs(controller1.getLeftJoystickXValue()) > 0.5 || Math.abs(controller1.getLeftJoystickYValue()) > 0.5 || Math.abs(controller1.getRightJoystickXValue()) > 0.5) && robotState == RobotState.AUTO_POSITION) {
+            drive.cancelFollowing();
+            setRobotState(RobotState.DRIVING);
+        }
+
         if(controller1.getaButton() == Controller.ButtonState.ON_PRESS) // set to aiming mode
             setRobotState(RobotState.AIMING);
 
@@ -236,6 +278,12 @@ public class RobotTele extends Robot {
                 Globals.currentAimingMode = AutoAim.Mode.ALIGN_TO_POINT;
             else
                 Globals.currentAimingMode = AutoAim.Mode.ALIGN_TO_HEADING;
+            autoAim.setCurrentMode(Globals.currentAimingMode);
+        }
+
+        if(controller2.getLeftJoystickButton() == Controller.ButtonState.PRESSED && controller2.getRightJoystickButton() == Controller.ButtonState.PRESSED) { // switch to automatic target driving for automatic powershots
+            setRobotState(RobotState.AUTO_POSITION);
+            driveToTarget();
         }
     }
 }

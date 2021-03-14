@@ -41,13 +41,13 @@ public class RobotTele extends Robot {
         // get starting pose from auto
         switch(Globals.rings) {
             case 0:
-                PoseStorage.currentPose = new Pose2d(10, 38, Math.toRadians(270));
+                PoseStorage.currentPose = new Pose2d(10, 38, Math.toRadians(266));
                 break;
             case 1:
-                PoseStorage.currentPose = new Pose2d(10, 10, Math.toRadians(270));
+                PoseStorage.currentPose = new Pose2d(10, 10, Math.toRadians(266));
                 break;
             case 4:
-                PoseStorage.currentPose = new Pose2d(10, 38, Math.toRadians(270));
+                PoseStorage.currentPose = new Pose2d(10, 38, Math.toRadians(266));
                 break;
         }
 
@@ -126,8 +126,10 @@ public class RobotTele extends Robot {
             setRobotState(RobotState.DRIVING);
         }
 
-        if(controller1.getaButton() == Controller.ButtonState.ON_PRESS) // set to aiming mode
+        if(controller1.getaButton() == Controller.ButtonState.ON_PRESS) { // set to aiming mode
             setRobotState(RobotState.AIMING);
+            Globals.updateTarget();
+        }
 
         if(controller1.getbButton() == Controller.ButtonState.ON_PRESS) // set to intaking mode
             setRobotState(RobotState.INTAKING);
@@ -288,7 +290,8 @@ public class RobotTele extends Robot {
                 Globals.currentAimingMode = AutoAim.Mode.ALIGN_TO_POINT;
             else
                 Globals.currentAimingMode = AutoAim.Mode.ALIGN_TO_HEADING;
-            autoAim.setCurrentMode(Globals.currentAimingMode);
+            if(robotState == RobotState.AIMING && robotState == RobotState.SHOOTING)
+                autoAim.setCurrentMode(Globals.currentAimingMode);
         }
 
         if(controller2.getLeftJoystickButton() == Controller.ButtonState.PRESSED && controller2.getRightJoystickButton() == Controller.ButtonState.PRESSED) { // switch to automatic target driving for automatic powershots

@@ -98,7 +98,7 @@ public class Auto_Blue_New extends LinearOpMode {
 
         // trajectory moves to the spot to shoot at the high goal
         Trajectory driveToShoot1 = robot.drive.trajectoryBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(-46, 30, Math.toRadians(2)))
+                .lineToLinearHeading(new Pose2d(-46, 30, Math.toRadians(3)))
                 .build();
 
         // Trajectory to intake single ring
@@ -221,7 +221,7 @@ public class Auto_Blue_New extends LinearOpMode {
         while(waitTimer.seconds() <= 0.3)
         {
         }
-        updateDistance(driveToShoot1.end());
+        updateDistance(driveToShoot1.end().minus(new Pose2d(2, 0, 0)));
         robot.drive.followTrajectoryAsync(driveToShoot1);
         robot.setRobotState(Robot.RobotState.SHOOTING);
         //robot.wobbleStoringPos();

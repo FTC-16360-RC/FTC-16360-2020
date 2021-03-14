@@ -79,13 +79,9 @@ public class AutoAim {
             if(Globals.currentAimingMode == Mode.ALIGN_TO_POINT) {
                 // Difference between the target vector and the bot's position
                 difference = targetPosition.minus(poseEstimate.vec());
-                // calculate distance for flap
-                distance = difference.norm();
             } else {
                 // Create artificial target at 4 heading
                 difference = new Vector2d(Targets.targetX-poseEstimate.getX(), 0);
-                // calculate distance for flap before artificial target shift
-                distance = difference.norm();
                 difference = difference.minus(new Vector2d(0, (Targets.targetX-poseEstimate.getX())*Math.tan(Math.toRadians(Globals.aimingHeadingError))));
             }
 
@@ -94,6 +90,8 @@ public class AutoAim {
             // Not technically omega because its power. This is the derivative of atan2
             double thetaFF = -fieldFrameInput.rotated(-Math.PI / 2).dot(difference) / (difference.norm() * difference.norm());
 
+            // calculate distance for flap
+            distance = difference.norm();
             //calculate remaining heading to change
             headingError = Math.abs(Math.toDegrees(theta));
 

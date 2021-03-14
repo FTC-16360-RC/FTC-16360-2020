@@ -216,7 +216,7 @@ public class Robot {
 
     // shooter methods
     public void shoot() {
-        if(robotState == RobotState.SHOOTING) { //  && AutoAim.getHeadingError() < 5
+        if(robotState == RobotState.SHOOTING || robotState == RobotState.AUTO_POSITION) { //  && AutoAim.getHeadingError() < 5
             shooter.shoot();
         }
     }

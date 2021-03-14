@@ -196,9 +196,9 @@ public class Shooter {
             case SHOOTING: // shooting speed including pidf
                 // flap
                 if(Globals.currentTargetType == Targets.TargetType.HIGHGOAL) {
-                    flap.setPosition(lutHighgoal.get(distance));
+                    flap.setPosition(lutHighgoal.get(distance)+0.002);
                 } else {
-                    flap.setPosition(lutPowershots.get(distance));
+                    flap.setPosition(lutPowershots.get(distance)+0.005);
                 }
 
                 // Call necessary controller methods

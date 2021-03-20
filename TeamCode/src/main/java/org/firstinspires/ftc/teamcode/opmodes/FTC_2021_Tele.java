@@ -1,83 +1,63 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
-
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.lib.AlignToPoint;
-import org.firstinspires.ftc.teamcode.lib.G;
-import org.firstinspires.ftc.teamcode.lib.Keybindings;
-import org.firstinspires.ftc.teamcode.lib.datatypes.UTuple;
-import org.firstinspires.ftc.teamcode.lib.hardware.Intake;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.teamcode.lib.AutoAim;
+import org.firstinspires.ftc.teamcode.lib.Globals;
+import org.firstinspires.ftc.teamcode.lib.PoseStorage;
+import org.firstinspires.ftc.teamcode.lib.RobotTele;
 import org.firstinspires.ftc.teamcode.lib.hardware.Shooter;
+import org.opencv.core.Mat;
 
-import java.util.ArrayList;
+
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(group = "advanced")
+public class FTC_2021_Tele extends LinearOpMode {
+    private RobotTele robot;
+
+    private ElapsedTime runtime = new ElapsedTime();
 
 
-@TeleOp(name="FTC 2020 Tele", group="Iterative Opmode")
-//@Disabled
-public class FTC_2021_Tele extends OpMode {
+    @Override
+    public void runOpMode() throws InterruptedException {
 
-    private Keybindings keybindings;
-    private AlignToPoint alignToPoint;
-    private Shooter shooter;
-    private Intake intake;
+        // initialize robot
+        robot = new RobotTele(hardwareMap, gamepad1, gamepad2);
 
-    ArrayList<UTuple> comms;
-    ArrayList<UTuple> lastComms;
+        waitForStart();
 
-    private void append(ArrayList<UTuple> input) {
-        for (int i = 0; i < input.size(); i++) {
-            comms.add(input.get(i));
-        }
-    }
+        if (isStopRequested()) return;
 
-    private ArrayList<UTuple> returnComs(UTuple.A name) {
-        ArrayList<UTuple> output = new ArrayList<UTuple>();
-        for (int i = 0; i < lastComms.size(); i++) {
-            if (lastComms.get(i).a_adr == name) {
-                output.add(lastComms.get(i).b_utp);
+        while (opModeIsActive() && !isStopRequested()) {
+            // clear cache for bulk reading
+            for (LynxModule module : this.hardwareMap.getAll(LynxModule.class)) {
+                module.clearBulkCache();
             }
+
+            // update robot and all it's elements
+            robot.update();
+
+            // get pose Estimtae for telemetry
+            Pose2d poseEstimate = robot.getPoseEstimate();
+
+            // Print pose to telemetry
+
+            telemetry.addData("x", PoseStorage.currentPose.getX());
+            telemetry.addData("y", poseEstimate.getY());
+            telemetry.addData("heading", Math.toDegrees(poseEstimate.getHeading()));
+            telemetry.addData("heading error", Math.toDegrees(AutoAim.getHeadingError()));
+            telemetry.addData("robot state", robot.getRobotState());
+            telemetry.addData("target", Globals.currentTargetType);
+            telemetry.addData("aiming mode", Globals.currentAimingMode);
+            telemetry.addData("rpm", robot.getShooterRPM());
+            telemetry.addData("rpm", robot.getTargetRPM());
+            telemetry.addData("distance", AutoAim.getDistance());
+            telemetry.addData("alliance", Globals.alliance);
+            telemetry.update();
         }
-        return output;
-    }
-
-    @Override
-    public void init() {
-        keybindings = new Keybindings(gamepad1, gamepad2, telemetry);
-        alignToPoint = new AlignToPoint(hardwareMap, telemetry, gamepad1, gamepad2);
-        shooter = new Shooter(hardwareMap);
-        intake = new Intake(hardwareMap, telemetry);
-
-        comms = new ArrayList<UTuple>();
-        lastComms = new ArrayList<UTuple>();
-    }
-
-    @Override
-    public void init_loop() {
-    }
-
-    @Override
-    public void start() {
-        intake.lowerIntake();
-    }
-
-    @Override
-    public void loop() {
-        //clear comms
-        comms.clear();
-
-        ArrayList<UTuple> temp = new ArrayList<>();
-
-        //every update function returns an Twople[] (String recipient, (String instruction, (JSONArray data)))
-        //append appends every element in this Twople[] to comms. Comms is also Twople[]
-        //retrunComs returns a INTuple[], an array of (String instruction, (JSONArray data))
-
-        append(keybindings.update(returnComs(G.a.KEYBINDINGS)));
-        append(alignToPoint.update(returnComs(G.a.ALIGN_TO_POINT)));
-        append(shooter.update(returnComs(G.a.SHOOTER)));
-
-        //lastComms is the comms that is used to give back to the classes. Comms picks up information.
-        lastComms = comms;
     }
 }

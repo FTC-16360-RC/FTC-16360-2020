@@ -58,15 +58,15 @@ public class Controller {
     */
 
     //constructor without deadzones
-    public Controller(Gamepad _gamepad){
-        gamepad = _gamepad;
+    public Controller(Gamepad gamepad){
+        this.gamepad = gamepad;
     }
 
     //constructor with deadzones
-    public Controller(Gamepad _gamepad, double _joystickDeadZone, double _triggerDeadZone){
-        gamepad = _gamepad;
-        joystickDeadZone = _joystickDeadZone;
-        triggerDeadZone = _triggerDeadZone;
+    public Controller(Gamepad gamepad, double joystickDeadZone, double triggerDeadZone){
+        this.gamepad = gamepad;
+        this.joystickDeadZone = joystickDeadZone;
+        this.triggerDeadZone = triggerDeadZone;
     }
 
     //gets gamepad values and updates variables
@@ -515,15 +515,15 @@ public class Controller {
         return joystickDeadZone;
     }
 
-    public void setJoystickDeadZone(double _joystickDeadZone) {
-        joystickDeadZone = _joystickDeadZone;
+    public void setJoystickDeadZone(double joystickDeadZone) {
+        this.joystickDeadZone = joystickDeadZone;
     }
 
     public double getTriggerDeadZone() {
         return triggerDeadZone;
     }
 
-    public void setTriggerDeadZone(double _triggerDeadZone) {
-        triggerDeadZone = _triggerDeadZone;
+    public void setTriggerDeadZone(double triggerDeadZone) {
+        triggerDeadZone = this.triggerDeadZone;
     }
 }

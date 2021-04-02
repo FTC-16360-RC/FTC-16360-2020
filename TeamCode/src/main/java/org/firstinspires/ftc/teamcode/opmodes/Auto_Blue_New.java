@@ -462,5 +462,7 @@ public class Auto_Blue_New extends LinearOpMode {
             telemetry.addData("state", currentState);
             telemetry.update();
         }
+        // write pose to PoseStorage one last time
+        PoseStorage.currentPose = robot.drive.getPoseEstimate();
     }
 }

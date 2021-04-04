@@ -61,7 +61,6 @@ public class RobotTele extends Robot {
     public void update() {
         // We update drive continuously in the background, regardless of state
         drive.update();
-        //drive.getLocalizer().update();
 
         // update controllers
         controller1.update();
@@ -79,15 +78,6 @@ public class RobotTele extends Robot {
         // update shooter pidf and flap in the background
         Shooter.setDistance(AutoAim.getDistance());
         shooter.update();
-
-        // very important to make sure nothing breaks
-        if(intake.getMode() == Intake.Mode.FORWARD && transfer.getMode() != Transfer.Mode.FORWARD) {
-            transfer.setMode(Transfer.Mode.FORWARD);
-        }
-
-        if(transfer.getMode() == Transfer.Mode.REVERSE && intake.getMode() != Intake.Mode.REVERSE) {
-            intake.setMode(Intake.Mode.REVERSE);
-        }
 
         // set drive motor power
         if(robotState != RobotState.AUTO_POSITION) {
@@ -124,21 +114,31 @@ public class RobotTele extends Robot {
         // controller 1
 
         // cancel driveToPoint
+        /*
         if((Math.abs(controller1.getLeftJoystickXValue()) > 0.5 || Math.abs(controller1.getLeftJoystickYValue()) > 0.5 || Math.abs(controller1.getRightJoystickXValue()) > 0.5) && robotState == RobotState.AUTO_POSITION) {
             drive.cancelFollowing();
             setRobotState(RobotState.DRIVING);
         }
 
-        if(controller1.getaButton() == Controller.ButtonState.ON_PRESS) { // set to aiming mode
+         */
+
+        if (controller1.getaButton() == Controller.ButtonState.ON_PRESS) { // set to aiming mode
             setRobotState(RobotState.AIMING);
             Globals.updateTarget();
+            if (Globals.currentTargetType == Targets.TargetType.HIGHGOAL) {
+                intake.setRingArmClearingPos();
+            }
         }
 
-        if(controller1.getbButton() == Controller.ButtonState.ON_PRESS) // set to intaking mode
+        if (controller1.getbButton() == Controller.ButtonState.ON_PRESS) { // set to intaking mode
             setRobotState(RobotState.INTAKING);
+            if (Globals.currentTargetType == Targets.TargetType.HIGHGOAL) {
+                intake.setRingArmExtendedPos();
+            }
+        }
 
         if(controller1.getxButton() == Controller.ButtonState.ON_PRESS) // reset y and heading components of pose
-            drive.setPoseEstimate(new Pose2d(drive.getPoseEstimate().getX(), 62.8, 0));
+            drive.setPoseEstimate(new Pose2d(drive.getPoseEstimate().getX(), 62.8, Math.toRadians(358)));
 
         if(controller1.getyButton() == Controller.ButtonState.ON_PRESS) // reset pose
             drive.setPoseEstimate(new Pose2d(-62, 62.8, 0));
@@ -154,6 +154,9 @@ public class RobotTele extends Robot {
                 setRobotState(RobotState.SHOOTING);
             }
             shoot();
+            if(Globals.currentTargetType == Targets.TargetType.HIGHGOAL) {
+                intake.setRingArmExtendedPos();
+            }
         }
 
         if(controller1.getRightBumper() == Controller.ButtonState.ON_PRESS) { // close / lift wobble arm
@@ -174,6 +177,7 @@ public class RobotTele extends Robot {
 
 
         if(controller1.getLeftBumper() == Controller.ButtonState.ON_PRESS) { // open / drop wobble arm
+            intake.setRingArmLiftedPos();
             if(wobble.getArmState() == Wobble.ArmState.RELEASE || wobble.getArmState() == Wobble.ArmState.DROPPING) {
                 if(wobble.getGripperState() != Wobble.GripperState.OPEN) {
                     wobblegripperOpen();
@@ -276,6 +280,9 @@ public class RobotTele extends Robot {
         if(controller2.getLeftTrigger() == Controller.ButtonState.ON_RELEASE) // reset intake
             transferIdle();
 
+        if(controller2.getRightTrigger() == Controller.ButtonState.ON_PRESS) // drop ring arm
+            intake.setRingArmLiftedPos();
+
         if(controller2.getaButton() == Controller.ButtonState.ON_PRESS) // activate intake and transfer
             intake();
 
@@ -293,7 +300,7 @@ public class RobotTele extends Robot {
                 Globals.currentAimingMode = AutoAim.Mode.ALIGN_TO_POINT;
             else
                 Globals.currentAimingMode = AutoAim.Mode.ALIGN_TO_HEADING;
-            if(robotState == RobotState.AIMING && robotState == RobotState.SHOOTING)
+            if(robotState == RobotState.AIMING || robotState == RobotState.SHOOTING)
                 autoAim.setCurrentMode(Globals.currentAimingMode);
         }
 

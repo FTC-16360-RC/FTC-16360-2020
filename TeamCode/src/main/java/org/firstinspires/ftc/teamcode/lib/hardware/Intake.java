@@ -8,12 +8,16 @@ public class Intake {
 
     private DcMotorEx intakeMotor;
 
-    private Servo intakeHolder1, intakeHolder2;
+    private Servo intakeHolder1, intakeHolder2, ringArm;
 
     private final double intakeHolder1StartPos = 0;
     private final double intakeHolder1EndPos = 0.1;
     private final double intakeHolder2StartPos = 0.34;
     private final double intakeHolder2EndPos = 0.25;
+    private final double ringArmExtendedPos = 0;
+    private final double ringArmClearingPos = 0;
+    private final double ringArmLiftedPos = 0;
+    private final double ringArmStoredPos = 0;
 
     public enum Mode {
         IDLE,
@@ -35,6 +39,9 @@ public class Intake {
 
         intakeHolder1 = hardwareMap.get(Servo.class, "intakeHolderLeft");
         intakeHolder2 = hardwareMap.get(Servo.class, "intakeHolderRight");
+
+        ringArm = hardwareMap.get(Servo.class, "ringArm");
+        ringArm.setPosition(ringArmStoredPos);
     }
 
     public void holdIntake() {
@@ -45,6 +52,19 @@ public class Intake {
     public void releaseIntake() {
         intakeHolder1.setPosition(intakeHolder1EndPos);
         intakeHolder2.setPosition(intakeHolder2EndPos);
+    }
+
+    // ring arm methods
+    public void setRingArmExtendedPos() {
+        ringArm.setPosition(ringArmExtendedPos);
+    }
+
+    public void setRingArmClearingPos() {
+        ringArm.setPosition(ringArmClearingPos);
+    }
+
+    public void setRingArmLiftedPos() {
+        ringArm.setPosition(ringArmLiftedPos);
     }
 
     public Mode getMode() {

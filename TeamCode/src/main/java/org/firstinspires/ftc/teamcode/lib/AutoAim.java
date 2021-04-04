@@ -82,16 +82,16 @@ public class AutoAim {
             } else {
                 // Create artificial target at 4 heading
                 difference = new Vector2d(Targets.targetX-poseEstimate.getX(), 0);
-                difference = difference.minus(new Vector2d(0, (Targets.targetX-poseEstimate.getX())*Math.tan(Math.toRadians(Globals.aimingHeadingError))));
             }
-
+            // calculate distance for flap
+            distance = difference.norm();
+            // correct for curved shooting
+            difference = difference.minus(new Vector2d(0, (Targets.targetX-poseEstimate.getX())*Math.tan(Math.toRadians(Globals.aimingHeadingError))));
             // Obtain the target angle for feedback and derivative for feedforward
-            double theta = difference.angle() - Math.toRadians(Globals.aimingHeadingError);
+            double theta = difference.angle();
             // Not technically omega because its power. This is the derivative of atan2
             double thetaFF = -fieldFrameInput.rotated(-Math.PI / 2).dot(difference) / (difference.norm() * difference.norm());
 
-            // calculate distance for flap
-            distance = difference.norm();
             //calculate remaining heading to change
             headingError = Math.abs(Math.toDegrees(theta));
 

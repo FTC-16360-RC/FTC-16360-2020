@@ -13,5 +13,5 @@ public class Targets {
     public static final double targetX = 72;
 
     // targets y coordinate from high goal (0) to inner most powershot (3). Use negative for red
-    public static final double[] targetsY = {35, 21, 13.5, 6};
+    public static final double[] targetsY = {35, 18, 10.5, 3};
 }

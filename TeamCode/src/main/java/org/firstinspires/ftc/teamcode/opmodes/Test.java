@@ -23,14 +23,14 @@ public class Test extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        Servo flap;
+        Servo ringArm;
         DcMotor lift;
         double servoPos = 0.5;
         boolean lastState = false;
 
         waitForStart();
 
-        flap = hardwareMap.get(Servo.class, "flap");
+        ringArm = hardwareMap.get(Servo.class, "ringArm");
         Shooter shooter = new Shooter(hardwareMap);
         lift = hardwareMap.get(DcMotor.class, "transfer");
 
@@ -61,7 +61,7 @@ public class Test extends LinearOpMode {
             
 
 
-            flap.setPosition(servoPos);
+            ringArm.setPosition(servoPos);
             telemetry.addData("w", Math.round(servoPos * 100) / 100);
             telemetry.addData("why", lastState);
             telemetry.update();

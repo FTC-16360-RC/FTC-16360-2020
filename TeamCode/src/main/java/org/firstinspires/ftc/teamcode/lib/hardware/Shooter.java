@@ -57,11 +57,11 @@ public class Shooter {
 
     private FeederState feederState;
 
-    private final double actuationTime = 0.24;
+    private final double actuationTime = 0.2;
     private final ElapsedTime feederTimer = new ElapsedTime();
 
-    private final double feederStartPosition = 0.25;
-    private final double feederExtendedPosition = 0.42;
+    private final double feederStartPosition = 0.54;
+    private final double feederExtendedPosition = 0.46;
 
     private final double flapRestPosition = 0.7;
 
@@ -105,7 +105,7 @@ public class Shooter {
         lutHighgoal.add(80, 0.538);
         lutHighgoal.add(85, 0.55);
         lutHighgoal.add(90, 0.565);
-        lutHighgoal.add(95, 0.568);
+        lutHighgoal.add(95, 0.56);  //ursprünglich 0.568
         lutHighgoal.add(100, 0.57);
         lutHighgoal.add(105, 0.575);
         lutHighgoal.add(110, 0.58);

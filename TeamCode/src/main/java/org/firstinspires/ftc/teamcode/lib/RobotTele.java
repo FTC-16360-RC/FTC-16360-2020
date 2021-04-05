@@ -309,5 +309,14 @@ public class RobotTele extends Robot {
             Globals.updateTarget();
             driveToTarget();
         }
+        if(controller2.getRightJoystickYValue() > 0.5) {
+            intake.setRingArmLiftedPos();
+        }
+        if(controller2.getRightJoystickYValue() < -0.5) {
+            intake.setRingArmExtendedPos();
+        }
+        if(controller2.getRightJoystickXValue() > 0.5) {
+            intake.setRingArmClearingPos();
+        }
     }
 }

@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.lib.hardware.TuningController;
 import org.firstinspires.ftc.teamcode.lib.VelocityPIDFController;
 
 @Config
-@Disabled
+//@Disabled
 @TeleOp
 public class LinkedMotorTuner extends LinearOpMode {
     public static PIDCoefficients MOTOR_VELO_PID = new PIDCoefficients(0, 0, 0);

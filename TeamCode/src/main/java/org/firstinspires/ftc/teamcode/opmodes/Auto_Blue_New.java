@@ -82,7 +82,7 @@ public class Auto_Blue_New extends LinearOpMode {
         robot.wobbleGrab();
 
         // Time to shoot
-        double shootTime = 0.5;
+        double shootTime = 0.41;
 
         // Time for all rings to pass into hopper
         double transferTime = 0.7;
@@ -123,7 +123,7 @@ public class Auto_Blue_New extends LinearOpMode {
                 .build();
 
         Trajectory depositWobble1_1 = robot.drive.trajectoryBuilder(intaking1_1.end())
-                .lineToLinearHeading(new Pose2d(40, 19, Math.toRadians(270)))
+                .lineToLinearHeading(new Pose2d(40, 25, Math.toRadians(270)))
                 .build();
 
         Trajectory depositWobble1_4 = robot.drive.trajectoryBuilder(intaking2_4.end())
@@ -165,7 +165,7 @@ public class Auto_Blue_New extends LinearOpMode {
                 .build();
 
         Trajectory deliverWobble2_1 = robot.drive.trajectoryBuilder(getWobble2_1.end())
-                .lineToLinearHeading(new Pose2d(28, 17, Math.toRadians(270)))
+                .lineToLinearHeading(new Pose2d(28, 24, Math.toRadians(270)))
                 .build();
 
         Trajectory deliverWobble2_4 = robot.drive.trajectoryBuilder(getWobble2_4.end())
@@ -221,7 +221,7 @@ public class Auto_Blue_New extends LinearOpMode {
         while(waitTimer.seconds() <= 0.3)
         {
         }
-        updateDistance(driveToShoot1.end().minus(new Pose2d(2, 0, 0)));
+        updateDistance(driveToShoot1.end().minus(new Pose2d(5, 0, 0)));
         robot.drive.followTrajectoryAsync(driveToShoot1);
         robot.setRobotState(Robot.RobotState.SHOOTING);
         //robot.wobbleStoringPos();

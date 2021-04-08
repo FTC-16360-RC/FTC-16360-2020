@@ -124,10 +124,10 @@ public class Shooter {
         lutPowershots.add(75, 0.54);
         lutPowershots.add(80, 0.547);
         lutPowershots.add(85, 0.56);
-        lutPowershots.add(90, 0.575);
-        lutPowershots.add(95, 0.578);
-        lutPowershots.add(100, 0.58);
-        lutPowershots.add(105, 0.585);
+        lutPowershots.add(90, 0.57);
+        lutPowershots.add(95, 0.573);
+        lutPowershots.add(100, 0.575);
+        lutPowershots.add(105, 0.58);
         lutPowershots.add(110, 0.59);
         lutPowershots.add(115, 0.59);
         lutPowershots.add(120, 0.595);

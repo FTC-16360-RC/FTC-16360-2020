@@ -17,7 +17,7 @@ public class Globals {
 
     public static Vector2d currentTarget = new Vector2d();
 
-    public static AutoAim.Mode currentAimingMode = AutoAim.Mode.ALIGN_TO_HEADING;
+    public static AutoAim.Mode currentAimingMode = AutoAim.Mode.ALIGN_TO_POINT;
 
     public static void setTarget(Targets.TargetType targetType) {
         currentTargetType = targetType;

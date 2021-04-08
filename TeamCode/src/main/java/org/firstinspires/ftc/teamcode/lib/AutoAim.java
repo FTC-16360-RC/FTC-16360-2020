@@ -47,6 +47,7 @@ public class AutoAim {
 
     public void update() {
         Pose2d poseEstimate = PoseStorage.currentPose;
+        Pose2d shooterPoseEstimate = poseEstimate.plus(new Pose2d(5*Math.sin(poseEstimate.getHeading()), -5*Math.cos(poseEstimate.getHeading()), 0));
 
         // Declare a target vector you'd like your bot to align with
         // Can be any x/y coordinate of your choosing
@@ -78,15 +79,15 @@ public class AutoAim {
             Vector2d difference;
             if(Globals.currentAimingMode == Mode.ALIGN_TO_POINT) {
                 // Difference between the target vector and the bot's position
-                difference = targetPosition.minus(poseEstimate.vec());
+                difference = targetPosition.minus(shooterPoseEstimate.vec());
             } else {
                 // Create artificial target at 4 heading
-                difference = new Vector2d(Targets.targetX-poseEstimate.getX(), 0);
+                difference = new Vector2d(Targets.targetX-shooterPoseEstimate.getX(), 0);
             }
             // calculate distance for flap
             distance = difference.norm();
             // correct for curved shooting
-            difference = difference.minus(new Vector2d(0, (Targets.targetX-poseEstimate.getX())*Math.tan(Math.toRadians(Globals.aimingHeadingError))));
+            difference = difference.minus(new Vector2d(0, (Targets.targetX-shooterPoseEstimate.getX())*Math.tan(Math.toRadians(Globals.aimingHeadingError))));
             // Obtain the target angle for feedback and derivative for feedforward
             double theta = difference.angle();
             // Not technically omega because its power. This is the derivative of atan2

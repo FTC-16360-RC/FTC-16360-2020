@@ -11,6 +11,8 @@ public class Globals {
 
     public static int rings;
 
+    public static boolean autonomous;
+
     public static Alliance alliance = Alliance.BLUE;
 
     public static Targets.TargetType currentTargetType = Targets.TargetType.HIGHGOAL;
@@ -48,6 +50,8 @@ public class Globals {
     public static double highGoalRPM = 5000;
 
     public static double powerShotRPM = 4000;
+
+    public static double powerShotAutoRPM = 3300;
 
     public static double aimingHeadingError = 4;
 

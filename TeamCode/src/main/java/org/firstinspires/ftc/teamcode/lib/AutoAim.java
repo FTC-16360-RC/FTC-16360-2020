@@ -38,7 +38,8 @@ public class AutoAim {
 
     public AutoAim() {
         // Set input bounds for the heading controller
-        // Automatically handles overflow
+        // Automatic
+        // ally handles overflow
         headingController.setInputBounds(-Math.PI, Math.PI);
     }
 
@@ -59,6 +60,7 @@ public class AutoAim {
 
         if (currentMode == Mode.NORMAL_CONTROL) {
             // Standard teleop control
+
             // Convert gamepad input into desired pose velocity
             driveDirection = new Pose2d(
                     -leftJoystickY,
@@ -74,7 +76,8 @@ public class AutoAim {
                     -leftJoystickY,
                     -leftJoystickX
             );
-            Vector2d robotFrameInput = fieldFrameInput.rotated(-poseEstimate.getHeading());
+            // field centric stuff
+            Vector2d robotFrameInput = fieldFrameInput.rotated(-poseEstimate.getHeading()-Math.PI/2);
 
             Vector2d difference;
             if(Globals.currentAimingMode == Mode.ALIGN_TO_POINT) {

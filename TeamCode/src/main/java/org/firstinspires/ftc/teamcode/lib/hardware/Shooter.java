@@ -71,6 +71,7 @@ public class Shooter {
     //Init the Look up table
     InterpLUT lutHighgoal = new InterpLUT();
     InterpLUT lutPowershots = new InterpLUT();
+    InterpLUT lutPowershotsAuto = new InterpLUT();
 
 
     public Shooter(HardwareMap hardwaremap) {
@@ -121,7 +122,7 @@ public class Shooter {
         lutPowershots.add(-1000000, 0.5);
         lutPowershots.add(65, 0.52);
         lutPowershots.add(70, 0.525);
-        lutPowershots.add(75, 0.54);
+        lutPowershots.add(75, 0.535);
         lutPowershots.add(80, 0.547);
         lutPowershots.add(85, 0.56);
         lutPowershots.add(90, 0.57);
@@ -136,6 +137,13 @@ public class Shooter {
 
         //generating final equation for lutPowershots
         lutPowershots.createLUT();
+
+        lutPowershotsAuto.add(-1000000, 0.4);
+        lutPowershotsAuto.add(75, 0.45);//545
+        lutPowershotsAuto.add(200000000, 0.4);
+
+        //generating final equation for lutPowershotsAuto
+        lutPowershotsAuto.createLUT();
     }
 
     public Mode getMode() {
@@ -176,6 +184,8 @@ public class Shooter {
 
         if(Globals.currentTargetType == Targets.TargetType.HIGHGOAL) {
             this.targetVelocity = Globals.rpmToTicksPerSecond(Globals.highGoalRPM, 1);
+        } else if (Globals.autonomous) {
+            this.targetVelocity = Globals.rpmToTicksPerSecond(Globals.powerShotAutoRPM, 1);
         } else {
             this.targetVelocity = Globals.rpmToTicksPerSecond(Globals.powerShotRPM, 1);
         }
@@ -197,6 +207,8 @@ public class Shooter {
                 // flap
                 if(Globals.currentTargetType == Targets.TargetType.HIGHGOAL) {
                     flap.setPosition(lutHighgoal.get(distance));
+                } else  if(Globals.autonomous) {
+                    flap.setPosition(lutPowershotsAuto.get(distance));
                 } else {
                     flap.setPosition(lutPowershots.get(distance)+0.005);
                 }

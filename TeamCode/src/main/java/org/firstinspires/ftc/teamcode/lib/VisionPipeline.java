@@ -30,12 +30,12 @@ public class VisionPipeline extends OpenCvPipeline
     /*
      * The core values which define the location and size of the sample regions
      */
-    static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(45,63);
+    static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(45,65);
 
     static final int REGION_WIDTH = 25;
     static final int REGION_HEIGHT = 45;
 
-    final int FOUR_RING_THRESHOLD = 150;
+    final int FOUR_RING_THRESHOLD = 148;
     final int ONE_RING_THRESHOLD = 135;
 
     Point region1_pointA = new Point(

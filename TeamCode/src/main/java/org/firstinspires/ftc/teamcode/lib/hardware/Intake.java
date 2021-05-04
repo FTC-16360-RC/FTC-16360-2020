@@ -15,7 +15,7 @@ public class Intake {
     private final double intakeHolder2StartPos = 0.34;
     private final double intakeHolder2EndPos = 0.25;
     private final double ringArmExtendedPos = 1;
-    private final double ringArmClearingPos = 0.8;
+    private final double ringArmClearingPos = 0.65;
     private final double ringArmLiftedPos = 0.5;
     private final double ringArmStoredPos = 0;
 

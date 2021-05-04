@@ -39,20 +39,22 @@ public class RobotTele extends Robot {
         Globals.setTarget(Targets.TargetType.HIGHGOAL);
 
         // get starting pose from auto
-        /*
         switch(Globals.rings) {
             case 0:
-                PoseStorage.currentPose = new Pose2d(10, 38, Math.toRadians(266));
+                PoseStorage.currentPose = new Pose2d(10, 38, Math.toRadians(268));
                 break;
             case 1:
-                PoseStorage.currentPose = new Pose2d(10, 10, Math.toRadians(266));
+                PoseStorage.currentPose = new Pose2d(10, 10, Math.toRadians(268));
                 break;
             case 4:
-                PoseStorage.currentPose = new Pose2d(10, 38, Math.toRadians(266));
+                PoseStorage.currentPose = new Pose2d(10, 38, Math.toRadians(268));
+                break;
+            default:
+                PoseStorage.currentPose = new Pose2d(10, 38, Math.toRadians(268));
                 break;
         }
 
-         */
+
 
         drive.setPoseEstimate(PoseStorage.currentPose);
     }
@@ -134,6 +136,8 @@ public class RobotTele extends Robot {
             setRobotState(RobotState.INTAKING);
             if (Globals.currentTargetType == Targets.TargetType.HIGHGOAL) {
                 intake.setRingArmExtendedPos();
+            } else {
+                intake.setRingArmLiftedPos();
             }
         }
 

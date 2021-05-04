@@ -38,7 +38,8 @@ public class AutoAim {
 
     public AutoAim() {
         // Set input bounds for the heading controller
-        // Automatically handles overflow
+        // Automatic
+        // ally handles overflow
         headingController.setInputBounds(-Math.PI, Math.PI);
     }
 
@@ -47,6 +48,7 @@ public class AutoAim {
 
     public void update() {
         Pose2d poseEstimate = PoseStorage.currentPose;
+        Pose2d shooterPoseEstimate = poseEstimate.plus(new Pose2d(5*Math.sin(poseEstimate.getHeading()), -5*Math.cos(poseEstimate.getHeading()), 0));
 
         // Declare a target vector you'd like your bot to align with
         // Can be any x/y coordinate of your choosing
@@ -58,6 +60,7 @@ public class AutoAim {
 
         if (currentMode == Mode.NORMAL_CONTROL) {
             // Standard teleop control
+
             // Convert gamepad input into desired pose velocity
             driveDirection = new Pose2d(
                     -leftJoystickY,
@@ -73,20 +76,21 @@ public class AutoAim {
                     -leftJoystickY,
                     -leftJoystickX
             );
-            Vector2d robotFrameInput = fieldFrameInput.rotated(-poseEstimate.getHeading());
+            // field centric stuff
+            Vector2d robotFrameInput = fieldFrameInput.rotated(-poseEstimate.getHeading()-Math.PI/2);
 
             Vector2d difference;
             if(Globals.currentAimingMode == Mode.ALIGN_TO_POINT) {
                 // Difference between the target vector and the bot's position
-                difference = targetPosition.minus(poseEstimate.vec());
+                difference = targetPosition.minus(shooterPoseEstimate.vec());
             } else {
                 // Create artificial target at 4 heading
-                difference = new Vector2d(Targets.targetX-poseEstimate.getX(), 0);
+                difference = new Vector2d(Targets.targetX-shooterPoseEstimate.getX(), 0);
             }
             // calculate distance for flap
             distance = difference.norm();
             // correct for curved shooting
-            difference = difference.minus(new Vector2d(0, (Targets.targetX-poseEstimate.getX())*Math.tan(Math.toRadians(Globals.aimingHeadingError))));
+            difference = difference.minus(new Vector2d(0, (Targets.targetX-shooterPoseEstimate.getX())*Math.tan(Math.toRadians(Globals.aimingHeadingError))));
             // Obtain the target angle for feedback and derivative for feedforward
             double theta = difference.angle();
             // Not technically omega because its power. This is the derivative of atan2

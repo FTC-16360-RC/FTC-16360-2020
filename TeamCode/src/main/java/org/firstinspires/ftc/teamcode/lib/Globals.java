@@ -11,13 +11,15 @@ public class Globals {
 
     public static int rings;
 
+    public static boolean autonomous;
+
     public static Alliance alliance = Alliance.BLUE;
 
     public static Targets.TargetType currentTargetType = Targets.TargetType.HIGHGOAL;
 
     public static Vector2d currentTarget = new Vector2d();
 
-    public static AutoAim.Mode currentAimingMode = AutoAim.Mode.ALIGN_TO_HEADING;
+    public static AutoAim.Mode currentAimingMode = AutoAim.Mode.ALIGN_TO_POINT;
 
     public static void setTarget(Targets.TargetType targetType) {
         currentTargetType = targetType;
@@ -48,6 +50,8 @@ public class Globals {
     public static double highGoalRPM = 5000;
 
     public static double powerShotRPM = 4000;
+
+    public static double powerShotAutoRPM = 3300;
 
     public static double aimingHeadingError = 4;
 

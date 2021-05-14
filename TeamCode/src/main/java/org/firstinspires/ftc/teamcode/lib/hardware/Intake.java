@@ -24,8 +24,14 @@ public class Intake {
         FORWARD,
         REVERSE
     }
+    public enum ArmPos {
+        CLEARING,
+        EXTENDED,
+        LIFTED
+    }
 
     private Mode mode = Mode.IDLE;
+    public ArmPos armPos = ArmPos.CLEARING;
 
     public Intake(HardwareMap hardwareMap) {
         intakeMotor = hardwareMap.get(DcMotorEx.class, "intake");
@@ -33,7 +39,7 @@ public class Intake {
         intakeMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
         intakeMotor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
-        intakeMotor.setDirection(DcMotorEx.Direction.REVERSE);
+        //intakeMotor.setDirection(DcMotorEx.Direction.REVERSE);
 
         setMode(Mode.IDLE);
 
@@ -57,14 +63,17 @@ public class Intake {
     // ring arm methods
     public void setRingArmExtendedPos() {
         ringArm.setPosition(ringArmExtendedPos);
+        armPos = ArmPos.EXTENDED;
     }
 
     public void setRingArmClearingPos() {
         ringArm.setPosition(ringArmClearingPos);
+        armPos = ArmPos.CLEARING;
     }
 
     public void setRingArmLiftedPos() {
         ringArm.setPosition(ringArmLiftedPos);
+        armPos = ArmPos.LIFTED;
     }
 
     public Mode getMode() {

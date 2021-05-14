@@ -88,11 +88,11 @@ public class Robot {
                 break;
             case AIMING:
                 autoAim.setCurrentMode(Globals.currentAimingMode);
-                intakeIdle();
+                //intakeIdle();
                 shooter.setMode(Shooter.Mode.SHOOTING);
                 break;
             case SHOOTING:
-                transferIdle();
+                //transferIdle();
                 shooter.setMode(Shooter.Mode.SHOOTING);
                 break;
         }

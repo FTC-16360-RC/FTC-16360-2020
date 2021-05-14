@@ -23,6 +23,7 @@ import java.util.Arrays;
 
 public class RobotTele extends Robot {
     Controller controller1, controller2;
+    int i = 0;
 
     public RobotTele(HardwareMap hardwareMap, Gamepad gamepad1, Gamepad gamepad2) {
         super(hardwareMap);
@@ -285,7 +286,13 @@ public class RobotTele extends Robot {
             transferIdle();
 
         if(controller2.getRightTrigger() == Controller.ButtonState.ON_PRESS) // drop ring arm
-            intake.setRingArmLiftedPos();
+        {
+            if (intake.armPos == Intake.ArmPos.EXTENDED) {
+                intake.setRingArmLiftedPos();
+            } else {
+                intake.setRingArmExtendedPos();
+            }
+        }
 
         if(controller2.getaButton() == Controller.ButtonState.ON_PRESS) // activate intake and transfer
             intake();

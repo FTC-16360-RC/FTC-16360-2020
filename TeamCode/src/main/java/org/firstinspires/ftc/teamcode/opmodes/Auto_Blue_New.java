@@ -42,9 +42,13 @@ public class Auto_Blue_New extends LinearOpMode {
         SHOOTING_3,
         DELIVER_WOBBLE_1,
         DROP_WOBBLE_1,
+        COLLECTRINGS,
         CLEAR_WOBBLE_1,
         GET_WOBBLE_2,
         GRAB_WOBBLE_2,
+        DRIVE_TO_SHOOT_2,
+        SHOOTING_4_HELPER,
+        SHOOTING_4,
         DELIVER_WOBBLE_2,
         DROP_WOBBLE_2,
         CLEAR_WOBBLE_2,
@@ -125,15 +129,22 @@ public class Auto_Blue_New extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(-46, 30, Math.toRadians(3)))
                 .build();
 
+
         // Trajectory to intake single ring
         Trajectory intaking1_1 = robot.drive.trajectoryBuilder(driveToShoot1.end())
                 .lineToLinearHeading(new Pose2d(-10, 30, Math.toRadians(3)))
                 .build();
 
+        Trajectory driveToPowerShot0_1 = robot.drive.trajectoryBuilder(intaking1_1.end())
+                .lineToLinearHeading(new Pose2d (-4, 16, Math.toRadians(357)))
+                .build();
+
+
         // Trajectory to intake first several rings of 4 stack
         Trajectory intaking1_4 = robot.drive.trajectoryBuilder(driveToShoot1.end())
                 .lineToLinearHeading(new Pose2d(-25, 30, Math.toRadians(3)))
                 .build();
+
 
         // Trajectory to intake remaining rings of 4 stack
         Trajectory intaking2_4 = robot.drive.trajectoryBuilder(intaking1_4.end())
@@ -146,7 +157,7 @@ public class Auto_Blue_New extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(10, 50, Math.toRadians(270)))
                 .build();
 
-        Trajectory depositWobble1_1 = robot.drive.trajectoryBuilder(intaking1_1.end())
+        Trajectory depositWobble1_1 = robot.drive.trajectoryBuilder(driveToPowershot2.end())
                 .lineToLinearHeading(new Pose2d(40, 25, Math.toRadians(270)))
                 .build();
 
@@ -182,13 +193,17 @@ public class Auto_Blue_New extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(-34.5, 44, Math.toRadians(0)))
                 .build();
 
+        Trajectory drivetoshoot_2 = robot.drive.trajectoryBuilder(getWobble2_0.end())
+                .lineToLinearHeading(new Pose2d(-46, 30, Math.toRadians(3)))
+                .build();
+
 
         // Trajectories to deposit second wobble goal
-        Trajectory deliverWobble2_0 = robot.drive.trajectoryBuilder(getWobble2_0.end())
+        Trajectory deliverWobble2_0 = robot.drive.trajectoryBuilder(drivetoshoot_2.end())
                 .lineToLinearHeading(new Pose2d(15, 41, Math.toRadians(270)))
                 .build();
 
-        Trajectory deliverWobble2_1 = robot.drive.trajectoryBuilder(getWobble2_1.end())
+        Trajectory deliverWobble2_1 = robot.drive.trajectoryBuilder(drivetoshoot_2.end())
                 .lineToLinearHeading(new Pose2d(28, 24, Math.toRadians(270)))
                 .build();
 
@@ -232,12 +247,14 @@ public class Auto_Blue_New extends LinearOpMode {
 
         // scan the rings
         waitTimer.reset();
-        while(waitTimer.seconds() <= 1.5)
+        /*while(waitTimer.seconds() <= 1.5)
         {
             rings = vision.getRingAmount();
         }
+
+         */
         Globals.rings = rings;
-        //rings = 4;
+        rings = 0;
 
         //drop the intake
         robot.dropIntake();
@@ -263,8 +280,7 @@ public class Auto_Blue_New extends LinearOpMode {
                         robot.drive.followTrajectoryAsync(driveToPowerShot0);
                         robot.setRobotState(Robot.RobotState.SHOOTING);
                         currentState = State.SHOOT_POWERSHOT_0;
-                    }
-                    else {
+                    } else {
                         updateDistance(driveToShoot1.end().minus(new Pose2d(5, 0, 0)));
                         robot.drive.followTrajectoryAsync(driveToShoot1);
                         robot.setRobotState(Robot.RobotState.SHOOTING);
@@ -273,7 +289,7 @@ public class Auto_Blue_New extends LinearOpMode {
                     break;
 
                 case SHOOT_POWERSHOT_0:
-                    if (!robot.drive.isBusy()){
+                    if (!robot.drive.isBusy()) {
                         Globals.currentTargetType = Targets.TargetType.OUTER_POWERSHOT;
                         currentState = State.SHOOTING_POWERSHOT_0;
                         waitTimer.reset();
@@ -290,7 +306,7 @@ public class Auto_Blue_New extends LinearOpMode {
                     break;
 
                 case SHOOT_POWERSHOT_1:
-                    if (!robot.drive.isBusy()){
+                    if (!robot.drive.isBusy()) {
                         Globals.currentTargetType = Targets.TargetType.CENTER_POWERSHOT;
                         currentState = State.SHOOTING_POWERSHOT_1;
                         waitTimer.reset();
@@ -307,7 +323,7 @@ public class Auto_Blue_New extends LinearOpMode {
                     break;
 
                 case SHOOT_POWERSHOT_2:
-                    if (!robot.drive.isBusy()){
+                    if (!robot.drive.isBusy()) {
                         Globals.currentTargetType = Targets.TargetType.INNER_POWERSHOT;
                         currentState = State.SHOOTING_POWERSHOT_2;
                         waitTimer.reset();
@@ -319,12 +335,12 @@ public class Auto_Blue_New extends LinearOpMode {
                     if (waitTimer.seconds() >= shootTime) {
                         robot.setRobotState(Robot.RobotState.DRIVING);
                         currentState = State.DELIVER_WOBBLE_1;
-                        robot.drive.followTrajectoryAsync(depositWobble1_0);
-
+                        if (rings == 0)
+                            robot.drive.followTrajectoryAsync(depositWobble1_0);
+                        else
+                            robot.drive.followTrajectoryAsync(depositWobble1_1);
                     }
                     break;
-
-
 
 
                 case DRIVE_TO_SHOOT_1:
@@ -336,22 +352,26 @@ public class Auto_Blue_New extends LinearOpMode {
 
                 case SHOOTING_1:
                     robot.shoot();
-                    if (waitTimer.seconds() >= 3*shootTime) {
-                        robot.wobbleOuttakingPos();
-                        switch(rings) {
-                            case 1:
+
+                    switch (rings) {
+                        case 1:
+                            if (waitTimer.seconds() >= shootTime) {
+                                robot.wobbleOuttakingPos();
                                 robot.drive.followTrajectoryAsync(intaking1_1);
                                 updateDistance(intaking1_1.end());
                                 robot.intake();
                                 currentState = State.INTAKING_1;
-                                break;
-                            case 4:
+                            }
+                            break;
+                        case 4:
+                            if (waitTimer.seconds() >= 3 * shootTime) {
+                                robot.wobbleOuttakingPos();
                                 robot.drive.followTrajectoryAsync(intaking1_4);
                                 updateDistance(intaking1_4.end());
                                 robot.intake();
                                 currentState = State.INTAKING_1;
-                                break;
-                        }
+                            }
+                            break;
                     }
                     break;
 
@@ -365,7 +385,14 @@ public class Auto_Blue_New extends LinearOpMode {
                 case WAIT_1:
                     if (waitTimer.seconds() >= transferTime) {
                         robot.transferIdle();
-                        currentState = State.SHOOTING_2;
+                        if (rings == 1) {
+                            updateDistance(driveToPowerShot0_1.end().minus(new Pose2d(5, 0, 0)));
+                            robot.drive.followTrajectoryAsync(driveToPowerShot0_1);
+                            robot.setRobotState(Robot.RobotState.SHOOTING);
+                            currentState = State.SHOOT_POWERSHOT_0;
+                       }
+                        else
+                            currentState = State.SHOOTING_2;
                         waitTimer.reset();
                     }
                     break;
@@ -425,14 +452,23 @@ public class Auto_Blue_New extends LinearOpMode {
                         switch(rings) {
                             case 0:
                                 robot.drive.followTrajectoryAsync(clearWobble1_0);
+                                currentState = State.COLLECTRINGS;
                                 break;
                             case 1:
                                 robot.drive.followTrajectoryAsync(clearWobble1_1);
+                                currentState = State.COLLECTRINGS;
                                 break;
                             case 4:
                                 robot.drive.followTrajectoryAsync(clearWobble1_4);
+                                currentState = State.CLEAR_WOBBLE_1;
                                 break;
                         }
+                    }
+                    break;
+                case COLLECTRINGS:
+                    if (!robot.drive.isBusy()) {
+                        robot.intake();
+                        //collect the rings with trajectory
                         currentState = State.CLEAR_WOBBLE_1;
                     }
                     break;
@@ -443,9 +479,11 @@ public class Auto_Blue_New extends LinearOpMode {
                         switch(rings) {
                             case 0:
                                 robot.drive.followTrajectoryAsync(getWobble2_0);
+                                robot.transferIdle();
                                 break;
                             case 1:
                                 robot.drive.followTrajectoryAsync(getWobble2_1);
+                                robot.transferIdle();
                                 break;
                             case 4:
                                 robot.drive.followTrajectoryAsync(getWobble2_4);
@@ -458,27 +496,54 @@ public class Auto_Blue_New extends LinearOpMode {
                 case GET_WOBBLE_2:
                     if (!robot.drive.isBusy()) {
                         robot.wobbleGrab();
-                        currentState = State.GRAB_WOBBLE_2;
+                        if (rings != 4) {
+                            currentState = State.DRIVE_TO_SHOOT_2;
+                        }
+                        else
+                            currentState = State.GRAB_WOBBLE_2;
                         waitTimer.reset();
                     }
                     break;
 
-                case GRAB_WOBBLE_2:
+                case DRIVE_TO_SHOOT_2:
                     if (waitTimer.seconds() >= wobbleGrabTime) {
                         robot.wobbleOuttakingPos();
-                        switch(rings) {
-                            case 0:
-                                robot.drive.followTrajectoryAsync(deliverWobble2_0);
-                                break;
-                            case 1:
-                                robot.drive.followTrajectoryAsync(deliverWobble2_1);
-                                break;
-                            case 4:
+                        robot.shoot();
+                        robot.drive.followTrajectoryAsync(drivetoshoot_2);
+                        currentState = State.SHOOTING_4_HELPER;
+                    }
+                    break;
+
+                case SHOOTING_4_HELPER:
+                    if (!robot.drive.isBusy()) {
+                        waitTimer.reset();
+                        currentState = State.SHOOTING_4;
+                    }
+                    break;
+
+                case SHOOTING_4:
+                    robot.shoot();
+                    if (waitTimer.seconds() >= 3 * shootTime) {
+                        currentState =  State.GRAB_WOBBLE_2;
+                    }
+                    break;
+
+                case GRAB_WOBBLE_2:
+                    switch(rings) {
+                        case 0:
+                            robot.drive.followTrajectoryAsync(deliverWobble2_0);
+                            break;
+                        case 1:
+                            robot.drive.followTrajectoryAsync(deliverWobble2_1);
+                            break;
+                        case 4:
+                            if (waitTimer.seconds() >= wobbleGrabTime) {
+                                robot.wobbleOuttakingPos();
                                 robot.drive.followTrajectoryAsync(deliverWobble2_4);
-                                break;
+                            }
+                            break;
                         }
                         currentState = State.DELIVER_WOBBLE_2;
-                    }
                     break;
 
                 case DELIVER_WOBBLE_2:

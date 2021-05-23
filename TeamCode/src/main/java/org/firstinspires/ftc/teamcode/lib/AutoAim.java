@@ -77,7 +77,7 @@ public class AutoAim {
                     -leftJoystickX
             );
             // field centric stuff
-            Vector2d robotFrameInput = fieldFrameInput.rotated(-poseEstimate.getHeading()-Math.PI/2);
+            Vector2d robotFrameInput = fieldFrameInput.rotated(-poseEstimate.getHeading());
 
             Vector2d difference;
             if(Globals.currentAimingMode == Mode.ALIGN_TO_POINT) {

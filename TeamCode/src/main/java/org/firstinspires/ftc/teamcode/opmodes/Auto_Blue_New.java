@@ -173,7 +173,7 @@ public class Auto_Blue_New extends LinearOpMode {
         // Trajectories to clear first wobble goal after depositing
         Trajectory clearWobble1_0 = robot.drive.trajectoryBuilder(depositWobble1_0.end())
                 .splineTo(new Vector2d(40, 45), 0)
-                .splineTo(new Vector2d(58, -3), Math.toRadians(270))
+                .splineTo(new Vector2d(58, 0), Math.toRadians(270))
                 .splineTo(new Vector2d(0, 24), Math.toRadians(90))
                 .build();
 

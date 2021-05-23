@@ -18,10 +18,7 @@ import org.firstinspires.ftc.teamcode.lib.hardware.Shooter;
 import org.firstinspires.ftc.teamcode.lib.hardware.Transfer;
 import org.opencv.core.Mat;
 
-<<<<<<< HEAD
 //@Disabled
-=======
->>>>>>> 2948485b147e05bef036f548d516ece2fb69bec9
 @Autonomous(group = "opmodes")
 public class Auto_Blue extends LinearOpMode {
 

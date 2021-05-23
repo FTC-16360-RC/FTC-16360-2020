@@ -181,8 +181,6 @@ public class Shooter {
             feeder.setPosition(feederStartPosition);
             feederState = FeederState.RETRACTING;
             feederTimer.reset();
-            feederState = FeederState.PUSHING;
-            shot++;
         }
     }
 

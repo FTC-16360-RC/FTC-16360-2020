@@ -92,7 +92,8 @@ public class Robot {
                 shooter.setMode(Shooter.Mode.SHOOTING);
                 break;
             case SHOOTING:
-                //transferIdle();
+                transferIdle();
+                intakeIdle();
                 shooter.setMode(Shooter.Mode.SHOOTING);
                 break;
         }

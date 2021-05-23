@@ -51,7 +51,7 @@ public class Globals {
 
     public static double powerShotRPM = 4000;
 
-    public static double powerShotAutoRPM = 3500;
+    public static double powerShotAutoRPM = 3600;
 
     public static double aimingHeadingError = 5;
 

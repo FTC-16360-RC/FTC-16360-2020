@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -13,12 +14,9 @@ import org.firstinspires.ftc.teamcode.lib.Controller;
 import org.firstinspires.ftc.teamcode.lib.Globals;
 import org.firstinspires.ftc.teamcode.lib.PoseStorage;
 import org.firstinspires.ftc.teamcode.lib.RobotTele;
-<<<<<<< HEAD
 import org.firstinspires.ftc.teamcode.lib.hardware.Intake;
 import org.firstinspires.ftc.teamcode.lib.hardware.Robot;
 import org.firstinspires.ftc.teamcode.lib.hardware.Shooter;
-=======
->>>>>>> 2948485b147e05bef036f548d516ece2fb69bec9
 
 
 @TeleOp(group = "advanced")
@@ -33,10 +31,8 @@ public class Test extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-<<<<<<< HEAD
         DcMotor shooter1 = hardwareMap.get(DcMotor.class, "shooter1");
 
-=======
         // initialize robot
         robot = new RobotTele(hardwareMap, gamepad1, gamepad2);
 
@@ -45,15 +41,12 @@ public class Test extends LinearOpMode {
         controller = new Controller(gamepad1);
 
         waitForStart();
->>>>>>> 2948485b147e05bef036f548d516ece2fb69bec9
 
         if (isStopRequested()) return;
 
         waitForStart();
 
         while (opModeIsActive() && !isStopRequested()) {
-<<<<<<< HEAD
-
             shooter1.setPower(0.1);sleep(1050);
             shooter1.setPower(0.2);sleep(1050);
             shooter1.setPower(0.3);sleep(1050);
@@ -64,7 +57,6 @@ public class Test extends LinearOpMode {
             shooter1.setPower(0.8);sleep(1050);
             shooter1.setPower(0.9);sleep(1050);
             shooter1.setPower(1);sleep(100550);
-=======
             // clear cache for bulk reading
             for (LynxModule module : this.hardwareMap.getAll(LynxModule.class)) {
                 module.clearBulkCache();
@@ -86,7 +78,6 @@ public class Test extends LinearOpMode {
 
             telemetry.addData("pos", servo.getPosition());
             telemetry.update();
->>>>>>> 2948485b147e05bef036f548d516ece2fb69bec9
 
 
 

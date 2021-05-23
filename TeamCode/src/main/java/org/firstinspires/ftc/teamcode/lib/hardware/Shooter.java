@@ -48,7 +48,8 @@ public class Shooter {
     private enum FeederState {
         PUSHING,
         RETRACTING,
-        RETRACTED
+        RETRACTED,
+        EXTENDED
     }
 
     private DcMotorEx shooter1, shooter2;
@@ -101,20 +102,20 @@ public class Shooter {
         mode = Mode.IDLE;
 
         // values for high goal lut
-        lutHighgoal.add(-1000000, 0.49);
-        lutHighgoal.add(65, 0.51);
-        lutHighgoal.add(70, 0.515);
-        lutHighgoal.add(75, 0.53);
-        lutHighgoal.add(80, 0.538);
-        lutHighgoal.add(85, 0.55);
-        lutHighgoal.add(90, 0.565);
-        lutHighgoal.add(95, 0.56);  //ursprünglich 0.568
-        lutHighgoal.add(100, 0.57);
-        lutHighgoal.add(105, 0.575);
-        lutHighgoal.add(110, 0.58);
-        lutHighgoal.add(115, 0.58);
-        lutHighgoal.add(120, 0.585);
-        lutHighgoal.add(125, 0.585);
+        lutHighgoal.add(-1000000, 0.495);
+        lutHighgoal.add(65, 0.515);
+        lutHighgoal.add(70, 0.52);
+        lutHighgoal.add(75, 0.535);
+        lutHighgoal.add(80, 0.543);
+        lutHighgoal.add(85, 0.555);
+        lutHighgoal.add(90, 0.57);
+        lutHighgoal.add(95, 0.565);  //ursprünglich 0.568
+        lutHighgoal.add(100, 0.575);
+        lutHighgoal.add(105, 0.58);
+        lutHighgoal.add(110, 0.585);
+        lutHighgoal.add(115, 0.585);
+        lutHighgoal.add(120, 0.59);
+        lutHighgoal.add(125, 0.59);
         lutHighgoal.add(200000000, 0.59);
 
         //generating final equation for lutHighgoal
@@ -166,8 +167,19 @@ public class Shooter {
 
     public void shoot() {
         // check if all requirements are met
-        if(feederState == FeederState.RETRACTED && mode == Mode.SHOOTING && targetVelocity * 0.9 <= currentVelocity && currentVelocity <= targetVelocity * 1.1) {
-            feeder.setPosition(feederExtendedPosition);
+        if(mode == Mode.SHOOTING && targetVelocity * 0.9 <= currentVelocity && currentVelocity <= targetVelocity * 1.1) {
+            if(feederState == FeederState.EXTENDED) {
+                feeder.setPosition(feederStartPosition);
+                feederState = FeederState.RETRACTING;
+                feederTimer.reset();
+            } else if (feederState == FeederState.RETRACTED){
+                feeder.setPosition(feederExtendedPosition);
+                feederState = FeederState.PUSHING;
+                feederTimer.reset();
+            }
+        } else if(feederState == FeederState.EXTENDED) {
+            feeder.setPosition(feederStartPosition);
+            feederState = FeederState.RETRACTING;
             feederTimer.reset();
             feederState = FeederState.PUSHING;
             shot++;
@@ -241,13 +253,11 @@ public class Shooter {
         packet.put("targetVelo", Globals.ticksPerSecondToRpm(targetVelocity, 1));
 
         // control feeder arm
-        if(feederState == FeederState.PUSHING && feederTimer.seconds() > actuationTime) {
-            feeder.setPosition(feederStartPosition);
-            feederTimer.reset();
-            feederState = FeederState.RETRACTING;
-        }
         if(feederState == FeederState.RETRACTING && feederTimer.seconds() > actuationTime) {
             feederState = FeederState.RETRACTED;
+        }
+        if(feederState == FeederState.PUSHING && feederTimer.seconds() > actuationTime) {
+            feederState = FeederState.EXTENDED;
         }
 
         // send shooter speeds to dashboard

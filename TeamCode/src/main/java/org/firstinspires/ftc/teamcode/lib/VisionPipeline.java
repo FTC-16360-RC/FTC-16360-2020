@@ -51,7 +51,7 @@ public class VisionPipeline extends OpenCvPipeline
     Mat region1_Cb;
     Mat YCrCb = new Mat();
     Mat Cb = new Mat();
-    int avg1;
+    public int avg1;
 
     // Volatile since accessed by OpMode thread w/o synchronization
     public volatile RingPosition position = RingPosition.FOUR;

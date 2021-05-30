@@ -31,8 +31,6 @@ public class Shooter {
 
     private double currentVelocity = 0.0;
 
-    private int shot = 0;
-
     // Our velocity controller
     private final VelocityPIDFController veloController = new VelocityPIDFController(MOTOR_VELO_PID, kV, kA, kStatic);
 
@@ -60,11 +58,11 @@ public class Shooter {
 
     private FeederState feederState;
 
-    private final double actuationTime = 0.2;
+    private final double actuationTime = 0.15;
     private final ElapsedTime feederTimer = new ElapsedTime();
 
-    private final double feederStartPosition = 0.54;
-    private final double feederExtendedPosition = 0.46;
+    private final double feederStartPosition = 0.42;
+    private final double feederExtendedPosition = 0.53;
 
     private final double flapRestPosition = 0.7;
 
@@ -78,7 +76,7 @@ public class Shooter {
 
 
     public Shooter(HardwareMap hardwaremap) {
-        // motors
+        // motors8
         shooter1 = hardwaremap.get(DcMotorEx.class, "shooter1");
         shooter2 = hardwaremap.get(DcMotorEx.class, "shooter2");
 
@@ -169,6 +167,7 @@ public class Shooter {
         // check if all requirements are met
         if(mode == Mode.SHOOTING && targetVelocity * 0.9 <= currentVelocity && currentVelocity <= targetVelocity * 1.1) {
             if(feederState == FeederState.EXTENDED) {
+                Globals.shots++;
                 feeder.setPosition(feederStartPosition);
                 feederState = FeederState.RETRACTING;
                 feederTimer.reset();
@@ -184,14 +183,28 @@ public class Shooter {
         }
     }
 
+    public void Retract() {
+        if(feederState == FeederState.EXTENDED) {
+            feeder.setPosition(feederStartPosition);
+            feederState = FeederState.RETRACTING;
+            feederTimer.reset();
+        }
+    }
+
+    public void forceExtend() {
+        feeder.setPosition(feederExtendedPosition);
+        feederState = FeederState.PUSHING;
+        feederTimer.reset();
+    }
+
     public void setMode(Mode mode) {
         this.mode = mode;
         if (mode == Mode.SHOOTING) {
             veloTimer.reset();
         } else {
-            if(shot >= 3) {
+            if(Globals.shots >= 3) {
                 feeder.setPosition(feederExtendedPosition);
-                shot = 0;
+                Globals.shots = 0;
             }
         }
     }
@@ -206,6 +219,11 @@ public class Shooter {
             this.targetVelocity = Globals.rpmToTicksPerSecond(Globals.powerShotAutoRPM, 1);
         } else {
             this.targetVelocity = Globals.rpmToTicksPerSecond(Globals.powerShotRPM, 1);
+        }
+
+        //reset shots
+        if(mode != Mode.SHOOTING) {
+            Globals.shots = 0;
         }
 
         //packet for dashboard graph
@@ -225,9 +243,9 @@ public class Shooter {
                 // flap
                 if(Globals.currentTargetType == Targets.TargetType.HIGHGOAL) {
                     flap.setPosition(lutHighgoal.get(distance));
-                } else  if(Globals.autonomous) {
+                } /*else  if(Globals.autonomous) {
                     flap.setPosition(lutPowershotsAuto.get(distance));
-                } else {
+                }*/ else {
                     flap.setPosition(lutPowershots.get(distance)+0.005);
                 }
 

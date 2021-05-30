@@ -88,7 +88,7 @@ public class Robot {
                 break;
             case AIMING:
                 autoAim.setCurrentMode(Globals.currentAimingMode);
-                //intakeIdle();
+                intakeIdle();
                 shooter.setMode(Shooter.Mode.SHOOTING);
                 break;
             case SHOOTING:
@@ -222,8 +222,19 @@ public class Robot {
         }
     }
 
+    /*public void shoot(int n) {
+        if(robotState == RobotState.SHOOTING || robotState == RobotState.AUTO_POSITION) { //  && AutoAim.getHeadingError() < 5
+            shooter.shoot(n);
+        }
+    }*/
+
     // shooter method for autonomous
-    public void forceShoot() {
-        shooter.shoot();
+    public void forceRetract() {  //ToDO change name
+        shooter.Retract();
+    }
+
+    // shooter method for autonomous
+    public void forceExtend() {
+        shooter.forceExtend();
     }
 }

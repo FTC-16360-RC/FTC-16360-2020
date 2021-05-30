@@ -51,9 +51,11 @@ public class Globals {
 
     public static double powerShotRPM = 4000;
 
-    public static double powerShotAutoRPM = 3600;
+    public static double powerShotAutoRPM = 3655;
 
     public static double aimingHeadingError = 5;
+
+    public static int shots = 0;
 
     public static double rpmToTicksPerSecond(double rpm, double gearRatio) {
         return rpm * 28 / gearRatio / 60;

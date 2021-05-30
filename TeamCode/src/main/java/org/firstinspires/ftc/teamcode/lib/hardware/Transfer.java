@@ -40,7 +40,7 @@ public class Transfer {
                 transferMotor.setPower(0);
                 break;
             case FORWARD:
-                transferMotor.setPower(1);
+                transferMotor.setPower(0.85);
                 break;
             case REVERSE:
                 transferMotor.setPower(-0.6);

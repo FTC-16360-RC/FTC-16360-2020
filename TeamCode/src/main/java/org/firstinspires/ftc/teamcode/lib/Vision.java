@@ -19,7 +19,7 @@ public class Vision {
 
     OpenCvCamera phoneCam;
     HardwareMap hardwareMap;
-    VisionPipeline pipeline;
+    public VisionPipeline pipeline;
 
 
     public Vision(HardwareMap hardwareMap) {

@@ -33,9 +33,9 @@ public class VisionPipeline extends OpenCvPipeline
     static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(45,65);
 
     static final int REGION_WIDTH = 25;
-    static final int REGION_HEIGHT = 45;
+    static final int REGION_HEIGHT = 60;
 
-    final int FOUR_RING_THRESHOLD = 148;
+    final int FOUR_RING_THRESHOLD = 143;    //148
     final int ONE_RING_THRESHOLD = 135;
 
     Point region1_pointA = new Point(

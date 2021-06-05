@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.lib.Globals;
 import org.firstinspires.ftc.teamcode.lib.PoseStorage;
+import org.firstinspires.ftc.teamcode.lib.Targets;
 import org.firstinspires.ftc.teamcode.lib.Vision;
 import org.firstinspires.ftc.teamcode.lib.hardware.Robot;
 import org.firstinspires.ftc.teamcode.lib.hardware.Shooter;
@@ -55,6 +56,8 @@ public class Auto_Blue_Classic extends LinearOpMode {
     // We define the current state we're on
     // Default to IDLE
     State currentState = State.IDLE;
+
+    int[] measurements = new int[30];
 
     // Define our start pose
     Pose2d startPose = new Pose2d(-62, 23, Math.toRadians(0));
@@ -103,11 +106,11 @@ public class Auto_Blue_Classic extends LinearOpMode {
                 .build();
 
         Trajectory driveToShoot1 = robot.drive.trajectoryBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(-46, 30, Math.toRadians(3)))
+                .lineToLinearHeading(new Pose2d(-46, 30, Math.toRadians(1)))
                 .build();
 
         Trajectory driveToShoot2 = robot.drive.trajectoryBuilder(driveToShoot1.end())
-                .lineToLinearHeading(new Pose2d(-12, 30, Math.toRadians(3)))
+                .lineToLinearHeading(new Pose2d(-12, 30, Math.toRadians(358)))
                 .build();
 
 
@@ -118,12 +121,12 @@ public class Auto_Blue_Classic extends LinearOpMode {
 
         // Trajectory to intake first several rings of 4 stack
         Trajectory intaking1_4 = robot.drive.trajectoryBuilder(driveToShoot1.end())
-                .lineToLinearHeading(new Pose2d(-30, 30, Math.toRadians(3)))
+                .lineToLinearHeading(new Pose2d(-30, 30, Math.toRadians(0)))
                 .build();
 
         // Trajectory to intake remaining rings of 4 stack
         Trajectory intaking2_4 = robot.drive.trajectoryBuilder(intaking1_4.end())
-                .lineToLinearHeading(new Pose2d(-10, 36, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(-10, 36, Math.toRadians(358)))
                 .build();
 
 
@@ -133,7 +136,7 @@ public class Auto_Blue_Classic extends LinearOpMode {
                 .build();
 
         Trajectory depositWobble1_1 = robot.drive.trajectoryBuilder(driveToShoot2.end())
-                .lineToLinearHeading(new Pose2d(40, 25, Math.toRadians(270)))
+                .lineToLinearHeading(new Pose2d(40, 23, Math.toRadians(270)))
                 .build();
 
         Trajectory depositWobble1_4 = robot.drive.trajectoryBuilder(intaking2_4.end())
@@ -157,7 +160,7 @@ public class Auto_Blue_Classic extends LinearOpMode {
 
         // Trajectories to pick up the second wobble goal
         Trajectory getWobble2_0 = robot.drive.trajectoryBuilder(clearWobble1_0.end())
-                .lineToLinearHeading(new Pose2d(-34.5, 44, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(-34.5, 45, Math.toRadians(0)))
                 .build();
 
         Trajectory getWobble2_1 = robot.drive.trajectoryBuilder(clearWobble1_1.end())
@@ -165,7 +168,7 @@ public class Auto_Blue_Classic extends LinearOpMode {
                 .build();
 
         Trajectory getWobble2_4 = robot.drive.trajectoryBuilder(clearWobble1_4.end())
-                .lineToLinearHeading(new Pose2d(-34.5, 44, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(-34.5, 45, Math.toRadians(0)))
                 .build();
 
 
@@ -175,11 +178,11 @@ public class Auto_Blue_Classic extends LinearOpMode {
                 .build();
 
         Trajectory deliverWobble2_1 = robot.drive.trajectoryBuilder(getWobble2_1.end())
-                .lineToLinearHeading(new Pose2d(28, 24, Math.toRadians(270)))
+                .lineToLinearHeading(new Pose2d(29, 23, Math.toRadians(270)))
                 .build();
 
         Trajectory deliverWobble2_4 = robot.drive.trajectoryBuilder(getWobble2_4.end())
-                .lineToLinearHeading(new Pose2d(53, 41, Math.toRadians(270)))
+                .lineToLinearHeading(new Pose2d(55, 41, Math.toRadians(270)))
                 .build();
 
 
@@ -195,17 +198,29 @@ public class Auto_Blue_Classic extends LinearOpMode {
                 .build();
 
         Trajectory park_1 = robot.drive.trajectoryBuilder(clearWobble2_1.end())
-                .lineToLinearHeading(new Pose2d(10, 10, Math.toRadians(270)))
+                .lineToLinearHeading(new Pose2d(10, 10, Math.toRadians(269)))
                 .build();
 
         Trajectory park_4 = robot.drive.trajectoryBuilder(deliverWobble2_4.end())
-                .lineToLinearHeading(new Pose2d(10, 38, Math.toRadians(270)))
+                .lineToLinearHeading(new Pose2d(10, 38, Math.toRadians(268)))
                 .build();
 
 
 
 
-        waitForStart();
+        while (!isStarted()) {
+
+            for(int i = 1; i < 30; i++) {
+                measurements[i] = measurements[i - 1];
+            }
+            measurements[0] = vision.getRingAmount();
+            if (vision.getRingAmount() == 4) {
+                measurements[0] = 2;
+            }
+
+            telemetry.addData("rings", vision.getRingAmount());
+            telemetry.update();
+        }
 
         if (isStopRequested()) return;
 
@@ -214,14 +229,16 @@ public class Auto_Blue_Classic extends LinearOpMode {
             module.clearBulkCache();
         }
 
-        // scan the rings
-        waitTimer.reset();
-        while(waitTimer.seconds() <= 1.5)
-        {
-            rings = vision.getRingAmount();
+        //get ring amount
+        for(int i = 0; i < 30; i++) {
+            rings += measurements[i];
         }
-        Globals.rings = rings;
-        //rings = 4;
+
+        rings = Math.round(rings / 30);
+
+        if(rings == 2) rings = 4;
+
+
 
         //drop the intake
         robot.dropIntake();
@@ -243,6 +260,10 @@ public class Auto_Blue_Classic extends LinearOpMode {
                 break;
         }
 
+        Globals.shots = 0; // reset ring counter
+
+        Globals.currentTargetType = Targets.TargetType.HIGHGOAL;
+
         while (opModeIsActive() && !isStopRequested()) {
             // clear cache for bulk reading
             for (LynxModule module : this.hardwareMap.getAll(LynxModule.class)) {
@@ -255,7 +276,7 @@ public class Auto_Blue_Classic extends LinearOpMode {
             switch (currentState) {
 
                 case DRIVE_TO_SHOOT_0:
-                    updateDistance(driveToShoot1.end().minus(new Pose2d(5, 0, 0)));
+                    updateDistance(driveToShoot0.end().minus(new Pose2d(0, 0, 0)));
                     robot.drive.followTrajectoryAsync(driveToShoot0);
                     robot.setRobotState(Robot.RobotState.SHOOTING);
                     currentState = State.DRIVE_TO_SHOOT_WAIT;
@@ -263,7 +284,11 @@ public class Auto_Blue_Classic extends LinearOpMode {
                     break;
 
                 case DRIVE_TO_SHOOT_1:
-                    updateDistance(driveToShoot1.end().minus(new Pose2d(5, 0, 0)));
+                    if(rings == 1) {
+                        updateDistance(driveToShoot1.end().minus(new Pose2d(25, 0, 0)));
+                    } else {
+                        updateDistance(driveToShoot1.end().minus(new Pose2d(5, 0, 0)));
+                    }
                     robot.drive.followTrajectoryAsync(driveToShoot1);
                     robot.setRobotState(Robot.RobotState.SHOOTING);
                     currentState = State.DRIVE_TO_SHOOT_WAIT;
@@ -285,7 +310,7 @@ public class Auto_Blue_Classic extends LinearOpMode {
                                 if (Globals.shots > 3) {
                                     robot.wobbleOuttakingPos();
                                     robot.drive.followTrajectoryAsync(depositWobble1_0);
-                                    robot.setRobotState(Robot.RobotState.DRIVING);
+                                    robot.setRobotState(Robot.RobotState.AUTO_DRIVING);
                                     currentState = State.DELIVER_WOBBLE_1;
                                     break;
                                 }
@@ -293,8 +318,8 @@ public class Auto_Blue_Classic extends LinearOpMode {
                                 if (Globals.shots > 0 && rings == 1) {      //how tf chunt er bi 0 ring da ine
                                     robot.wobbleOuttakingPos();
                                     robot.drive.followTrajectoryAsync(driveToShoot2);
-                                    robot.setRobotState(Robot.RobotState.INTAKING);
-                                    updateDistance(driveToShoot2.end());        //?
+                                    updateDistance(driveToShoot2.end());
+                                    Globals.shots = 0;
                                     robot.intake();
                                     currentState = State.SHOOTING_1_2_WAIT;
                                     break;
@@ -303,8 +328,8 @@ public class Auto_Blue_Classic extends LinearOpMode {
                                 if (Globals.shots > 3) {
                                     robot.wobbleOuttakingPos();
                                     robot.drive.followTrajectoryAsync(intaking1_4);
-                                    robot.setRobotState(Robot.RobotState.INTAKING);
-                                    updateDistance(intaking1_4.end());      //?
+                                    updateDistance(intaking1_4.end());
+                                    Globals.shots = 0;
                                     robot.intake();
                                     currentState = State.INTAKING_1;
                                     break;
@@ -316,7 +341,6 @@ public class Auto_Blue_Classic extends LinearOpMode {
                 case SHOOTING_1_2_WAIT:
                     if (!robot.drive.isBusy()) {
                         waitTimer.reset();
-                        robot.setRobotState(Robot.RobotState.SHOOTING);
                         robot.transferIdle();
                         robot.intakeIdle();
                         currentState = State.SHOOTING_1_2;
@@ -328,7 +352,7 @@ public class Auto_Blue_Classic extends LinearOpMode {
                     robot.shoot();
                     if(Globals.shots > 3) {
                         robot.drive.followTrajectoryAsync(depositWobble1_1);
-                        robot.setRobotState(Robot.RobotState.DRIVING);
+                        robot.setRobotState(Robot.RobotState.AUTO_DRIVING);
                         currentState = State.DELIVER_WOBBLE_1;
                     }
                     break;
@@ -351,10 +375,10 @@ public class Auto_Blue_Classic extends LinearOpMode {
 
                 case SHOOTING_4_2:
                     robot.shoot();
-                    if (Globals.shots > 4) {
+                    if (Globals.shots > 2) {
                         robot.drive.followTrajectoryAsync(intaking2_4);
-                        robot.setRobotState(Robot.RobotState.INTAKING);
                         updateDistance(intaking2_4.end());
+                        Globals.shots = 0;
                         robot.intake();
                         currentState = State.INTAKING_2;
                     }
@@ -379,9 +403,9 @@ public class Auto_Blue_Classic extends LinearOpMode {
 
                 case SHOOTING_3:
                     robot.shoot();
-                    if (Globals.shots > 4) {
+                    if (Globals.shots > 3) {
                         robot.drive.followTrajectoryAsync(depositWobble1_4);
-                        robot.setRobotState(Robot.RobotState.DRIVING);
+                        robot.setRobotState(Robot.RobotState.AUTO_DRIVING);
                         currentState = State.DELIVER_WOBBLE_1;
                     }
                     break;

@@ -49,7 +49,7 @@ public class Globals {
 
     public static double highGoalRPM = 5000;
 
-    public static double powerShotRPM = 4000;
+    public static double powerShotRPM = 4100;
 
     public static double powerShotAutoRPM = 3655;
 

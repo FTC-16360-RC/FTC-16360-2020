@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.lib.VelocityPIDFController;
 @Config
 public class Shooter {
     // PID coefficients
-    public static PIDCoefficients MOTOR_VELO_PID = new PIDCoefficients(0.0038, 0, 0.000015);
+    public static PIDCoefficients MOTOR_VELO_PID = new PIDCoefficients(0.0052, 0, 0.000016); //0.0038, 0, 0.000015
 
     // feedforward gains
     public static double kV = 0.00034;
@@ -40,7 +40,7 @@ public class Shooter {
     public enum Mode {
         SHOOTING,
         IDLE,
-        //COASTING
+        OFF
     }
 
     private enum FeederState {
@@ -58,7 +58,7 @@ public class Shooter {
 
     private FeederState feederState;
 
-    private final double actuationTime = 0.15;
+    private final double actuationTime = 0.1;
     private final ElapsedTime feederTimer = new ElapsedTime();
 
     private final double feederStartPosition = 0.42;
@@ -165,9 +165,9 @@ public class Shooter {
 
     public void shoot() {
         // check if all requirements are met
-        if(mode == Mode.SHOOTING && targetVelocity * 0.9 <= currentVelocity && currentVelocity <= targetVelocity * 1.1) {
+        if(mode == Mode.SHOOTING && ((Globals.shots == 0 && targetVelocity * 0.94 <= currentVelocity && currentVelocity <= targetVelocity * 1.1) ||
+                (Globals.shots != 0 && targetVelocity * 0.9 <= currentVelocity && currentVelocity <= targetVelocity * 1.05))) {
             if(feederState == FeederState.EXTENDED) {
-                Globals.shots++;
                 feeder.setPosition(feederStartPosition);
                 feederState = FeederState.RETRACTING;
                 feederTimer.reset();
@@ -175,8 +175,9 @@ public class Shooter {
                 feeder.setPosition(feederExtendedPosition);
                 feederState = FeederState.PUSHING;
                 feederTimer.reset();
+                Globals.shots++;
             }
-        } else if(feederState == FeederState.EXTENDED) {
+        } else  { //if(feederState == FeederState.EXTENDED)
             feeder.setPosition(feederStartPosition);
             feederState = FeederState.RETRACTING;
             feederTimer.reset();
@@ -201,11 +202,6 @@ public class Shooter {
         this.mode = mode;
         if (mode == Mode.SHOOTING) {
             veloTimer.reset();
-        } else {
-            if(Globals.shots >= 3) {
-                feeder.setPosition(feederExtendedPosition);
-                Globals.shots = 0;
-            }
         }
     }
 
@@ -221,11 +217,6 @@ public class Shooter {
             this.targetVelocity = Globals.rpmToTicksPerSecond(Globals.powerShotRPM, 1);
         }
 
-        //reset shots
-        if(mode != Mode.SHOOTING) {
-            Globals.shots = 0;
-        }
-
         //packet for dashboard graph
         TelemetryPacket packet = new TelemetryPacket();
 
@@ -238,7 +229,12 @@ public class Shooter {
             case IDLE: // no power
                 shooter1.setPower(0);
                 shooter2.setPower(0);
+                Globals.shots = 0;
                 break;
+            case OFF:
+                shooter1.setPower(0);
+                shooter2.setPower(0);
+                Globals.shots = 0;
             case SHOOTING: // shooting speed including pidf
                 // flap
                 if(Globals.currentTargetType == Targets.TargetType.HIGHGOAL) {

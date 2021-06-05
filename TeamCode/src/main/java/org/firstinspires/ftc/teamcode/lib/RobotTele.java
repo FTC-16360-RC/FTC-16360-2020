@@ -42,16 +42,16 @@ public class RobotTele extends Robot {
         // get starting pose from auto
         switch(Globals.rings) {
             case 0:
-                PoseStorage.currentPose = new Pose2d(10, 38, Math.toRadians(268));
+                PoseStorage.currentPose = new Pose2d(10, 38, Math.toRadians(270));
                 break;
             case 1:
-                PoseStorage.currentPose = new Pose2d(10, 10, Math.toRadians(268));
+                PoseStorage.currentPose = new Pose2d(10, 10, Math.toRadians(270));
                 break;
             case 4:
-                PoseStorage.currentPose = new Pose2d(10, 38, Math.toRadians(268));
+                PoseStorage.currentPose = new Pose2d(10, 38, Math.toRadians(270));
                 break;
             default:
-                PoseStorage.currentPose = new Pose2d(10, 38, Math.toRadians(268));
+                PoseStorage.currentPose = new Pose2d(10, 38, Math.toRadians(270));
                 break;
         }
 
@@ -83,34 +83,13 @@ public class RobotTele extends Robot {
         shooter.update();
 
         // set drive motor power
-        if(robotState != RobotState.AUTO_POSITION) {
-            drive.setWeightedDrivePower(autoAim.getDriveDirection());
-        }
+        drive.setWeightedDrivePower(autoAim.getDriveDirection());
 
         // Read pose
         poseEstimate = drive.getPoseEstimate();
 
         // Continually write pose to PoseStorage
         PoseStorage.currentPose = poseEstimate;
-    }
-
-    private void driveToTarget() {
-        // If the method is called, we generate a lineToLinearHeading()
-        // trajectory on the fly and follow it
-        // It places us directly in front of the target
-        Trajectory traj = drive.trajectoryBuilder(poseEstimate)
-                .lineToLinearHeading(
-                        new Pose2d(poseEstimate.getX(), Globals.currentTarget.getY() + 6 , -Math.toRadians(Globals.aimingHeadingError)),
-                        new MinVelocityConstraint(
-                            Arrays.asList(
-                        new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
-                        new MecanumVelocityConstraint(60, DriveConstants.TRACK_WIDTH)
-                        )
-                    ),
-                new ProfileAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .build();
-
-        drive.followTrajectoryAsync(traj);
     }
 
     private void updateControls() {
@@ -155,7 +134,7 @@ public class RobotTele extends Robot {
             transferIdle();
 
         if(controller1.getRightTrigger() == Controller.ButtonState.PRESSED) { // shoot
-            if(getRobotState() != RobotState.SHOOTING && getRobotState() != RobotState.AUTO_POSITION) {
+            if(getRobotState() != RobotState.SHOOTING) {
                 setRobotState(RobotState.SHOOTING);
             }
             shoot();
@@ -207,20 +186,14 @@ public class RobotTele extends Robot {
 
         if(controller2.getdPadDown() == Controller.ButtonState.ON_PRESS) { // increase distance by adding 2 inches to x pose
             drive.setPoseEstimate(drive.getPoseEstimate().plus(new Pose2d(-4, 0, 0)));
-            if (robotState == RobotState.AUTO_POSITION)
-                driveToTarget();
         }
 
         if(controller2.getdPadLeft() == Controller.ButtonState.ON_PRESS) { // correct heading by adding 1 degree
             drive.setPoseEstimate(drive.getPoseEstimate().plus(new Pose2d(0, 0, Math.toRadians(-2))));
-            if (robotState == RobotState.AUTO_POSITION)
-                driveToTarget();
         }
 
         if(controller2.getdPadRight() == Controller.ButtonState.ON_PRESS) { // correct heading by subtracting 1 degree
             drive.setPoseEstimate(drive.getPoseEstimate().plus(new Pose2d(0, 0, Math.toRadians(2))));
-            if(robotState == RobotState.AUTO_POSITION)
-                driveToTarget();
         }
 
         if(controller2.getRightBumper() == Controller.ButtonState.ON_PRESS) { // change to the next right target
@@ -247,8 +220,6 @@ public class RobotTele extends Robot {
                     break;
             }
             Globals.updateTarget();
-            if(robotState == RobotState.AUTO_POSITION)
-                driveToTarget();
         }
 
         if(controller2.getLeftBumper() == Controller.ButtonState.ON_PRESS) { // change to the next left target
@@ -275,8 +246,6 @@ public class RobotTele extends Robot {
                     break;
             }
             Globals.updateTarget();
-            if(robotState == RobotState.AUTO_POSITION)
-                driveToTarget();
         }
 
         if(controller2.getLeftTrigger() == Controller.ButtonState.ON_PRESS) // reverse intake
@@ -315,11 +284,6 @@ public class RobotTele extends Robot {
                 autoAim.setCurrentMode(Globals.currentAimingMode);
         }
 
-        if(controller2.getLeftJoystickButton() == Controller.ButtonState.PRESSED && controller2.getRightJoystickButton() == Controller.ButtonState.PRESSED) { // switch to automatic target driving for automatic powershots
-            setRobotState(RobotState.AUTO_POSITION);
-            Globals.updateTarget();
-            driveToTarget();
-        }
         if(controller2.getRightJoystickYValue() > 0.5) {
             intake.setRingArmLiftedPos();
         }
